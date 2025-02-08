@@ -243,13 +243,13 @@ int main() {
     GuiVar avel3 = 0;
 
     Rectangle button_panel { GetScreenWidth() - 380.f, 50, 350, GetScreenHeight() - 100.f };
-    Rectangle button_avel1   { button_panel.x + 20 + 45, button_panel.y + 10 + 75, 80, 30 };
+    Rectangle button_avel1 { button_panel.x + 20 + 45, button_panel.y + 10 + 75, 80, 30 };
 
-    Rectangle button_vel2   { button_panel.x + 20 + 135, button_panel.y + 10 + 35, 80, 30 };
-    Rectangle button_avel2  { button_panel.x + 20 + 135, button_panel.y + 10 + 75, 80, 30 };
+    Rectangle button_vel2  { button_panel.x + 20 + 135, button_panel.y + 10 + 35, 80, 30 };
+    Rectangle button_avel2 { button_panel.x + 20 + 135, button_panel.y + 10 + 75, 80, 30 };
 
-    Rectangle button_vel3   { button_panel.x + 20 + 225, button_panel.y + 10 + 35, 80, 30 };
-    Rectangle button_avel3  { button_panel.x + 20 + 225, button_panel.y + 10 + 75, 80, 30 };
+    Rectangle button_vel3  { button_panel.x + 20 + 225, button_panel.y + 10 + 35, 80, 30 };
+    Rectangle button_avel3 { button_panel.x + 20 + 225, button_panel.y + 10 + 75, 80, 30 };
 
     bool pause = false;
 
