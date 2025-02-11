@@ -3,10 +3,10 @@
 
 #define RAYGUI_IMPLEMENTATION
 #define RAYGUI_VALUEBOX_MAX_CHARS 10
-
 #include <raygui.h>
 
 #include <vector>
+#include <initializer_list>
 #include <numeric>
 #include <cmath>
 #include <cassert>
@@ -38,82 +38,40 @@ inline Point Lerp(Point a, Point b, float t) {
     return a + (b - a) * t;
 }
 
-struct Polygon {
-    std::vector<Point> vertexes;
+inline Point GetScreenCenter() {
+    return Point { GetScreenWidth() / 2.f, GetScreenHeight() / 2.f };
+}
 
-    struct Interpolator {
-        const Polygon &polygon;
-
-        // index of starting point
-        size_t edge_idx = 0;
-        float  t = 0;
-
-        Interpolator(const Polygon &polygon) : polygon(polygon) {}
-
-        Point Step(float speed) {
-            float len = polygon.Length();
-            float step_len = fmodf(speed * GetFrameTime() * len, len);
-            int npoints = polygon.vertexes.size();
-            
-            Point a = polygon.GetPoint(edge_idx);
-            Point b = polygon.GetPoint((edge_idx + 1) % npoints);
-
-            Point current_pos = Lerp(a, b, t);
-
-            while (step_len > 0) {
-                float d = Distance(current_pos, b);
-
-                if (d > step_len) {
-                    t += step_len / Distance(a, b);
-                    break;
-                }
-
-                // switch to next edge
-                step_len -= d;
-                t = 0;
-
-                current_pos = b;
-                a = b;
-                b = polygon.GetPoint((edge_idx + 2) % npoints);
-
-                edge_idx = (edge_idx + 1) % npoints;
+void DrawPoint(Point point, Color color, float radius=0) {
+    for (float x = -radius; x <= radius; x++) {
+        for (float y = -radius; y <= radius; y++) {
+            if (x * x + y * y <= radius * radius) {
+                DrawPixel(x + point.x, y + point.y, color);
             }
-
-            return Lerp(a, b, t);
         }
-    };
+    }
+}
 
-    Interpolator interpolator;
+class Polygon {
+public:
+    Polygon() {}
 
-    Polygon() : interpolator(*this) {}
+    Polygon(std::initializer_list<Point> points) {
+        for (Point point : points) {
+            vertexes.push_back(point);
+        }
+    }
 
     void AddPoint(Point point) {
         vertexes.push_back(point);
     }
 
     Point GetPoint(size_t idx) const {
-        return idx < vertexes.size() ? vertexes[idx] : Vector2Zeros;
+        return vertexes.at(idx);
     }
 
-    void Draw(Color color) {
-        if (vertexes.size() == 0) {
-            return;
-        }
-
-        Point a = vertexes.front();
-        for (size_t i = 1; i < vertexes.size(); i++) {
-            DrawLineV(a, vertexes[i], color);
-            a = vertexes[i];
-        }
-        DrawLineV(a, vertexes.front(), color);
-    }
-
-    Point GetCenter() {
-        Point center = std::accumulate(vertexes.begin(), vertexes.end(), Vector2Zeros);
-
-        center.x /= vertexes.size();
-        center.y /= vertexes.size();
-        return center;
+    size_t NumPoints() const {
+        return vertexes.size();
     }
 
     void Shift(Point shift) {
@@ -123,10 +81,17 @@ struct Polygon {
     }
 
     void Rotate(float angle) {
-        Point center = GetCenter();
+        Point center = RealCenter();
         for (Point &point : vertexes) {
             point = RotatePoint(point, angle, center);
         }
+
+        rotation = fmodf(rotation + angle, 2 * M_PI);
+    }
+
+    void ResetRotation() {
+        Rotate(-rotation);
+        rotation = 0;
     }
 
     float Length() const {
@@ -143,84 +108,193 @@ struct Polygon {
         len += Distance(a, vertexes.front());
         return len;
     }
-};
 
-struct Circle {
-    Point center;
-    float r;
-
-    Circle(Point center, float r) : center(center), r(r) {}
-
-    void Draw(Color color) {
-        for (float x = -r; x <= r; x++) {
-            for (float y = -r; y <= r; y++) {
-                if (x * x + y * y <= r * r) {
-                    DrawPixel(x + center.x, y + center.y, color);
-                }
-            }
-        }
+    Point RealCenter() const {
+        Point center = std::accumulate(vertexes.begin(), vertexes.end(), Vector2Zeros);
+        center.x /= vertexes.size();
+        center.y /= vertexes.size();
+        return center;
     }
+
+    // Shape specific
+
+    void Draw(Color color) const {
+        if (vertexes.size() == 0) {
+            return;
+        }
+
+        Point a = vertexes.front();
+        for (size_t i = 1; i < vertexes.size(); i++) {
+            DrawLineV(a, vertexes[i], color);
+            a = vertexes[i];
+        }
+        DrawLineV(a, vertexes.front(), color);
+    }
+protected:
+    std::vector<Point> vertexes;
+    float rotation = 0;
 };
 
-struct Ellipse {
+struct Ellipse : public Polygon {
     Point center;
     float a, b;
-    float rotation = 0;
 
-    Polygon polygon;
+    Ellipse() = delete;
+    void AddPoint(Point point) = delete;
 
-    Ellipse(Point center, float a, float b, int poly_steps=30) : center(center), a(a), b(b) {
+    Ellipse(Point center, float a, float b, int poly_steps=30) : Polygon(), center(center), a(a), b(b) {
         for (float t = 0.5 * M_PI; t <= 2.5 * M_PI; t += 2 * M_PI / poly_steps) {
-            polygon.AddPoint({center.x + a * sinf(t), center.y + b * cosf(t)});
+            Polygon::AddPoint({center.x + a * sinf(t), center.y + b * cosf(t)});
         }
     }
 
-    void Draw(Color line_color) {
-        Circle(center, std::min(a, b)/15).Draw(GREEN);
-        Circle(polygon.GetCenter(), std::min(a, b)/15).Draw(RED);
-        polygon.Draw(line_color);
+    void Draw(Color line_color) const {
+        DrawPoint(center, GREEN, std::min(a, b)/15);
+        DrawPoint(RealCenter(), RED, std::min(a, b)/15);
+        Polygon::Draw(line_color);
     }
 
-    void Rotate(float angle) {
-        angle *= GetFrameTime();
-
-        polygon.Rotate(angle);
-
-        rotation += angle;
-        while (rotation >= 2 * M_PI)  rotation -= 2 * M_PI;
-        while (rotation <= -2 * M_PI) rotation += 2 * M_PI;
-    }
-
-    void ResetRotation() {
-        polygon.Rotate(-rotation);
-        rotation = 0;
-    }
-
-    void SetCenter(Point point) {
-        polygon.Shift(point - center);
-        center = point;
+    void SetCenter(Point new_center) {
+        Shift(new_center - center);
+        center = new_center;
     }
 };
 
-inline Point GetScreenCenter() {
-    return Point { GetScreenWidth() / 2.f, GetScreenHeight() / 2.f };
-}
+class Interpolator {
+public:
+    Interpolator(const Polygon &polygon) : polygon(&polygon) {}
 
-struct GuiVar {
-    char buffer[RAYGUI_VALUEBOX_MAX_CHARS + 1] = "0";
-    float value;
-    bool editmode = false;
+    bool Valid() {
+        return polygon;
+    }
 
-    GuiVar(float value) : value(value) {}
-    operator float() const {
-        return value;
+    Point Step(float speed) {
+        float len = polygon->Length();
+        int npoints = polygon->NumPoints();
+
+        if (npoints == 0) {
+            return Vector2Zeros;
+        }
+        if (len == 0) {
+            return polygon->GetPoint(0);
+        }
+
+        float step_len = fmodf(speed * len, len);
+            
+        Point a = polygon->GetPoint(edge_idx);
+        Point b = polygon->GetPoint((edge_idx + 1) % npoints);
+
+        Point current_pos = Lerp(a, b, t);
+
+        while (step_len > 0) {
+            float d = Distance(current_pos, b);
+
+            if (d > step_len) {
+                t += step_len / Distance(a, b);
+                break;
+            }
+
+            // switch to next edge
+            step_len -= d;
+            t = 0;
+
+            current_pos = b;
+            a = b;
+            b = polygon->GetPoint((edge_idx + 2) % npoints);
+
+            edge_idx = (edge_idx + 1) % npoints;
+        }
+
+        return Lerp(a, b, t);
+    }
+private:
+    const Polygon *polygon;
+
+    // index of starting point
+    size_t edge_idx = 0;
+    float  t = 0;
+};
+
+struct GuiInputBox {
+    Rectangle box;
+    float*    value;
+    bool      editmode = false;
+    char      text_buffer[RAYGUI_VALUEBOX_MAX_CHARS + 1] = {0};
+
+    GuiInputBox(Rectangle box, float *value) : box(box), value(value) {}
+
+    void ResetValue() {
+        memset(text_buffer, 0, sizeof(text_buffer));
+        *value = 0;
+    }
+
+    void Draw() {
+        if (GuiValueBoxFloat(box, nullptr, text_buffer, value, editmode)) {
+            editmode = !editmode;
+        }
+    }
+};
+
+struct GuiInputBoxPanel {
+    Rectangle box;
+    std::vector<GuiInputBox> input_boxes;
+
+    GuiInputBoxPanel(Rectangle box) : box(box) {}
+
+    void AddInputBox(Rectangle box, float *value) {
+        Rectangle actual { this->box.x + box.x, this->box.y + box.y, box.width, box.height };
+        input_boxes.emplace_back(actual, value);
+    }
+
+    void Draw() {
+        DrawRectangleLinesEx(box, 1, GRAY);
+        DrawText("1", box.x + 100, box.y + 15, 15, GRAY);
+        DrawText("2", box.x + 190, box.y + 15, 15, GRAY);
+        DrawText("3", box.x + 280, box.y + 15, 15, GRAY);
+
+        DrawText("Vel: ",  box.x + 20, box.y + 15 + 35, 15, GRAY);
+        DrawText("Avel: ", box.x + 20, box.y + 15 + 75, 15, GRAY);
+
+        for (GuiInputBox &ib : input_boxes) {
+            ib.Draw();
+        }
+    }
+
+    void ResetValues() {
+        for (GuiInputBox &ib : input_boxes) {
+            ib.ResetValue();
+        }
+    }
+};
+
+struct EllipseAnimation {
+    Ellipse ellipse;
+    Interpolator interpolator;
+    
+    float moving_speed   = 0;
+    float rotation_speed = 0;
+
+    struct {
+        Point center;
+        float a;
+        float b;
+    } _init;
+    
+    EllipseAnimation(Point center, float a, float b, const Polygon &trajectory) :
+        ellipse(center, a, b, 20), _init{center, a, b}, interpolator(trajectory) {}
+
+
+    void Update() {
+        float dt = GetFrameTime();
+        ellipse.Rotate(rotation_speed * dt);
+        if (interpolator.Valid()) {
+            ellipse.SetCenter(interpolator.Step(moving_speed * dt));
+        }
     }
 
     void Reset() {
-        memset(buffer, 0, sizeof(buffer));
-        buffer[0] = '0';
-
-        value = 0;
+        ellipse.ResetRotation();
+        ellipse.SetCenter(_init.center);
     }
 };
 
@@ -231,25 +305,20 @@ int main() {
     Point center = GetScreenCenter();
     center.x *= 0.75;
 
-    Ellipse e1(center,                 200., 100., 20);
-    GuiVar avel1 = 0;
+    Polygon e1_trajectory { center };
 
-    Ellipse e2(e1.polygon.GetPoint(0), 100., 50.,  20);
-    GuiVar vel2  = 0;
-    GuiVar avel2 = 0;
+    EllipseAnimation e1(center, 200.f, 100.f, e1_trajectory);
+    EllipseAnimation e2(e1.ellipse.GetPoint(0), 100.f, 50.f, e1.ellipse);
+    EllipseAnimation e3(e2.ellipse.GetPoint(0), 50.f, 25.f, e2.ellipse);
 
-    Ellipse e3(e2.polygon.GetPoint(0), 50.,  25,   20);
-    GuiVar vel3  = 0;
-    GuiVar avel3 = 0;
+    GuiInputBoxPanel panel( { GetScreenWidth() - 380.f, 50, 350, GetScreenHeight() - 100.f } );
+    panel.AddInputBox(Rectangle{ 65, 85, 80, 30 },  &e1.rotation_speed);
 
-    Rectangle button_panel { GetScreenWidth() - 380.f, 50, 350, GetScreenHeight() - 100.f };
-    Rectangle button_avel1 { button_panel.x + 20 + 45, button_panel.y + 10 + 75, 80, 30 };
+    panel.AddInputBox(Rectangle{ 155, 45, 80, 30 }, &e2.moving_speed);
+    panel.AddInputBox(Rectangle{ 155, 85, 80, 30 }, &e2.rotation_speed);
 
-    Rectangle button_vel2  { button_panel.x + 20 + 135, button_panel.y + 10 + 35, 80, 30 };
-    Rectangle button_avel2 { button_panel.x + 20 + 135, button_panel.y + 10 + 75, 80, 30 };
-
-    Rectangle button_vel3  { button_panel.x + 20 + 225, button_panel.y + 10 + 35, 80, 30 };
-    Rectangle button_avel3 { button_panel.x + 20 + 225, button_panel.y + 10 + 75, 80, 30 };
+    panel.AddInputBox(Rectangle{ 245, 45, 80, 30 }, &e3.moving_speed);
+    panel.AddInputBox(Rectangle{ 245, 85, 80, 30 }, &e3.rotation_speed);
 
     bool pause = false;
 
@@ -260,79 +329,39 @@ int main() {
         }
         if (IsKeyDown(KEY_LEFT_CONTROL)) {
             if (IsKeyPressed(KEY_R)) {
-                avel1.Reset();
+                panel.ResetValues();
 
-                vel2.Reset();
-                avel2.Reset();
-
-                vel3.Reset();
-                avel3.Reset();
-
-                e1.ResetRotation();
-                e2.ResetRotation();
-                e3.ResetRotation();
-                
-                e2.SetCenter(e1.polygon.GetPoint(0));
-                e3.SetCenter(e2.polygon.GetPoint(0));
+                e1.Reset();
+                e2.Reset();
+                e3.Reset();
             }
         } else {
             if (IsKeyPressed(KEY_R)) {
-                e1.ResetRotation();
-                e2.ResetRotation();
-                e3.ResetRotation();
-                
-                e2.SetCenter(e1.polygon.GetPoint(0));
-                e3.SetCenter(e2.polygon.GetPoint(0));
+                e1.Reset();
+                e2.Reset();
+                e3.Reset();
             }
         }
 
         BeginDrawing();
             ClearBackground(GetColor(0x181818ff));
 
-            DrawRectangleLinesEx(button_panel, 1, GRAY);
-
-            DrawText("1", button_panel.x + 100, button_panel.y + 15, 15, GRAY);
-            DrawText("2", button_panel.x + 190, button_panel.y + 15, 15, GRAY);
-            DrawText("3", button_panel.x + 280, button_panel.y + 15, 15, GRAY);
-
-            DrawText("Vel: ",  button_panel.x + 20, button_panel.y + 15 + 35, 15, GRAY);
-            DrawText("Avel: ", button_panel.x + 20, button_panel.y + 15 + 75, 15, GRAY);
-
-            if (GuiValueBoxFloat(button_avel1, nullptr, avel1.buffer, &avel1.value, avel1.editmode)) {
-                avel1.editmode = !avel1.editmode;
-            }
-
-            if (GuiValueBoxFloat(button_vel2, nullptr, vel2.buffer, &vel2.value, vel2.editmode)) {
-                vel2.editmode = !vel2.editmode;
-            }
-            if (GuiValueBoxFloat(button_avel2, nullptr, avel2.buffer, &avel2.value, avel2.editmode)) {
-                avel2.editmode = !avel2.editmode;
-            }
-
-            if (GuiValueBoxFloat(button_vel3, nullptr, vel3.buffer, &vel3.value, vel3.editmode)) {
-                vel3.editmode = !vel3.editmode;
-            }
-            if (GuiValueBoxFloat(button_avel3, nullptr, avel3.buffer, &avel3.value, avel3.editmode)) {
-                avel3.editmode = !avel3.editmode;
-            }
+            panel.Draw();
 
             if (pause) {
                 DrawText("paused", 20, 20, 15, GRAY);
             }
 
-            e1.Draw(YELLOW);
-            e2.Draw(YELLOW);
-            e3.Draw(YELLOW);
+            e1.ellipse.Draw(YELLOW);
+            e2.ellipse.Draw(YELLOW);
+            e3.ellipse.Draw(YELLOW);
 
         EndDrawing();
 
         if (!pause) {
-            e1.Rotate(avel1);
-            e2.Rotate(avel2);
-            e3.Rotate(avel3);
-            
-            e2.SetCenter(e1.polygon.interpolator.Step(vel2));
-            e3.SetCenter(e2.polygon.interpolator.Step(vel3));
+            e1.Update();
+            e2.Update();
+            e3.Update();
         }
     }
 

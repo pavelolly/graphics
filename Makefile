@@ -11,7 +11,7 @@ else
 endif
 
 CC = g++
-CFLAGS = --std=c++20 -Wall -Wextra
+CFLAGS = --std=c++20 -Wall -Wextra -ggdb
 INCLUDE_PATH = -I ${RAYLIB_PATH} -I raygui/src
 LD_PATH = -L ${RAYLIB_PATH}
 
