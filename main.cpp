@@ -31,7 +31,9 @@ Point RotatePoint(Point point, float angle, Point center = Vector2Zeros) {
 }
 
 inline float Distance(Point a, Point b) {
-    return std::hypotf(a.x - b.x, a.y - b.y);
+    float x = a.x - b.x;
+    float y = a.y - b.y;
+    return powf(x * x + y * y, 0.5f);
 }
 
 inline Point Lerp(Point a, Point b, float t) {
@@ -307,9 +309,9 @@ int main() {
 
     Polygon e1_trajectory { center };
 
-    EllipseAnimation e1(center, 200.f, 100.f, e1_trajectory);
-    EllipseAnimation e2(e1.ellipse.GetPoint(0), 100.f, 50.f, e1.ellipse);
-    EllipseAnimation e3(e2.ellipse.GetPoint(0), 50.f, 25.f, e2.ellipse);
+    EllipseAnimation e1(center,                 200.f, 100.f, e1_trajectory);
+    EllipseAnimation e2(e1.ellipse.GetPoint(0), 100.f, 50.f,  e1.ellipse);
+    EllipseAnimation e3(e2.ellipse.GetPoint(0), 50.f,  25.f,  e2.ellipse);
 
     GuiInputBoxPanel panel( { GetScreenWidth() - 380.f, 50, 350, GetScreenHeight() - 100.f } );
     panel.AddInputBox(Rectangle{ 65, 85, 80, 30 },  &e1.rotation_speed);
