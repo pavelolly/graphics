@@ -1,4 +1,5 @@
 RAYLIB_PATH = raylib/src
+RAYGUI_PATH = raygui/src
 
 vpath libraylib.a ${RAYLIB_PATH}
 
@@ -12,12 +13,20 @@ endif
 
 CC = g++
 CFLAGS = --std=c++20 -Wall -Wextra -ggdb
-INCLUDE_PATH = -I ${RAYLIB_PATH} -I raygui/src
+
+# TODO: compile below modules separately to aviod turning off warnings
+# for compiling raymath
+CFLAGS += -Wno-missing-field-initializers
+# for compiling raygui
+CFLAGS += -Wno-unused-parameter -Wno-enum-compare
+
+
+INCLUDE_PATH = -I ${RAYLIB_PATH} -I ${RAYGUI_PATH}
 LD_PATH = -L ${RAYLIB_PATH}
 
 
-${MAIN}: main.cpp libraylib.a
-	${CC} -o $@ main.cpp ${INCLUDE_PATH} ${LD_PATH} ${LD_FLAGS}
+${MAIN}: main.cpp geometry.h gui.h libraylib.a
+	${CC} ${CFLAGS} -o $@ main.cpp ${INCLUDE_PATH} ${LD_PATH} ${LD_FLAGS}
 
 libraylib.a:
 	${MAKE} -C ${RAYLIB_PATH}
