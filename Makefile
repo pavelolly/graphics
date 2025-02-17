@@ -24,8 +24,9 @@ CFLAGS += -Wno-unused-parameter -Wno-enum-compare
 INCLUDE_PATH = -I ${RAYLIB_PATH} -I ${RAYGUI_PATH}
 LD_PATH = -L ${RAYLIB_PATH}
 
+HEADERS = geometry.h gui.h log_macros.h
 
-${MAIN}: main.cpp geometry.h gui.h libraylib.a
+${MAIN}: main.cpp ${HEADERS} libraylib.a
 	${CC} ${CFLAGS} -o $@ main.cpp ${INCLUDE_PATH} ${LD_PATH} ${LD_FLAGS}
 
 libraylib.a:
