@@ -66,6 +66,10 @@ struct Polygon {
         vertexes.push_back(point);
     }
 
+    Point &GetPoint(size_t idx) {
+        return vertexes.at(idx);
+    }
+
     Point GetPoint(size_t idx) const {
         return vertexes.at(idx);
     }
@@ -103,6 +107,10 @@ struct Polygon {
         return center;
     }
 
+    void ShiftPoint(size_t idx, Point shift) {
+        vertexes[idx] += shift;
+    }
+
     // Shape specific
 
     virtual Point GetCenter() const {
@@ -122,11 +130,13 @@ struct Polygon {
         Point a = vertexes.front();
         for (size_t i = 1; i < vertexes.size(); i++) {
             DrawLineV(a, vertexes[i], color_line);
-            DrawPoint(vertexes[i], color_point, 7);
+            DrawPoint(vertexes[i], color_point, 5);
             a = vertexes[i];
         }
         DrawLineV(a, vertexes.front(), color_line);
-        DrawPoint(vertexes.front(), color_point, 7);
+        DrawPoint(vertexes.front(), color_point, 5);
+
+        DrawPoint(RealCenter(), color_point, 7);
     }
 
     virtual void Shift(Point shift) {
@@ -140,8 +150,10 @@ struct Ellipse : Polygon {
     Point center;
     float a, b;
 
-    Ellipse() = delete;
-    void AddPoint(Point point) = delete;
+    Ellipse()                                = delete;
+    void AddPoint(Point point)               = delete;
+    void ShiftPoint(size_t idx, Point shift) = delete;
+    Point &GetPoint(size_t idx)              = delete;
 
     Ellipse(Point center, float a, float b, int poly_steps=40) : Polygon(), center(center), a(a), b(b) {
         for (float t = 0.5 * std::numbers::pi; t <= 2.5 * std::numbers::pi; t += 2 * std::numbers::pi / poly_steps) {

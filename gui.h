@@ -21,7 +21,20 @@ struct GUI_InputBox {
 
     GUI_InputBox(Rectangle box, float *value, std::string text) : box(box), value(value), text(std::move(text)) {
         if (*value != 0) {
-            snprintf(text_buffer, RAYGUI_VALUEBOX_MAX_CHARS, "%.2f", *value);
+            snprintf(text_buffer, RAYGUI_VALUEBOX_MAX_CHARS, "%f", *value);
+            for (int i = RAYGUI_VALUEBOX_MAX_CHARS; i >= 0; --i) {
+                char &ch = text_buffer[i];
+                
+                if (ch == '\0' || ch == '0' || ch == '.' || ch == ',') {
+                    ch = '\0';
+                    continue;
+                }
+
+                break;
+            }
+            if (text_buffer[0] == '\0') {
+                text_buffer[0] = '0';
+            }
         }
     }
 

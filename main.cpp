@@ -26,6 +26,7 @@ struct PolygonStorage {
 
     void Remove(Polygon *polygon) {
         std::erase(polygons, polygon);
+        delete polygon;
     }
 };
 
@@ -45,7 +46,7 @@ struct PolygonAnimation {
     {}
 
     void Update(float dt) {
-        polygon->SetCenter(interpolator.Step(moving_speed * dt));
+        polygon->SetCenter(interpolator.Step(moving_speed * 100 * dt));
         
         polygon->Rotate(rotation_speed * dt);
         rotation = fmodf(rotation + rotation_speed * dt, 2 * std::numbers::pi);
@@ -94,10 +95,6 @@ struct Scene {
         for (auto &animation : animations) {
             animation.polygon->Draw(YELLOW, RED);
         }
-
-        for (auto &input_box : input_boxes) {
-            input_box.Draw();
-        }
     }
 
     void Shift(Point shift) {
@@ -131,9 +128,9 @@ struct Scene {
 PolygonStorage polygons;
 
 Scene GetEllipsesScene() {
-    Polygon *eliipse1 = polygons.Add(Ellipse( { GetScreenWidth() * 7.f / 16.f, GetScreenHeight() / 2.f }, 200, 100));
-    Polygon *eliipse2 = polygons.Add(Ellipse( eliipse1->GetPoint(0),                                   100, 50  ));
-    Polygon *eliipse3 = polygons.Add(Ellipse( eliipse2->GetPoint(0),                                   50,  25  ));
+    Polygon *eliipse1 = polygons.Add(Ellipse( { GetScreenWidth() * 7.f / 16.f, GetScreenHeight() / 2.f }, 200, 100 ));
+    Polygon *eliipse2 = polygons.Add(Ellipse( eliipse1->GetPoint(0),                                      100, 50  ));
+    Polygon *eliipse3 = polygons.Add(Ellipse( eliipse2->GetPoint(0),                                      50,  25  ));
 
     Scene scene;
     scene.type = Scene::ELLIPSES;
@@ -142,11 +139,11 @@ Scene GetEllipsesScene() {
 
     scene.AddAnimation(PolygonAnimation(*eliipse2, *eliipse1));
     scene.animations[1].rotation_speed = 2;
-    scene.animations[1].moving_speed   = 0.5;
+    scene.animations[1].moving_speed   = 2;
 
     scene.AddAnimation(PolygonAnimation(*eliipse3, *eliipse2));
     scene.animations[2].rotation_speed = 3;
-    scene.animations[2].moving_speed   = 0.3;
+    scene.animations[2].moving_speed   = 3;
 
     scene.AddInputBox(&scene.animations[0].rotation_speed, "Rotation Speed 1\t");
     scene.AddInputBox(&scene.animations[1].moving_speed,   "Moving Speed 2\t");
@@ -177,6 +174,8 @@ int main() {
     Scene scene_draw_polygons = GetDrawPolygonsScene();
     GUI_Toggle toggle_draw_polygon(Rectangle{ PANEL_X + PANEL_W - BUTTON_W - 35, PANEL_Y + PANEL_H - 2 * BUTTON_H, BUTTON_W, BUTTON_H }, "Draw", "Finish");
     Polygon *drawn_polygon = polygons.Add(Polygon{});
+    bool dragging        = false;
+    Point *dragged_point = nullptr;
 
     Scene *scene = &scene_ellipses;
 
@@ -187,12 +186,22 @@ int main() {
 
             ClearBackground(GetColor(0x181818ff));
 
-            DrawRectangleLinesEx(PANEL, GuiGetStyle(DEFAULT, BORDER_WIDTH), GRAY);
-            scene->Draw();
+            // Draw Polygons
 
+            scene->Draw();
+            if (scene->type == Scene::DRAW_POLYGONS) {
+                drawn_polygon->Draw(ORANGE, PURPLE);
+            }
+
+            // Draw UI
+
+            DrawRectangleRec(PANEL, GetColor(0x181818ff));
+            DrawRectangleLinesEx(PANEL, GuiGetStyle(DEFAULT, BORDER_WIDTH), GRAY);
+            for (auto &input_box : scene->input_boxes) {
+                input_box.Draw();
+            }
             if (scene->type == Scene::DRAW_POLYGONS) {
                 toggle_draw_polygon.Draw();
-                drawn_polygon->Draw(ORANGE, PURPLE);
             }
 
             if (pause) {
@@ -264,6 +273,47 @@ int main() {
                     }
                 
                     drawn_polygon = polygons.Add(Polygon{});
+                }
+
+            }
+
+            if (pause) {
+
+                if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+                    Point mouse_pos = GetMousePosition();
+
+                    for (auto &animation : scene->animations) {
+                        for (auto &point : animation.polygon->vertexes) {
+                            if (Distance(mouse_pos, point) < 10) {
+                                dragged_point = &point;
+                                break;
+                            }
+                        }
+                        if (dragged_point) {
+                            break;
+                        }
+                    }
+
+                    if (dragged_point) {
+                        dragging = true;
+                    }
+                }
+
+                if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
+
+                    if (dragging) {
+                        assert(dragged_point && "dragged_point is nullptr when trying to drag");
+                        
+                        *dragged_point += GetMouseDelta();
+                    }
+
+                } else if (IsMouseButtonUp(MOUSE_BUTTON_RIGHT)) {
+
+                    if (dragging) {
+                        dragging = false;
+                        dragged_point = nullptr;
+                    }
+
                 }
 
             }
