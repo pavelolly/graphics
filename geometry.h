@@ -189,7 +189,7 @@ struct Interpolator {
     float t                = 0;
 
     Interpolator(Point point=Vector2Zeros) : default_point(point) {};
-    Interpolator(const Polygon *polygon) : polygon(polygon) {
+    Interpolator(const Polygon *polygon) : polygon(polygon), default_point(polygon->GetPoint(0)) {
         assert(polygon && "polygon for Interpolator must be not null");
     }
 

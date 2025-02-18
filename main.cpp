@@ -55,6 +55,7 @@ struct PolygonAnimation {
     void Reset() {
         polygon->Rotate(-rotation);
         rotation = 0;
+        polygon->SetCenter(interpolator.default_point);
 
         interpolator.Reset();
     }
@@ -303,7 +304,7 @@ int main() {
 
                     if (dragging) {
                         assert(dragged_point && "dragged_point is nullptr when trying to drag");
-                        
+
                         *dragged_point += GetMouseDelta();
                     }
 
