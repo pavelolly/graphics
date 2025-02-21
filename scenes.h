@@ -39,16 +39,18 @@ struct PolygonAnimation {
 };
 
 struct Scene {
+    bool switchable = true;
+
     virtual void Draw()           = 0;
     virtual void Update(float dt) = 0;
     virtual ~Scene() {};
 };
 
 
-#define PANEL_X  (static_cast<float>(GetScreenWidth()) - 400)
+#define PANEL_X  (static_cast<float>(GetScreenWidth()) - 400) // static_cast bruh...
 #define PANEL_Y  40
 #define PANEL_W  400
-#define PANEL_H  (static_cast<float>(GetScreenHeight()) - 40)
+#define PANEL_H  (static_cast<float>(GetScreenHeight()) - 40) // static_cast bruh...
 
 #define PANEL (Rectangle { PANEL_X - 10, PANEL_Y - 10, PANEL_W - 10, PANEL_H - 10 })
 
@@ -134,6 +136,14 @@ struct SceneEllipses : Scene {
         for (auto &animation : animations) {
             animation.Update(dt);
         }
+
+        switchable = true;
+        for (auto &input_box : input_boxes) {
+            if (input_box.editmode) {
+                switchable = false;
+                break;
+            }
+        }
     }
 };
 
@@ -207,6 +217,14 @@ struct SceneDrawPolygons : Scene {
                 for (auto &animation : animations) {
                     animation.Reset();
                 }
+            }
+        }
+
+        switchable = true;
+        for (auto &input_box : input_boxes) {
+            if (input_box.editmode) {
+                switchable = false;
+                break;
             }
         }
 

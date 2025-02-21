@@ -31,12 +31,15 @@ int main() {
 
         EndDrawing();
 
-        if (IsKeyPressed('Q')) {
-            scene = &scene_ellipses;
-        }
+        // scene is not switchable when input boxes are active
+        if (scene->switchable) {
+            if (IsKeyPressed('1')) {
+                scene = &scene_ellipses;
+            }
 
-        if (IsKeyPressed('E')) {
-            scene = &scene_draw_polygons;
+            if (IsKeyPressed('2')) {
+                scene = &scene_draw_polygons;
+            }
         }
 
         scene->Update(GetFrameTime());
