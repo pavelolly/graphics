@@ -13,7 +13,7 @@
 
 using Point = Vector2;
 
-inline Point RotatePoint(Point point, float angle, Point center = Vector2Zeros) {
+inline Point RotatePoint(Point point, float angle, Point center=Vector2Zeros) {
     point -= center;
 
     float x = point.x;
@@ -60,14 +60,33 @@ struct Polygon {
         }
     }
 
+    Polygon(const Polygon &other) = default;
+    Polygon(Polygon &&other) : vertexes(std::move(other.vertexes)) {}
+
+    Polygon &operator =(const Polygon& other) {
+        if (this == &other) {
+            return *this;
+        }
+
+        vertexes = other.vertexes;
+
+        return *this;
+    }
+
+    Polygon &operator =(Polygon&& other) {
+        if (this == &other) {
+            return *this;
+        }
+
+        vertexes = std::move(other.vertexes);
+
+        return *this;
+    }
+
     virtual ~Polygon() = default;
 
     void AddPoint(Point point) {
         vertexes.push_back(point);
-    }
-
-    Point &GetPoint(size_t idx) {
-        return vertexes.at(idx);
     }
 
     Point GetPoint(size_t idx) const {
@@ -153,7 +172,6 @@ struct Ellipse : Polygon {
     Ellipse()                                = delete;
     void AddPoint(Point point)               = delete;
     void ShiftPoint(size_t idx, Point shift) = delete;
-    Point &GetPoint(size_t idx)              = delete;
 
     Ellipse(Point center, float a, float b, int poly_steps=40) : Polygon(), center(center), a(a), b(b) {
         for (float t = 0.5 * std::numbers::pi; t <= 2.5 * std::numbers::pi; t += 2 * std::numbers::pi / poly_steps) {
@@ -189,9 +207,7 @@ struct Interpolator {
     float t                = 0;
 
     Interpolator(Point point=Vector2Zeros) : default_point(point) {};
-    Interpolator(const Polygon *polygon) : polygon(polygon), default_point(polygon->GetPoint(0)) {
-        assert(polygon && "polygon for Interpolator must be not null");
-    }
+    Interpolator(const Polygon &polygon) : polygon(&polygon), default_point(polygon.GetPoint(0)) {}
 
     void Reset() {
         edge_idx = 0;
@@ -215,7 +231,7 @@ struct Interpolator {
 
         float step_len = fmodf(speed, len);
             
-        Point a = polygon->GetPoint(edge_idx);
+        Point a = polygon->GetPoint(edge_idx % npoints);
         Point b = polygon->GetPoint((edge_idx + 1) % npoints);
 
         Point current_pos = Lerp(a, b, t);
