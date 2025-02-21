@@ -16,12 +16,24 @@ RAYGUI_PATH = ...
 
 Just run `make` to build everything
 
-## Scene 1
+## Scenes
 
-![screen1](.github/1.gif)
+<img src=".github/1.gif" alt="scene_1" width="90%" height="90%" style="display: block;
+    margin-left: auto;
+    margin-right: auto;">
+</img>
 
-## Scene 2
+<img src=".github/2.gif" alt="scene_2_1" width="90%" height="90%" style="display: block;
+    margin-left: auto;
+    margin-right: auto;">
+</img>
 
-![screen2](.github/2.gif)
+<img src=".github/3.gif" alt="scene_2_2" width="90%" height="90%" style="display: block;
+    margin-left: auto;
+    margin-right: auto;">
+</img>
 
-![screen3](.github/3.gif)
+<img src=".github/4.gif" alt="scene_3" width="90%" height="90%" style="display: block;
+    margin-left: auto;
+    margin-right: auto;">
+</img>
