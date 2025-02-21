@@ -18,8 +18,9 @@ int main() {
     SetTraceLogLevel(LOG_DEBUG);
     GuiSetStyle(DEFAULT, TEXT_SIZE, 15);
 
-    SceneEllipses scene_ellipses;
+    SceneEllipses     scene_ellipses;
     SceneDrawPolygons scene_draw_polygons;
+    SceneLocalization scene_localization;
 
     Scene *scene = &scene_ellipses;
 
@@ -34,11 +35,14 @@ int main() {
         // scene is not switchable when input boxes are active
         if (scene->switchable) {
             if (IsKeyPressed('1')) {
+                EnableCursor();
                 scene = &scene_ellipses;
-            }
-
-            if (IsKeyPressed('2')) {
+            } else if (IsKeyPressed('2')) {
+                EnableCursor();
                 scene = &scene_draw_polygons;
+            } else if (IsKeyPressed('3')) {
+                DisableCursor();
+                scene = &scene_localization;
             }
         }
 

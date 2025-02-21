@@ -49,6 +49,23 @@ inline void DrawPoint(Point point, Color color, float radius=0) {
     }
 }
 
+inline bool IsInsideTriangle(Point p, Point a, Point b, Point c) {
+    bool side1 = signbit((p.x - a.x) * (b.y - a.y) - (p.y - a.y) * (b.x - a.x));
+    bool side2 = signbit((p.x - b.x) * (c.y - b.y) - (p.y - b.y) * (c.x - b.x));
+    bool side3 = signbit((p.x - c.x) * (a.y - c.y) - (p.y - c.y) * (a.x - c.x));
+
+    return side1 == side2 && side2 == side3;
+}
+
+inline bool IsInsideTriangle2(Point p, Point a, Point b, Point c) {
+    float d  = (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y);
+    float k1 = ((b.x - p.x) * (c.y - p.y) - (c.x - p.x) * (b.y - p.y)) / d;
+    float k2 = ((p.x - a.x) * (c.y - a.y) - (c.x - a.x) * (p.y - a.y)) / d;
+    float k3 = 1 - k1 - k2;
+
+    return k1 > 0 && k2 > 0 && k3 > 0;
+}
+
 struct Polygon {
     std::vector<Point> vertexes;
 
