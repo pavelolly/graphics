@@ -37,11 +37,13 @@ struct GUI_InputBox {
             }
         }
         for (int i = len - 1; i > dot; --i) {
-            if (text_buffer[i] == '0') {
-                text_buffer[i] = '\0';
-                if (i == dot + 1) {
-                    text_buffer[dot] = '\0';
-                }
+            if (text_buffer[i] != '0') {
+                break;
+            }
+
+            text_buffer[i] = '\0';
+            if (i == dot + 1) {
+                text_buffer[dot] = '\0';
             }
         }
     }
