@@ -4,8 +4,8 @@
 
 #include <array>
 
-#include "geometry.h"
-#include "gui.h"
+#include "geometry.hpp"
+#include "gui.hpp"
 
 struct PolygonAnimation {
     Polygon *polygon;
@@ -244,16 +244,15 @@ struct SceneDrawPolygons : Scene {
                 polygons.push_back(std::move(drawn_polygon));
 
                 if (animations.size() == 0) {
-                    animations.push_back(PolygonAnimation(polygons.back()));
+                    animations.emplace_back(polygons.back());
 
                     AddInputBox(&animations[0].rotation_speed, "Rotation Speed 1\t");
                 } else {
-                    animations.push_back(PolygonAnimation(polygons.back(), *animations.back().polygon));
-                    animations.back().polygon->SetCenter(animations.back().interpolator.default_point);
+                    animations.emplace_back(polygons.back(), *animations.back().polygon);
 
-                    int polygon_ordinal = animations.size();
-                    AddInputBox(&animations[polygon_ordinal - 1].moving_speed,   "Moving Speed "   + std::to_string(polygon_ordinal) + "\t");
-                    AddInputBox(&animations[polygon_ordinal - 1].rotation_speed, "Rotation Speed " + std::to_string(polygon_ordinal) + "\t");
+                    auto polygon_ordinal = std::to_string(animations.size());
+                    AddInputBox(&animations.back().moving_speed,   "Moving Speed "   + polygon_ordinal + "\t");
+                    AddInputBox(&animations.back().rotation_speed, "Rotation Speed " + polygon_ordinal + "\t");
                 }
             }
 
@@ -288,7 +287,7 @@ struct SceneDrawPolygons : Scene {
 
                 for (size_t i = 0; i < animations.size(); ++i) {
                     for (auto &point : animations[i].polygon->vertexes) {
-                        if (Distance(mouse_pos, point) < 10) {
+                        if (CheckCollisionPointCircle(mouse_pos, point, 10)) {
                             dragged_point = &point;
                             break;
                         }
@@ -397,15 +396,15 @@ struct SceneLocalization : Scene {
         if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
             Point mouse_pos = GetMousePosition();
 
-            if (Distance(triangle.a, mouse_pos) < 10) {
+            if (CheckCollisionPointCircle(mouse_pos, triangle.a, 10)) {
                 dragging = true;
                 dragged_point = &triangle.a;
             }
-            if (Distance(triangle.b, mouse_pos) < 10) {
+            if (CheckCollisionPointCircle(mouse_pos, triangle.b, 10)) {
                 dragging = true;
                 dragged_point = &triangle.b;
             }
-            if (Distance(triangle.c, mouse_pos) < 10) {
+            if (CheckCollisionPointCircle(mouse_pos, triangle.c, 10)) {
                 dragging = true;
                 dragged_point = &triangle.c;
             }

@@ -3,9 +3,9 @@
 
 #include <deque>
 
-#include "geometry.h"
-#include "gui.h"
-#include "scenes.h"
+#include "geometry.hpp"
+#include "gui.hpp"
+#include "scenes.hpp"
 
 #include "log_macros.h"
 
