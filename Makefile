@@ -3,16 +3,16 @@ RAYGUI_PATH = raygui/src
 
 vpath libraylib.a ${RAYLIB_PATH}
 
+CC = g++
+CFLAGS = --std=c++20 -Wall -Wextra -ggdb
+
 ifeq (${OS},Windows_NT)
     MAIN = main.exe
     LD_FLAGS = -lraylib -lopengl32 -lgdi32 -lwinmm -lshell32
 else
     MAIN = main
-    LD_FLAGS = -lraylib
+    LD_FLAGS = -lraylib -lm
 endif
-
-CC = g++
-CFLAGS = --std=c++20 -Wall -Wextra -ggdb
 
 # TODO: compile below modules separately to aviod turning off warnings
 # for compiling raymath

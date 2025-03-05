@@ -15,7 +15,9 @@
 int main() {
     InitWindow(WIDTH, HEIGHT, "Ellipses");
     SetTargetFPS(60);
+
     SetTraceLogLevel(LOG_DEBUG);
+
     GuiSetStyle(DEFAULT, TEXT_SIZE, 15);
 
     SceneEllipses     scene_ellipses;

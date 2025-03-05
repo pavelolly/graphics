@@ -69,7 +69,8 @@ inline bool IsInsideTriangle2(Point p, Point a, Point b, Point c) {
 struct Polygon {
     std::vector<Point> vertexes;
 
-    Polygon() {}
+    Polygon() = default;
+    virtual ~Polygon() = default;
 
     Polygon(std::initializer_list<Point> points) {
         for (Point point : points) {
@@ -77,8 +78,10 @@ struct Polygon {
         }
     }
 
-    Polygon(const Polygon &other) = default;
-    Polygon(Polygon &&other) : vertexes(std::move(other.vertexes)) {}
+    Polygon(const Polygon &other) : vertexes(other.vertexes)
+    {}
+    Polygon(Polygon &&other) : vertexes(std::move(other.vertexes))
+    {}
 
     Polygon &operator =(const Polygon& other) {
         if (this == &other) {
@@ -99,8 +102,6 @@ struct Polygon {
 
         return *this;
     }
-
-    virtual ~Polygon() = default;
 
     void AddPoint(Point point) {
         vertexes.push_back(point);
@@ -141,10 +142,6 @@ struct Polygon {
         center.x /= vertexes.size();
         center.y /= vertexes.size();
         return center;
-    }
-
-    void ShiftPoint(size_t idx, Point shift) {
-        vertexes[idx] += shift;
     }
 
     // Shape specific
@@ -188,7 +185,6 @@ struct Ellipse : Polygon {
 
     Ellipse()                                = delete;
     void AddPoint(Point point)               = delete;
-    void ShiftPoint(size_t idx, Point shift) = delete;
 
     Ellipse(Point center, float a, float b, int poly_steps=40) : Polygon(), center(center), a(a), b(b) {
         for (float t = 0.5 * std::numbers::pi; t <= 2.5 * std::numbers::pi; t += 2 * std::numbers::pi / poly_steps) {

@@ -8,32 +8,29 @@
 #include "gui.hpp"
 
 struct PolygonAnimation {
-    Polygon *polygon;
+    const Polygon *original_polygon;
+    Polygon animated_polygon;
+
     Interpolator interpolator;
-    float rotation = 0;
-    float moving_speed = 0;
+    
+    float moving_speed   = 0;
     float rotation_speed = 0;
 
     PolygonAnimation(Polygon &polygon, const Polygon &trajectory) :
-        polygon(&polygon), interpolator(trajectory)
+        original_polygon(&polygon), animated_polygon(polygon), interpolator(trajectory)
     {}
 
     PolygonAnimation(Polygon &polygon) :
-        polygon(&polygon), interpolator(polygon.GetCenter())
+        original_polygon(&polygon), animated_polygon(polygon), interpolator(polygon.GetCenter())
     {}
 
     void Update(float dt) {
-        polygon->SetCenter(interpolator.Step(moving_speed * 100 * dt));
-        
-        polygon->Rotate(rotation_speed * dt);
-        rotation = fmodf(rotation + rotation_speed * dt, 2 * std::numbers::pi);
+        animated_polygon.SetCenter(interpolator.Step(moving_speed * 100 * dt));
+        animated_polygon.Rotate(rotation_speed * dt);
     }
 
     void Reset() {
-        polygon->Rotate(-rotation);
-        rotation = 0;
-        polygon->SetCenter(interpolator.default_point);
-
+        animated_polygon = *original_polygon;
         interpolator.Reset();
     }
 };
@@ -59,9 +56,9 @@ struct Scene {
 
 
 struct SceneEllipses : Scene {
-    std::array<Ellipse, 3> ellipses;
+    std::array<Ellipse,          3> ellipses;
     std::array<PolygonAnimation, 3> animations;
-    std::array<GUI_InputBox, 5> input_boxes;
+    std::array<GUI_InputBox,     5> input_boxes;
 
     bool paused = false;
 
@@ -73,8 +70,8 @@ struct SceneEllipses : Scene {
         },
         animations {
             PolygonAnimation(ellipses[0]),
-            PolygonAnimation(ellipses[1], ellipses[0]),
-            PolygonAnimation(ellipses[2], ellipses[1])
+            PolygonAnimation(ellipses[1], animations[0].animated_polygon),
+            PolygonAnimation(ellipses[2], animations[1].animated_polygon)
         }
     {
         // initial parameters
@@ -95,7 +92,7 @@ struct SceneEllipses : Scene {
 
     void Draw() override {
         for (auto &animation : animations) {
-            animation.polygon->Draw(YELLOW, RED);
+            animation.animated_polygon.Draw(YELLOW, RED);
         }
 
         DrawRectangleRec(PANEL, GetColor(0x181818ff));
@@ -167,10 +164,6 @@ struct SceneDrawPolygons : Scene {
         toggle_draw_polygon(Rectangle{ PANEL_X + PANEL_W - BUTTON_W - 35, PANEL_Y + PANEL_H - 2 * BUTTON_H, BUTTON_W, BUTTON_H }, "Draw", "Finish")
     {}
 
-    void AddAnimation(const PolygonAnimation &animation) {
-        animations.push_back(animation);
-    }
-
     void AddInputBox(float *value, std::string text="") {
         size_t nbuttons = input_boxes.size();
         input_boxes.emplace_back(Rectangle { PANEL_X + PANEL_W / 2, PANEL_Y + nbuttons*(BUTTON_H + 10.f), BUTTON_W, BUTTON_H }, value, std::move(text));
@@ -178,7 +171,7 @@ struct SceneDrawPolygons : Scene {
 
     void Draw() override {
         for (auto &animation : animations) {
-            animation.polygon->Draw(YELLOW, RED);
+            animation.animated_polygon.Draw(YELLOW, RED);
         }
 
         drawn_polygon.Draw(ORANGE, PURPLE);
@@ -248,7 +241,7 @@ struct SceneDrawPolygons : Scene {
 
                     AddInputBox(&animations[0].rotation_speed, "Rotation Speed 1\t");
                 } else {
-                    animations.emplace_back(polygons.back(), *animations.back().polygon);
+                    animations.emplace_back(polygons.back(), animations.back().animated_polygon);
 
                     auto polygon_ordinal = std::to_string(animations.size());
                     AddInputBox(&animations.back().moving_speed,   "Moving Speed "   + polygon_ordinal + "\t");
@@ -286,7 +279,7 @@ struct SceneDrawPolygons : Scene {
                 Point mouse_pos = GetMousePosition();
 
                 for (size_t i = 0; i < animations.size(); ++i) {
-                    for (auto &point : animations[i].polygon->vertexes) {
+                    for (auto &point : animations[i].animated_polygon.vertexes) {
                         if (CheckCollisionPointCircle(mouse_pos, point, 10)) {
                             dragged_point = &point;
                             break;
@@ -309,24 +302,24 @@ struct SceneDrawPolygons : Scene {
 
         Point shift = Vector2Zeros;
         if (IsKeyDown(KEY_LEFT)) {
-            shift += {-200, 0};
+            shift += {-1, 0};
         }
         if (IsKeyDown(KEY_RIGHT)) {
-            shift += {200, 0};
+            shift += {1, 0};
         }
         if (IsKeyDown(KEY_UP)) {
-            shift += {0, -200};
+            shift += {0, -1};
         }
         if (IsKeyDown(KEY_DOWN)) {
-            shift += {0, 200};
+            shift += {0, 1};
         }
-        shift *= dt;
+        shift *= 200 * dt;
 
         if (shift != Vector2Zeros) {
             for (size_t i = 0; i < animations.size(); ++i) {
-                animations[i].polygon->Shift(shift);
+                animations[i].animated_polygon.Shift(shift);
                 if (animations[i].interpolator.polygon == nullptr) {
-                    animations[i].interpolator.default_point = animations[i].polygon->GetCenter();
+                    animations[i].interpolator.default_point = animations[i].animated_polygon.GetCenter();
                 }
             }
             
