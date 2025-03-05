@@ -10,16 +10,46 @@
 #include "geometry.hpp"
 #include "gui.hpp"
 
+// simple wrapper around std::variant for convinience
+// Trajectory can be reference to existing polygon or single point
+struct Trajectory {
+    using PolygonPtr = std::weak_ptr<const Polygon>;
+
+    std::variant<PolygonPtr, Point> trajectory;
+
+    Trajectory() = default;
+    Trajectory(PolygonPtr polygon) : trajectory(polygon) {}
+    Trajectory(Point point) : trajectory(point) {}
+
+    bool IsPolygon() const {
+        return std::holds_alternative<PolygonPtr>(trajectory);
+    }
+    bool IsPoint() const {
+        return std::holds_alternative<Point>(trajectory);
+    }
+
+    PolygonPtr GetPolygon() const {
+        return std::get<PolygonPtr>(trajectory);
+    }
+    Point& GetPoint() {
+        return std::get<Point>(trajectory);
+    }
+    Point GetPoint() const {
+        return std::get<Point>(trajectory);
+    }
+};
+
 struct PolygonAnimation {
     // reference to orignal polygon that is animated
     std::weak_ptr<const Polygon> original_polygon;
 
+    // original position of polygon if no trajectory-as-polygon was introduced
+    Point original_point = Vector2Zeros;
+
     // copy of original polygon that is actually changed during animation
     std::shared_ptr<Polygon> animated_polygon;
     
-    // trajectory: it can be reference to existing polygon or songle point
-    std::variant<std::weak_ptr<const Polygon>, Point> trajectory;
-    Point original_point = Vector2Zeros;
+    Trajectory trajectory;
     size_t trajectory_edge_idx         = 0;   // edge of trajectory we're currently at
     float trajectory_edge_interpolator = 0.f; // interpolator for the current edge
     
@@ -39,17 +69,19 @@ struct PolygonAnimation {
         original_polygon(polygon),
         animated_polygon(std::make_shared<Poly>(*polygon)),
         trajectory(polygon->GetCenter()),
-        original_point(std::get<Point>(trajectory))
+        original_point(trajectory.GetPoint())
     {}
 
     Point InterpolatorStep(float dt) {
         float speed = moving_speed * 100 * dt;
 
-        if (std::holds_alternative<Point>(trajectory)) {
-            return std::get<Point>(trajectory);
+        if (trajectory.IsPoint()) {
+            return trajectory.GetPoint();
         }
 
-        auto trajectory_ptr = std::get<std::weak_ptr<const Polygon>>(trajectory);
+        assert(trajectory.IsPolygon() && "trajectory is in invalid state");
+
+        auto trajectory_ptr = trajectory.GetPolygon();
         if (trajectory_ptr.expired()) {
             return Vector2Zeros;
         }
@@ -104,8 +136,8 @@ struct PolygonAnimation {
             original_polygon.lock()->CloneInto(animated_polygon.get());
         }
 
-        if (std::holds_alternative<Point>(trajectory)) {
-            std::get<Point>(trajectory) = original_point;
+        if (trajectory.IsPoint()) {
+            trajectory.GetPoint() = original_point;
         }
         trajectory_edge_idx          = 0.f;
         trajectory_edge_interpolator = 0.f;
@@ -119,7 +151,8 @@ struct Scene {
     virtual ~Scene() = default;
 };
 
-
+// TODO: do smth with this defines
+//       they are kind of... odd
 #define PANEL_X  (static_cast<float>(GetScreenWidth()) - 400) // static_cast bruh...
 #define PANEL_Y  40
 #define PANEL_W  400
@@ -296,6 +329,10 @@ struct SceneDrawPolygons : Scene {
             if (IsKeyPressed('R')) {
                 for (auto &animation : animations) {
                     animation.Reset();
+                    // if paused we want to see results of resetting immediately
+                    if (paused) {
+                        animation.Update(0);
+                    }
                 }
             
                 for (auto &input_box : input_boxes) {
@@ -307,6 +344,10 @@ struct SceneDrawPolygons : Scene {
             if (IsKeyPressed('R')) {
                 for (auto &animation : animations) {
                     animation.Reset();
+                    // if paused we want to see results of resetting immediately
+                    if (paused) {
+                        animation.Update(0);
+                    }
                 }
             }
         }
@@ -412,8 +453,8 @@ struct SceneDrawPolygons : Scene {
         if (shift != Vector2Zeros) {
             for (auto &animation : animations) {
                 animation.animated_polygon->Shift(shift);
-                if (std::holds_alternative<Point>(animation.trajectory)) {
-                    std::get<Point>(animation.trajectory) += shift;
+                if (animation.trajectory.IsPoint()) {
+                    animation.trajectory.GetPoint() += shift;
                 }
             }
             
