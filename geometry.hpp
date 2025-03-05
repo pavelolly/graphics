@@ -6,6 +6,7 @@
 #include <vector>
 #include <numeric>
 #include <cmath>
+#include <memory>
 
 #include <cassert>
 
@@ -146,6 +147,10 @@ struct Polygon {
 
     // Shape specific
 
+    virtual std::unique_ptr<Polygon> Clone() const {
+        return std::make_unique<Polygon>(*this);
+    }
+
     virtual Point GetCenter() const {
         return RealCenter();
     }
@@ -192,6 +197,41 @@ struct Ellipse : Polygon {
         }
     }
 
+    Ellipse(const Ellipse &other) = default;
+    Ellipse(Ellipse &&other) = default;
+
+    Ellipse &operator =(const Ellipse &other) {
+        if (this == &other) {
+            return *this;
+        }
+
+        Polygon::operator =(other);
+
+        center = other.center;
+        a = other.a;
+        b = other.b;
+
+        return *this;
+    }
+
+    Ellipse &operator =(Ellipse &&other) {
+        if (this == &other) {
+            return *this;
+        }
+
+        Polygon::operator =(std::move(other));
+
+        center = other.center;
+        a = other.a;
+        b = other.b;
+        
+        return *this;
+    }
+
+    std::unique_ptr<Polygon> Clone() const override {
+        return std::make_unique<Ellipse>(*this);
+    }
+
     void Draw(Color color_line, Color color_point=RED) const override {
         DrawPoint(center, GREEN, std::min(a, b)/15);
         DrawPoint(GetCenter(), color_point, std::min(a, b)/15);
@@ -210,64 +250,5 @@ struct Ellipse : Polygon {
     void Shift(Point shift) override {
         Polygon::Shift(shift);
         center += shift;
-    }
-};
-
-struct Interpolator {
-    const Polygon *polygon = nullptr;
-    Point default_point    = Vector2Zeros;
-    size_t edge_idx        = 0;
-    float t                = 0;
-
-    Interpolator(Point point=Vector2Zeros) : default_point(point) {};
-    Interpolator(const Polygon &polygon) : polygon(&polygon), default_point(polygon.GetPoint(0)) {}
-
-    void Reset() {
-        edge_idx = 0;
-        t = 0;
-    }
-
-    Point Step(float speed) {
-        if (!polygon) {
-            return default_point;
-        }
-
-        float len   = polygon->Length();
-        int npoints = polygon->NumPoints();
-
-        if (npoints == 0) {
-            return Vector2Zeros;
-        }
-        if (len == 0) {
-            return polygon->GetPoint(0);
-        }
-
-        float step_len = fmodf(speed, len);
-            
-        Point a = polygon->GetPoint(edge_idx % npoints);
-        Point b = polygon->GetPoint((edge_idx + 1) % npoints);
-
-        Point current_pos = Lerp(a, b, t);
-
-        while (step_len > 0) {
-            float d = Distance(current_pos, b);
-
-            if (d > step_len) {
-                t += step_len / Distance(a, b);
-                break;
-            }
-
-            // switch to next edge
-            step_len -= d;
-            t = 0;
-
-            current_pos = b;
-            a = b;
-            b = polygon->GetPoint((edge_idx + 2) % npoints);
-
-            edge_idx = (edge_idx + 1) % npoints;
-        }
-
-        return Lerp(a, b, t);
     }
 };

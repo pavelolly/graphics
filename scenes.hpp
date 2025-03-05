@@ -3,35 +3,94 @@
 #include <raylib.h>
 
 #include <array>
+#include <memory>
+#include <variant>
 
 #include "geometry.hpp"
 #include "gui.hpp"
 
 struct PolygonAnimation {
     const Polygon *original_polygon;
-    Polygon animated_polygon;
+    std::unique_ptr<Polygon> animated_polygon;
 
-    Interpolator interpolator;
+    std::variant<const Polygon *, Point> trajectory;
+    size_t trajectory_edge_idx         = 0;
+    float trajectory_edge_interpolator = 0.f;
     
-    float moving_speed   = 0;
-    float rotation_speed = 0;
+    float moving_speed   = 0.f;
+    float rotation_speed = 0.f;
 
-    PolygonAnimation(Polygon &polygon, const Polygon &trajectory) :
-        original_polygon(&polygon), animated_polygon(polygon), interpolator(trajectory)
+    template <typename Poly> requires std::is_base_of_v<Polygon, Poly>
+    PolygonAnimation(Poly &polygon, Polygon &trajectory) :
+        original_polygon(&polygon),
+        animated_polygon(std::make_unique<Poly>(polygon)),
+        trajectory(&trajectory)
     {}
 
-    PolygonAnimation(Polygon &polygon) :
-        original_polygon(&polygon), animated_polygon(polygon), interpolator(polygon.GetCenter())
+    template <typename Poly> requires std::is_base_of_v<Polygon, Poly>
+    PolygonAnimation(Poly &polygon) :
+        original_polygon(&polygon),
+        animated_polygon(std::make_unique<Poly>(polygon)),
+        trajectory(polygon.GetCenter())
     {}
+
+    Point InterpolatorStep(float dt) {
+        float speed = moving_speed * 100 * dt;
+
+        if (std::holds_alternative<Point>(trajectory)) {
+            return std::get<Point>(trajectory);
+        }
+
+        auto *polygon_trajectory = std::get<const Polygon *>(trajectory);
+
+        float len   = polygon_trajectory->Length();
+        int npoints = polygon_trajectory->NumPoints();
+
+        if (npoints == 0) {
+            return Vector2Zeros;
+        }
+        if (len == 0) {
+            return polygon_trajectory->GetPoint(0);
+        }
+
+        float step_len = fmodf(speed, len);
+            
+        Point a = polygon_trajectory->GetPoint(trajectory_edge_idx % npoints);
+        Point b = polygon_trajectory->GetPoint((trajectory_edge_idx + 1) % npoints);
+
+        Point current_pos = Lerp(a, b, trajectory_edge_interpolator);
+
+        while (step_len > 0) {
+            float d = Distance(current_pos, b);
+
+            if (d > step_len) {
+                trajectory_edge_interpolator += step_len / Distance(a, b);
+                break;
+            }
+
+            // switch to next edge
+            step_len -= d;
+            trajectory_edge_interpolator = 0;
+
+            current_pos = b;
+            a = b;
+            b = polygon_trajectory->GetPoint((trajectory_edge_idx + 2) % npoints);
+
+            trajectory_edge_idx = (trajectory_edge_idx + 1) % npoints;
+        }
+
+        return Lerp(a, b, trajectory_edge_interpolator);
+    }
 
     void Update(float dt) {
-        animated_polygon.SetCenter(interpolator.Step(moving_speed * 100 * dt));
-        animated_polygon.Rotate(rotation_speed * dt);
+        animated_polygon->SetCenter(InterpolatorStep(dt));
+        animated_polygon->Rotate(rotation_speed * dt);
     }
 
     void Reset() {
-        animated_polygon = *original_polygon;
-        interpolator.Reset();
+        animated_polygon = original_polygon->Clone();
+        trajectory_edge_idx          = 0.f;
+        trajectory_edge_interpolator = 0.f;
     }
 };
 
@@ -70,8 +129,8 @@ struct SceneEllipses : Scene {
         },
         animations {
             PolygonAnimation(ellipses[0]),
-            PolygonAnimation(ellipses[1], animations[0].animated_polygon),
-            PolygonAnimation(ellipses[2], animations[1].animated_polygon)
+            PolygonAnimation(ellipses[1], *animations[0].animated_polygon),
+            PolygonAnimation(ellipses[2], *animations[1].animated_polygon)
         }
     {
         // initial parameters
@@ -92,7 +151,7 @@ struct SceneEllipses : Scene {
 
     void Draw() override {
         for (auto &animation : animations) {
-            animation.animated_polygon.Draw(YELLOW, RED);
+            animation.animated_polygon->Draw(YELLOW, RED);
         }
 
         DrawRectangleRec(PANEL, GetColor(0x181818ff));
@@ -129,16 +188,18 @@ struct SceneEllipses : Scene {
                 }
             }
         }
-        
-        for (auto &animation : animations) {
-            animation.Update(dt);
-        }
 
         switchable = true;
         for (auto &input_box : input_boxes) {
             if (input_box.editmode) {
                 switchable = false;
                 break;
+            }
+        }
+
+        if (!paused) {
+            for (auto &animation : animations) {
+                animation.Update(dt);
             }
         }
     }
@@ -171,7 +232,7 @@ struct SceneDrawPolygons : Scene {
 
     void Draw() override {
         for (auto &animation : animations) {
-            animation.animated_polygon.Draw(YELLOW, RED);
+            animation.animated_polygon->Draw(YELLOW, RED);
         }
 
         drawn_polygon.Draw(ORANGE, PURPLE);
@@ -241,7 +302,7 @@ struct SceneDrawPolygons : Scene {
 
                     AddInputBox(&animations[0].rotation_speed, "Rotation Speed 1\t");
                 } else {
-                    animations.emplace_back(polygons.back(), animations.back().animated_polygon);
+                    animations.emplace_back(polygons.back(), *animations.back().animated_polygon);
 
                     auto polygon_ordinal = std::to_string(animations.size());
                     AddInputBox(&animations.back().moving_speed,   "Moving Speed "   + polygon_ordinal + "\t");
@@ -279,7 +340,7 @@ struct SceneDrawPolygons : Scene {
                 Point mouse_pos = GetMousePosition();
 
                 for (size_t i = 0; i < animations.size(); ++i) {
-                    for (auto &point : animations[i].animated_polygon.vertexes) {
+                    for (auto &point : animations[i].animated_polygon->vertexes) {
                         if (CheckCollisionPointCircle(mouse_pos, point, 10)) {
                             dragged_point = &point;
                             break;
@@ -317,12 +378,11 @@ struct SceneDrawPolygons : Scene {
 
         if (shift != Vector2Zeros) {
             for (size_t i = 0; i < animations.size(); ++i) {
-                animations[i].animated_polygon.Shift(shift);
-                if (animations[i].interpolator.polygon == nullptr) {
-                    animations[i].interpolator.default_point = animations[i].animated_polygon.GetCenter();
+                animations[i].animated_polygon->Shift(shift);
+                if (std::holds_alternative<Point>(animations[i].trajectory)) {
+                    std::get<Point>(animations[i].trajectory) = animations[i].animated_polygon->GetCenter();
                 }
             }
-            
             
             drawn_polygon.Shift(shift);
         }
