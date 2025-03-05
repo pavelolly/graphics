@@ -88,18 +88,17 @@ struct PolygonAnimation {
     }
 
     void Reset() {
-        animated_polygon = original_polygon->Clone();
+        // animated_polygon = original_polygon->Clone();
         trajectory_edge_idx          = 0.f;
         trajectory_edge_interpolator = 0.f;
     }
 };
 
 struct Scene {
-    bool switchable = true;
-
     virtual void Draw()           = 0;
     virtual void Update(float dt) = 0;
-    virtual ~Scene() {};
+    virtual bool IsSwitchable() { return true; }
+    virtual ~Scene() = default;
 };
 
 
@@ -149,6 +148,15 @@ struct SceneEllipses : Scene {
         input_boxes[4] = GUI_InputBox(Rectangle { PANEL_X + PANEL_W / 2, PANEL_Y + 4 * (BUTTON_H + 10.f), BUTTON_W, BUTTON_H }, &animations[2].rotation_speed, "Rotation Speed 3\t");
     }
 
+    bool IsSwitchable() override {
+        for (auto &input_box : input_boxes) {
+            if (input_box.editmode) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     void Draw() override {
         for (auto &animation : animations) {
             animation.animated_polygon->Draw(YELLOW, RED);
@@ -174,6 +182,11 @@ struct SceneEllipses : Scene {
             if (IsKeyPressed('R')) {
                 for (auto &animation : animations) {
                     animation.Reset();
+
+                    // if paused we want to see results of resetting immediately
+                    if (paused) {
+                        animation.Update(0);
+                    }
                 }
             
                 for (auto &input_box : input_boxes) {
@@ -185,15 +198,12 @@ struct SceneEllipses : Scene {
             if (IsKeyPressed('R')) {
                 for (auto &animation : animations) {
                     animation.Reset();
-                }
-            }
-        }
 
-        switchable = true;
-        for (auto &input_box : input_boxes) {
-            if (input_box.editmode) {
-                switchable = false;
-                break;
+                    // if paused we want to see results of resetting immediately
+                    if (paused) {
+                        animation.Update(0);
+                    }
+                }
             }
         }
 
@@ -250,6 +260,15 @@ struct SceneDrawPolygons : Scene {
         }
     }
 
+    bool IsSwitchable() override {
+        for (auto &input_box : input_boxes) {
+            if (input_box.editmode) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     void Update(float dt) override {
         if (IsKeyPressed(KEY_SPACE)) {
             paused = !paused;
@@ -271,14 +290,6 @@ struct SceneDrawPolygons : Scene {
                 for (auto &animation : animations) {
                     animation.Reset();
                 }
-            }
-        }
-
-        switchable = true;
-        for (auto &input_box : input_boxes) {
-            if (input_box.editmode) {
-                switchable = false;
-                break;
             }
         }
 

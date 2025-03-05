@@ -35,7 +35,7 @@ int main() {
         EndDrawing();
 
         // scene is not switchable when input boxes are active
-        if (scene->switchable) {
+        if (scene->IsSwitchable()) {
             if (IsKeyPressed('1')) {
                 EnableCursor();
                 scene = &scene_ellipses;
