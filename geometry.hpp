@@ -109,7 +109,7 @@ struct Polygon {
     }
 
     Point GetPoint(size_t idx) const {
-        return vertexes.at(idx);
+        return idx < vertexes.size() ? vertexes.at(idx) : Vector2Zeros;
     }
 
     size_t NumPoints() const {
@@ -153,7 +153,7 @@ struct Polygon {
 
     virtual Polygon *CloneInto(Polygon *dest) const {
         assert(typeid(*this) == typeid(*dest) && "trying to CloneInto different type");
-        
+
         dest->~Polygon();
         return new(dest) Polygon(*this);
     }

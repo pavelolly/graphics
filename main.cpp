@@ -1,8 +1,6 @@
 
 #include <raylib.h>
 
-#include <deque>
-
 #include "geometry.hpp"
 #include "gui.hpp"
 #include "scenes.hpp"

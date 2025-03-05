@@ -3,6 +3,7 @@
 #include <raylib.h>
 
 #include <array>
+#include <deque>
 #include <memory>
 #include <variant>
 
@@ -10,12 +11,11 @@
 #include "gui.hpp"
 
 struct PolygonAnimation {
-    const Polygon *original_polygon;
+    std::weak_ptr<const Polygon> original_polygon;
 
-    // this is unique_ptr only because i don't want to free memory myself
-    std::unique_ptr<Polygon> animated_polygon;
+    std::shared_ptr<Polygon> animated_polygon;
 
-    std::variant<const Polygon *, Point> trajectory;
+    std::variant<std::weak_ptr<const Polygon>, Point> trajectory;
     size_t trajectory_edge_idx         = 0;
     float trajectory_edge_interpolator = 0.f;
     
@@ -23,17 +23,17 @@ struct PolygonAnimation {
     float rotation_speed = 0.f;
 
     template <typename Poly> requires std::is_base_of_v<Polygon, Poly>
-    PolygonAnimation(Poly &polygon, Polygon &trajectory) :
-        original_polygon(&polygon),
-        animated_polygon(std::make_unique<Poly>(polygon)),
-        trajectory(&trajectory)
+    PolygonAnimation(std::shared_ptr<Poly> polygon, std::shared_ptr<Polygon> trajectory) :
+        original_polygon(polygon),
+        animated_polygon(std::make_shared<Poly>(*polygon)),
+        trajectory(trajectory)
     {}
 
     template <typename Poly> requires std::is_base_of_v<Polygon, Poly>
-    PolygonAnimation(Poly &polygon) :
-        original_polygon(&polygon),
-        animated_polygon(std::make_unique<Poly>(polygon)),
-        trajectory(polygon.GetCenter())
+    PolygonAnimation(std::shared_ptr<Poly> polygon) :
+        original_polygon(polygon),
+        animated_polygon(std::make_shared<Poly>(*polygon)),
+        trajectory(polygon->GetCenter())
     {}
 
     Point InterpolatorStep(float dt) {
@@ -43,7 +43,11 @@ struct PolygonAnimation {
             return std::get<Point>(trajectory);
         }
 
-        auto *polygon_trajectory = std::get<const Polygon *>(trajectory);
+        auto trajectory_ptr = std::get<std::weak_ptr<const Polygon>>(trajectory);
+        if (trajectory_ptr.expired()) {
+            return Vector2Zeros;
+        }
+        auto polygon_trajectory = trajectory_ptr.lock();
 
         float len   = polygon_trajectory->Length();
         int npoints = polygon_trajectory->NumPoints();
@@ -90,7 +94,10 @@ struct PolygonAnimation {
     }
 
     void Reset() {
-        original_polygon->CloneInto(animated_polygon.get());
+        if (!original_polygon.expired())  {
+            original_polygon.lock()->CloneInto(animated_polygon.get());
+        }
+    
         trajectory_edge_idx          = 0.f;
         trajectory_edge_interpolator = 0.f;
     }
@@ -116,7 +123,7 @@ struct Scene {
 
 
 struct SceneEllipses : Scene {
-    std::array<Ellipse,          3> ellipses;
+    std::array<std::shared_ptr<Ellipse>, 3> ellipses;
     std::array<PolygonAnimation, 3> animations;
     std::array<GUI_InputBox,     5> input_boxes;
 
@@ -124,14 +131,14 @@ struct SceneEllipses : Scene {
 
     SceneEllipses() :
         ellipses {
-            Ellipse( { GetScreenWidth() * 7.f / 16.f, GetScreenHeight() / 2.f }, 200, 100 ),
-            Ellipse( ellipses[0].GetPoint(0),                                    100, 50  ),
-            Ellipse( ellipses[0].GetPoint(0),                                    50,  25  )
+            std::make_shared<Ellipse>( Point { GetScreenWidth() * 7.f / 16.f, GetScreenHeight() / 2.f }, 200, 100 ),
+            std::make_shared<Ellipse>( ellipses[0]->GetPoint(0),                                         100, 50  ),
+            std::make_shared<Ellipse>( ellipses[0]->GetPoint(0),                                         50,  25  )
         },
         animations {
             PolygonAnimation(ellipses[0]),
-            PolygonAnimation(ellipses[1], *animations[0].animated_polygon),
-            PolygonAnimation(ellipses[2], *animations[1].animated_polygon)
+            PolygonAnimation(ellipses[1], animations[0].animated_polygon),
+            PolygonAnimation(ellipses[2], animations[1].animated_polygon)
         }
     {
         // initial parameters
@@ -220,7 +227,7 @@ struct SceneEllipses : Scene {
 
 struct SceneDrawPolygons : Scene {
     // these muse be deques so refs to these objects are always valid
-    std::deque<Polygon> polygons;
+    std::deque<std::shared_ptr<Polygon>> polygons;
     std::deque<PolygonAnimation> animations;
     
     std::vector<GUI_InputBox> input_boxes;
@@ -308,14 +315,18 @@ struct SceneDrawPolygons : Scene {
         } else {
 
             if (drawn_polygon.NumPoints() != 0) {
-                polygons.push_back(std::move(drawn_polygon));
+                polygons.push_back(std::make_shared<Polygon>(std::move(drawn_polygon)));
 
                 if (animations.size() == 0) {
                     animations.emplace_back(polygons.back());
 
                     AddInputBox(&animations[0].rotation_speed, "Rotation Speed 1\t");
                 } else {
-                    animations.emplace_back(polygons.back(), *animations.back().animated_polygon);
+                    // move the original polygon to where it starts the animation
+                    // so resetting the animation puts it in the right place
+                    polygons.back()->SetCenter(animations.back().animated_polygon->GetPoint(0));
+
+                    animations.emplace_back(polygons.back(), animations.back().animated_polygon);
 
                     auto polygon_ordinal = std::to_string(animations.size());
                     AddInputBox(&animations.back().moving_speed,   "Moving Speed "   + polygon_ordinal + "\t");
