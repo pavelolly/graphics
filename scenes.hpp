@@ -11,6 +11,8 @@
 
 struct PolygonAnimation {
     const Polygon *original_polygon;
+
+    // this is unique_ptr only because i don't want to free memory myself
     std::unique_ptr<Polygon> animated_polygon;
 
     std::variant<const Polygon *, Point> trajectory;
@@ -88,7 +90,7 @@ struct PolygonAnimation {
     }
 
     void Reset() {
-        // animated_polygon = original_polygon->Clone();
+        original_polygon->CloneInto(animated_polygon.get());
         trajectory_edge_idx          = 0.f;
         trajectory_edge_interpolator = 0.f;
     }

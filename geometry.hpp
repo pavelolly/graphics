@@ -151,6 +151,13 @@ struct Polygon {
         return std::make_unique<Polygon>(*this);
     }
 
+    virtual Polygon *CloneInto(Polygon *dest) const {
+        assert(typeid(*this) == typeid(*dest) && "trying to CloneInto different type");
+        
+        dest->~Polygon();
+        return new(dest) Polygon(*this);
+    }
+
     virtual Point GetCenter() const {
         return RealCenter();
     }
@@ -230,6 +237,11 @@ struct Ellipse : Polygon {
 
     std::unique_ptr<Polygon> Clone() const override {
         return std::make_unique<Ellipse>(*this);
+    }
+
+    Polygon *CloneInto(Polygon *dest) const override {
+        dest->~Polygon();
+        return new(dest) Ellipse(*this);
     }
 
     void Draw(Color color_line, Color color_point=RED) const override {
