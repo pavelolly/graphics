@@ -195,8 +195,8 @@ struct Ellipse : Polygon {
     Point center;
     float a, b;
 
-    Ellipse()                                = delete;
-    void AddPoint(Point point)               = delete;
+    Ellipse()                  = delete;
+    void AddPoint(Point point) = delete;
 
     Ellipse(Point center, float a, float b, int poly_steps=40) : Polygon(), center(center), a(a), b(b) {
         for (float t = 0.5 * std::numbers::pi; t <= 2.5 * std::numbers::pi; t += 2 * std::numbers::pi / poly_steps) {

@@ -11,14 +11,19 @@
 #include "gui.hpp"
 
 struct PolygonAnimation {
+    // reference to orignal polygon that is animated
     std::weak_ptr<const Polygon> original_polygon;
 
+    // copy of original polygon that is actually changed during animation
     std::shared_ptr<Polygon> animated_polygon;
-
-    std::variant<std::weak_ptr<const Polygon>, Point> trajectory;
-    size_t trajectory_edge_idx         = 0;
-    float trajectory_edge_interpolator = 0.f;
     
+    // trajectory: it can be reference to existing polygon or songle point
+    std::variant<std::weak_ptr<const Polygon>, Point> trajectory;
+    Point original_point = Vector2Zeros;
+    size_t trajectory_edge_idx         = 0;   // edge of trajectory we're currently at
+    float trajectory_edge_interpolator = 0.f; // interpolator for the current edge
+    
+    // animation parameters
     float moving_speed   = 0.f;
     float rotation_speed = 0.f;
 
@@ -33,7 +38,8 @@ struct PolygonAnimation {
     PolygonAnimation(std::shared_ptr<Poly> polygon) :
         original_polygon(polygon),
         animated_polygon(std::make_shared<Poly>(*polygon)),
-        trajectory(polygon->GetCenter())
+        trajectory(polygon->GetCenter()),
+        original_point(std::get<Point>(trajectory))
     {}
 
     Point InterpolatorStep(float dt) {
@@ -97,7 +103,10 @@ struct PolygonAnimation {
         if (!original_polygon.expired())  {
             original_polygon.lock()->CloneInto(animated_polygon.get());
         }
-    
+
+        if (std::holds_alternative<Point>(trajectory)) {
+            std::get<Point>(trajectory) = original_point;
+        }
         trajectory_edge_idx          = 0.f;
         trajectory_edge_interpolator = 0.f;
     }
@@ -401,10 +410,10 @@ struct SceneDrawPolygons : Scene {
         shift *= 200 * dt;
 
         if (shift != Vector2Zeros) {
-            for (size_t i = 0; i < animations.size(); ++i) {
-                animations[i].animated_polygon->Shift(shift);
-                if (std::holds_alternative<Point>(animations[i].trajectory)) {
-                    std::get<Point>(animations[i].trajectory) = animations[i].animated_polygon->GetCenter();
+            for (auto &animation : animations) {
+                animation.animated_polygon->Shift(shift);
+                if (std::holds_alternative<Point>(animation.trajectory)) {
+                    std::get<Point>(animation.trajectory) += shift;
                 }
             }
             
