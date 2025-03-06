@@ -67,9 +67,9 @@ struct PolygonAnimation {
     template <typename Poly> requires std::is_base_of_v<Polygon, Poly>
     PolygonAnimation(std::shared_ptr<Poly> polygon) :
         original_polygon(polygon),
+        original_point(polygon->GetCenter()),
         animated_polygon(std::make_shared<Poly>(*polygon)),
-        trajectory(polygon->GetCenter()),
-        original_point(trajectory.GetPoint())
+        trajectory(original_point)
     {}
 
     Point InterpolatorStep(float dt) {

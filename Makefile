@@ -11,7 +11,7 @@ ifeq (${OS},Windows_NT)
     LD_FLAGS = -lraylib -lopengl32 -lgdi32 -lwinmm -lshell32
 else
     MAIN = main
-	CFLAGS += -fsanitize=address
+    CFLAGS += -fPIC # -fsanitize=address
     LD_FLAGS = -lraylib -lm
 endif
 
