@@ -11,7 +11,7 @@
 #include "gui.hpp"
 
 // simple wrapper around std::variant for convinience
-// Trajectory can be reference to existing polygon or single point
+// Trajectory can be reference to polygon or single point
 struct Trajectory {
     using PolygonPtr = std::weak_ptr<const Polygon>;
 
@@ -268,7 +268,7 @@ struct SceneEllipses : Scene {
 
 
 struct SceneDrawPolygons : Scene {
-    // these muse be deques so refs to these objects are always valid
+    // these must be deques so refs to the objects are always valid
     std::deque<std::shared_ptr<Polygon>> polygons;
     std::deque<PolygonAnimation> animations;
     
@@ -372,7 +372,7 @@ struct SceneDrawPolygons : Scene {
 
                     AddInputBox(&animations[0].rotation_speed, "Rotation Speed 1\t");
                 } else {
-                    // move the original polygon to where it starts the animation
+                    // move the original polygon to where it started the animation
                     // so resetting the animation puts it in the right place
                     polygons.back()->SetCenter(animations.back().animated_polygon->GetPoint(0));
 
