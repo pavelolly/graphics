@@ -1,20 +1,17 @@
 # Quick start
 
-Don't forget to `git clone --recursive-submodules ...` or `git submodule update --init` to get raylib and raygui
+Don't forget to `git clone --recursive-submodules ...` or `git submodule update --init` to get raylib
 
-Or you can modify Makefile to use already installed ones:
+Or you can modify Makefile to use already installed raylib:
 ```Makefile
-RAYLIB_PATH = ...
-RAYGUI_PATH = ...
+RAYLIB_PATH = ... # must contain libraylib.a
 
 ...
 ```
 
-`RAYLIB_PATH` must contain raylib headers and libraylib.a
+You would probably need to get appropriate `raylib.h` as well.
 
-`RAYGUI_PATH` must contain `raygui.h`
-
-Just run `make` to build everything
+Run `make` to build everything
 
 ## Scenes
 
