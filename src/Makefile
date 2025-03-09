@@ -19,11 +19,11 @@ LD_PATH = -L ${RAYLIB_PATH}
 
 OBJECTS = geometry.o \
           gui.o \
-		  scene_ellipses.o \
-		  scene_draw_polygons.o \
-		  scene_localization.o \
-		  polygon_animation.o \
-		  raygui.o
+          scene_ellipses.o \
+          scene_draw_polygons.o \
+          scene_localization.o \
+          polygon_animation.o \
+          raygui.o
 
 ${MAIN}: main.cpp ${OBJECTS} libraylib.a
 	${CXX} ${CXXFLAGS} -o $@ ${INCLUDE_PATH} $< ${OBJECTS} ${LD_PATH} ${LD_FLAGS}
