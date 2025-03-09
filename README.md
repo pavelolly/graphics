@@ -11,7 +11,7 @@ RAYLIB_PATH = ... # must contain libraylib.a
 
 You would probably need to get appropriate `raylib.h` as well.
 
-Run `make` to build everything
+Run `make` within the src/ folder to build everything
 
 ## Scenes
 
