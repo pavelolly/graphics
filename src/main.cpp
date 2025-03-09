@@ -1,11 +1,7 @@
 
 #include <raylib.h>
 
-#include "geometry.hpp"
-#include "gui.hpp"
 #include "scenes.hpp"
-
-#include "log_macros.h"
 
 #define WIDTH  1600
 #define HEIGHT 900
