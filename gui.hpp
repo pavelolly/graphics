@@ -1,9 +1,6 @@
 #pragma once
 
 #include <raylib.h>
-
-#define RAYGUI_IMPLEMENTATION
-#define RAYGUI_VALUEBOX_MAX_CHARS 10
 #include <raygui.h>
 
 #include <vector>
@@ -49,7 +46,9 @@ struct GUI_InputBox {
     }
 
     void Reset() {
-        memset(text_buffer, 0, sizeof(text_buffer));
+        new (text_buffer) char[]{ '\0' };
+        text_buffer[0] = '0';
+        
         if (value) {
             *value = 0;
         }
