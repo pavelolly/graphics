@@ -506,7 +506,7 @@ struct SceneLocalization : Scene {
                   15);
     }
 
-    void Update(float dt) override {
+    void Update(float) override {
         if (dragging) {
             if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
                 assert(dragged_point && "dragged_point is nullptr when trying to drag");

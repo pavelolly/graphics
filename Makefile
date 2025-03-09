@@ -15,10 +15,10 @@ else
 endif
 
 
-INCLUDE_PATH = -I ${RAYLIB_PATH} -I ./
+INCLUDE_PATH = -I ./include -I ./
 LD_PATH = -L ${RAYLIB_PATH}
 
-HEADERS = geometry.hpp gui.hpp log_macros.h scenes.hpp
+HEADERS = geometry.hpp gui.hpp include/log_macros.h scenes.hpp
 
 ${MAIN}: main.cpp ${HEADERS} libraylib.a raygui.o
 	${CC} ${CFLAGS} ${INCLUDE_PATH} -DRAYGUI_VALUEBOX_MAX_CHARS=10 -o $@ main.cpp raygui.o ${LD_PATH} ${LD_FLAGS}
@@ -26,5 +26,5 @@ ${MAIN}: main.cpp ${HEADERS} libraylib.a raygui.o
 libraylib.a:
 	${MAKE} -C ${RAYLIB_PATH}
 
-raygui.o: raygui.h
-	${CC} --std=c11 -O2 ${INCLUDE_PATH} -DRAYGUI_IMPLEMENTATION -DRAYGUI_VALUEBOX_MAX_CHARS=10 -o $@ -c -x c raygui.h ${LD_PATH} ${LD_FLAGS}
+raygui.o: include/raygui.h
+	${CC} --std=c11 -O2 ${INCLUDE_PATH} -DRAYGUI_IMPLEMENTATION -DRAYGUI_VALUEBOX_MAX_CHARS=10 -o $@ -c -x c include/raygui.h ${LD_PATH} ${LD_FLAGS}
