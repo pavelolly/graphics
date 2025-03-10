@@ -10,7 +10,11 @@ set(SOURCES
     scene_localization.cpp scene_localization.hpp)
 
 add_executable(main ${SOURCES})
-target_compile_options(main PUBLIC "/W3")
+if (MSVC)
+    target_compile_options(main PUBLIC "/W3")
+else()
+    target_compile_options(main PUBLIC "-Wall" "-Wextra")
+endif()
 
 target_include_directories(main PUBLIC "../include")
 

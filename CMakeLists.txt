@@ -10,7 +10,9 @@ add_subdirectory(raylib)
 
 add_library(raygui STATIC ./include/raygui.h ./include/raygui.c)
 set_target_properties(raygui PROPERTIES LINKER_LANGUAGE C)
-target_compile_definitions(raygui PRIVATE "_CRT_SECURE_NO_WARNINGS")
+if (MSVC)
+    target_compile_definitions(raygui PRIVATE "_CRT_SECURE_NO_WARNINGS")
+endif()
 target_include_directories(raygui PRIVATE ./include)
 
 
