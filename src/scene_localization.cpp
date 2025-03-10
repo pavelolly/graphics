@@ -1,4 +1,5 @@
-#include "scenes.hpp"
+#include "scene_localization.hpp"
+
 
 SceneLocalization::SceneLocalization() {
     auto w = GetScreenWidth();

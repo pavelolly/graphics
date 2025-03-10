@@ -1,4 +1,4 @@
-#include "scenes.hpp"
+#include "scene_ellipses.hpp"
 
 
 SceneEllipses::SceneEllipses() {

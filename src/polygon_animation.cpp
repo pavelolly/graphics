@@ -1,4 +1,4 @@
-#include "scenes.hpp"
+#include "polygon_animation.hpp"
 
 
 Point PolygonAnimation::InterpolatorStep(float dt) {

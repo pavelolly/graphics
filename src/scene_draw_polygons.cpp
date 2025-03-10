@@ -1,4 +1,5 @@
-#include "scenes.hpp"
+#include "scene_draw_polygons.hpp"
+
 
 bool SceneDrawPolygons::IsSwitchable() {
     for (auto &input_box : input_boxes) {
