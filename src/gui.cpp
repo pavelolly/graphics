@@ -1,15 +1,17 @@
+#include <cstring>
+
 #include "gui.hpp"
 
-GUI_InputBox::GUI_InputBox(Rectangle box, float *value, std::string text)
-    : box(box), value(value), text(std::move(text)) {
+GUI_InputBox::GUI_InputBox(Rectangle box, float *value, std::string text) : box(box), value(value), text(std::move(text)) {
     if (value) {
         UpdateTextBuffer();
     }
 }
 
 void GUI_InputBox::UpdateTextBuffer() {
-    int len =
-        snprintf(text_buffer, RAYGUI_VALUEBOX_MAX_CHARS + 1, "%f", *value);
+    int len = snprintf(text_buffer, RAYGUI_VALUEBOX_MAX_CHARS + 1, "%f", *value);
+
+    /* truncate insignificant zeros */
     int dot = -1;
     for (int i = 0; i < len; ++i) {
         if (text_buffer[i] == '.') {
@@ -17,6 +19,10 @@ void GUI_InputBox::UpdateTextBuffer() {
             break;
         }
     }
+    if (dot == -1) {
+        return;
+    }
+
     for (int i = len - 1; i > dot; --i) {
         if (text_buffer[i] != '0') {
             break;
@@ -30,8 +36,8 @@ void GUI_InputBox::UpdateTextBuffer() {
 }
 
 void GUI_InputBox::Reset() {
-    new (text_buffer) char[]{'\0'};
     text_buffer[0] = '0';
+    memset(text_buffer + 1, '\0', RAYGUI_VALUEBOX_MAX_CHARS);
 
     if (value) {
         *value = 0;
