@@ -29,7 +29,7 @@ ${MAIN}: main.cpp ${OBJECTS} libraylib.a
 	${CXX} ${CXXFLAGS} -o $@ ${INCLUDE_PATH} $< ${OBJECTS} ${LD_PATH} ${LD_FLAGS}
 
 %.o: %.cpp
-	${CXX} ${CXXFLAGS} -c -o $@ ${INCLUDE_PATH} $< ${LD_PATH} ${LD_FLAGS}
+	${CXX} ${CXXFLAGS} -c -o $@ ${INCLUDE_PATH} $<
 
 geometry.o: geometry.cpp geometry.hpp
 gui.o: gui.cpp gui.hpp
@@ -39,7 +39,7 @@ scene_draw_polygons.o: scene_draw_polygons.cpp scene_draw_polygons.hpp scene.hpp
 scene_localization.o: scene_localization.cpp scene_localization.hpp scene.hpp
 
 raygui.o: ../include/raygui.h
-	${CXX} --std=c11 -O2 ${INCLUDE_PATH} -DRAYGUI_IMPLEMENTATION -DRAYGUI_VALUEBOX_MAX_CHARS=10 -o $@ -c -x c $< ${LD_PATH} ${LD_FLAGS}
+	${CXX} --std=c11 -O2 ${INCLUDE_PATH} -DRAYGUI_IMPLEMENTATION -DRAYGUI_VALUEBOX_MAX_CHARS=10 -o $@ -c -x c $<
 
 libraylib.a:
 	${MAKE} -C ${RAYLIB_PATH}
