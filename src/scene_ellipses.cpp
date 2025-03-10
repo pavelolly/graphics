@@ -1,24 +1,19 @@
 #include "scenes.hpp"
 
 
-SceneEllipses::SceneEllipses() :
-    ellipses {
-        std::make_shared<Ellipse>( Point { GetScreenWidth() * 7.f / 16.f, GetScreenHeight() / 2.f }, 200, 100 ),
-        std::make_shared<Ellipse>( ellipses[0]->GetPoint(0),                                         100, 50  ),
-        std::make_shared<Ellipse>( ellipses[0]->GetPoint(0),                                         50,  25  )
-    },
-    animations {
-        PolygonAnimation(ellipses[0]),
-        PolygonAnimation(ellipses[1], animations[0].animated_polygon),
-        PolygonAnimation(ellipses[2], animations[1].animated_polygon)
-    }
-{
-    // initial parameters
+SceneEllipses::SceneEllipses() {
+    ellipses[0] = std::make_shared<Ellipse>( Point { GetScreenWidth() * 7.f / 16.f, GetScreenHeight() / 2.f }, 200, 100 );
+    ellipses[1] = std::make_shared<Ellipse>( ellipses[0]->GetPoint(0),                                         100, 50  );
+    ellipses[2] = std::make_shared<Ellipse>( ellipses[1]->GetPoint(0),                                         50,  25  );
+
+    animations[0] = PolygonAnimation(ellipses[0]);
     animations[0].rotation_speed = 1;
 
+    animations[1] = PolygonAnimation(ellipses[1], animations[0].animated_polygon);
     animations[1].rotation_speed = 2;
     animations[1].moving_speed   = 2;
 
+    animations[2] = PolygonAnimation(ellipses[2], animations[1].animated_polygon);
     animations[2].rotation_speed = 3;
     animations[2].moving_speed   = 3;
 

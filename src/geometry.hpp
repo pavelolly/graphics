@@ -90,7 +90,6 @@ struct Ellipse : Polygon {
     Point center;
     float a, b;
 
-    Ellipse()                  = delete;
     void AddPoint(Point point) = delete;
 
     Ellipse(Point center, float a, float b, int poly_steps=40);

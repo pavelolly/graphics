@@ -57,6 +57,8 @@ struct PolygonAnimation {
     float moving_speed   = 0.f;
     float rotation_speed = 0.f;
 
+    PolygonAnimation() = default;
+
     template <typename Poly> requires std::is_base_of_v<Polygon, Poly>
     PolygonAnimation(std::shared_ptr<Poly> polygon, std::shared_ptr<Polygon> trajectory) :
         original_polygon(polygon),
