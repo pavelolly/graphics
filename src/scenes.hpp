@@ -156,5 +156,5 @@ struct SceneLocalization : Scene {
     SceneLocalization();
 
     void Draw() override;
-    void Update(float) override;
+    void Update(float dt) override;
 };

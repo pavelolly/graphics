@@ -43,3 +43,8 @@ raygui.o: ../include/raygui.h
 
 libraylib.a:
 	${MAKE} -C ${RAYLIB_PATH}
+
+.PHONY: clean
+
+clean:
+	${RM} *.exe *.o
