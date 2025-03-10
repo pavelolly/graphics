@@ -3,6 +3,7 @@ RAYLIB_PATH = ../raylib/src
 vpath libraylib.a ${RAYLIB_PATH}
 
 CXX = g++
+CC  = gcc
 CXXFLAGS = --std=c++20 -Wall -Wextra -ggdb
 
 ifeq (${OS},Windows_NT)
@@ -39,7 +40,7 @@ scene_draw_polygons.o: scene_draw_polygons.cpp scene_draw_polygons.hpp scene.hpp
 scene_localization.o: scene_localization.cpp scene_localization.hpp scene.hpp
 
 raygui.o: ../include/raygui.h
-	${CXX} --std=c11 -O2 ${INCLUDE_PATH} -DRAYGUI_IMPLEMENTATION -DRAYGUI_VALUEBOX_MAX_CHARS=10 -o $@ -c -x c $<
+	${CC} --std=c11 -O2 ${INCLUDE_PATH} -DRAYGUI_IMPLEMENTATION -DRAYGUI_VALUEBOX_MAX_CHARS=10 -o $@ -c -x c $<
 
 libraylib.a:
 	${MAKE} -C ${RAYLIB_PATH}
