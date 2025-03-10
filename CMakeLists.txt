@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.25)
 project(graphics C CXX)
 
 set(CMAKE_C_STANDARD 11)

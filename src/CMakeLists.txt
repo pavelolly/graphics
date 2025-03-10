@@ -19,6 +19,3 @@ endif()
 target_include_directories(main PUBLIC "../include")
 
 target_link_libraries(main PUBLIC raygui raylib)
-if (${CMAKE_SYSTEM_NAME} STREQUAL "Windows" AND NOT MSVC)
-    target_link_options(main PUBLIC "-lopengl32" "-lgdi32" "-lwinmm" "-lshell32")
-endif()
