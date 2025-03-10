@@ -17,7 +17,7 @@ Point PolygonAnimation::InterpolatorStep(float dt) {
     auto polygon_trajectory = trajectory_ptr.lock();
 
     float len = polygon_trajectory->Perimeter();
-    int npoints = polygon_trajectory->NumPoints();
+    size_t npoints = polygon_trajectory->NumPoints();
 
     if (npoints == 0) {
         return Vector2Zeros;
@@ -68,6 +68,6 @@ void PolygonAnimation::Reset() {
     if (trajectory.IsPoint()) {
         trajectory.GetPoint() = original_point;
     }
-    trajectory_edge_idx = 0.f;
+    trajectory_edge_idx = 0;
     trajectory_edge_interpolator = 0.f;
 }

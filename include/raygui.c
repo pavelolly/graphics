@@ -1,0 +1,3 @@
+#define RAYGUI_IMPLEMENTATION
+#define RAYGUI_VALUEBOX_MAX_CHARS 10
+#include "raygui.h"

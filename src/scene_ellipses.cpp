@@ -2,9 +2,9 @@
 
 
 SceneEllipses::SceneEllipses() {
-    ellipses[0] = std::make_shared<Ellipse>( Point { GetScreenWidth() * 7.f / 16.f, GetScreenHeight() / 2.f }, 200, 100 );
-    ellipses[1] = std::make_shared<Ellipse>( ellipses[0]->GetPoint(0),                                         100, 50  );
-    ellipses[2] = std::make_shared<Ellipse>( ellipses[1]->GetPoint(0),                                         50,  25  );
+    ellipses[0] = std::make_shared<Ellipse>( Point { GetScreenWidth() * 7.f / 16.f, GetScreenHeight() / 2.f }, 200.f, 100.f );
+    ellipses[1] = std::make_shared<Ellipse>( ellipses[0]->GetPoint(0),                                         100.f, 50.f  );
+    ellipses[2] = std::make_shared<Ellipse>( ellipses[1]->GetPoint(0),                                         50.f,  25.f  );
 
     animations[0] = PolygonAnimation(ellipses[0]);
     animations[0].rotation_speed = 1;
@@ -39,7 +39,7 @@ void SceneEllipses::Draw() {
     }
 
     DrawRectangleRec(PANEL, GetColor(0x181818ff));
-    DrawRectangleLinesEx(PANEL, GuiGetStyle(DEFAULT, BORDER_WIDTH), GRAY);
+    DrawRectangleLinesEx(PANEL, static_cast<float>(GuiGetStyle(DEFAULT, BORDER_WIDTH)), GRAY);
     for (auto &input_box : input_boxes) {
         input_box.Draw();
     }

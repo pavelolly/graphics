@@ -18,7 +18,7 @@ void SceneDrawPolygons::Draw() {
     drawn_polygon.Draw(ORANGE, PURPLE);
 
     DrawRectangleRec(PANEL, GetColor(0x181818ff));
-    DrawRectangleLinesEx(PANEL, GuiGetStyle(DEFAULT, BORDER_WIDTH), GRAY);
+    DrawRectangleLinesEx(PANEL, static_cast<float>(GuiGetStyle(DEFAULT, BORDER_WIDTH)), GRAY);
     for (auto &input_box : input_boxes) {
         input_box.Draw();
     }

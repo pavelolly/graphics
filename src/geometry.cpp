@@ -1,6 +1,7 @@
 #include "geometry.hpp"
 
 #include <numeric>
+#include <numbers>
 #include <cmath>
 
 Point RotatePoint(Point point, float angle, Point center) {
@@ -29,7 +30,7 @@ void DrawPoint(Point point, Color color, float radius) {
     for (float x = -radius; x <= radius; x++) {
         for (float y = -radius; y <= radius; y++) {
             if (x * x + y * y <= radius * radius) {
-                DrawPixel(x + point.x, y + point.y, color);
+                DrawPixel(static_cast<int>(x + point.x), static_cast<int>(y + point.y), color);
             }
         }
     }
@@ -125,7 +126,7 @@ void Polygon::Draw(Color color_line, Color color_point) const {
 }
 
 Ellipse::Ellipse(Point center, float a, float b, int poly_steps) : center(center), a(a), b(b) {
-    using std::numbers::pi;
+    constexpr const float pi = static_cast<float>(std::numbers::pi);
 
     for (float t = 0.5 * pi; t <= 2.5 * pi; t += 2 * pi / poly_steps) {
         Polygon::AddPoint({ center.x + a * sinf(t), center.y + b * cosf(t) });
