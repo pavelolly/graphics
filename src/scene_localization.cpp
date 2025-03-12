@@ -5,14 +5,9 @@ SceneLocalization::SceneLocalization() {
     auto w = GetScreenWidth();
     auto h = GetScreenHeight();
 
-    auto GetRandomPoint = [w, h]() {
-        return Point { static_cast<float>(GetRandomValue(-w / 2, w / 2)),
-                       static_cast<float>(GetRandomValue(-h / 2, h / 2)) };
-    };
-
-    triangle.a = GetScreenCenter() + GetRandomPoint();
-    triangle.b = GetScreenCenter() + GetRandomPoint();
-    triangle.c = GetScreenCenter() + GetRandomPoint();
+    triangle.a = GetScreenCenter() + GetRandomPoint(-w / 2, w / 2, -h / 2, h / 2);
+    triangle.b = GetScreenCenter() + GetRandomPoint(-w / 2, w / 2, -h / 2, h / 2);
+    triangle.c = GetScreenCenter() + GetRandomPoint(-w / 2, w / 2, -h / 2, h / 2);
 }
 
 void SceneLocalization::Draw() {

@@ -14,6 +14,11 @@ inline Point GetScreenCenter() {
     return Point { GetScreenWidth() / 2.f, GetScreenHeight() / 2.f };
 }
 
+inline Point GetRandomPoint(int min_x, int max_x, int min_y, int max_y) {
+    return Point { static_cast<float>(GetRandomValue(min_x, max_x)),
+                   static_cast<float>(GetRandomValue(min_y, max_y)) };
+};
+
 Point RotatePoint(Point point, float angle, Point center=Vector2Zeros);
 float Distance(Point a, Point b);
 Point Lerp(Point a, Point b, float t);
