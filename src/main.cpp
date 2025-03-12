@@ -24,12 +24,16 @@ int main() {
         BeginDrawing();
 
             ClearBackground(GetColor(0x181818ff));
-            scene->Draw();
+            if (scene) {
+                scene->Draw();
+            } else {
+                DrawLineBezier({100, 100}, {200, 200}, 2, YELLOW);
+            }
 
         EndDrawing();
 
         // scene is not switchable when input boxes are active
-        if (scene->IsSwitchable()) {
+        if (!scene || scene->IsSwitchable()) {
             if (IsKeyPressed('1')) {
                 EnableCursor();
                 scene = &scene_ellipses;
@@ -39,10 +43,16 @@ int main() {
             } else if (IsKeyPressed('3')) {
                 DisableCursor();
                 scene = &scene_localization;
+
+            } else if (IsKeyPressed('0')) {
+                EnableCursor();
+                scene = nullptr; // empty scene  used for testing
             }
         }
-
-        scene->Update(GetFrameTime());
+        
+        if (scene) {
+            scene->Update(GetFrameTime());
+        }
     }
 
     CloseWindow();
