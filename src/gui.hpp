@@ -6,18 +6,39 @@
 #include <variant>
 #include <vector>
 #include <string>
+#include <type_traits>
+#include <limits>
 
 namespace GUI {
 
 struct InputBox {
     Rectangle box;
-    std::variant<int *, float *> value_ptr;
+
+    template <typename ValueType> requires std::is_same_v<ValueType, int> || std::is_same_v<ValueType, float>
+    struct Value {
+        ValueType *ptr;
+        ValueType min;
+        ValueType max;
+
+        Value() = default;
+        Value(ValueType *ptr) :
+            ptr(ptr),
+            min(std::numeric_limits<ValueType>::lowest()),
+            max(std::numeric_limits<ValueType>::max())
+        {}
+        Value(ValueType *ptr, ValueType min, ValueType max) :
+            ptr(ptr), min(min), max(max)
+        {}
+    };
+
+    std::variant<Value<int>, Value<float>> value;
+
     std::string text;
     char text_buffer[RAYGUI_VALUEBOX_MAX_CHARS + 1] = {0};
     bool editmode = false;
 
     InputBox() = default;
-    InputBox(Rectangle box, int   *value, std::string text);
+    InputBox(Rectangle box, int   *value, int min, int max, std::string text);
     InputBox(Rectangle box, float *value, std::string text);
 
     void UpdateTextBuffer();
@@ -38,7 +59,7 @@ struct InputBoxPanel {
     InputBoxPanel(Rectangle box) : panel(box) {}
 
     void Add(float *value, std::string text="");
-    void Add(int   *value, std::string text="");
+    void Add(int   *value, int min, int max, std::string text="");
 
     void Draw();
     void Reset();

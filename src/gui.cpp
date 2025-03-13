@@ -7,29 +7,28 @@
 
 namespace GUI {
 
-InputBox::InputBox(Rectangle box, int *value, std::string text) : box(box), value_ptr(value), text(std::move(text)) {
-    if (value) {
+InputBox::InputBox(Rectangle box, int *value_ptr, int min, int max, std::string text) :
+    box(box), value(InputBox::Value(value_ptr, min, max)), text(std::move(text))
+{
+    if (value_ptr) {
         UpdateTextBuffer();
     }
 }
 
-InputBox::InputBox(Rectangle box, float *value, std::string text) : box(box), value_ptr(value), text(std::move(text)) {
-    if (value) {
+InputBox::InputBox(Rectangle box, float *value_ptr, std::string text) : box(box), value(value_ptr), text(std::move(text))
+{
+    if (value_ptr) {
         UpdateTextBuffer();
     }
 }
 
 void InputBox::UpdateTextBuffer() {
-    if (value_ptr.index() == std::variant_npos) {
+    if (std::holds_alternative<Value<int>>(value)) {
+        snprintf(text_buffer, RAYGUI_VALUEBOX_MAX_CHARS + 1, "%d", *std::get<Value<int>>(value).ptr);
         return;
     }
 
-    if (std::holds_alternative<int *>(value_ptr)) {
-        snprintf(text_buffer, RAYGUI_VALUEBOX_MAX_CHARS + 1, "%d", *std::get<int *>(value_ptr));
-        return;
-    }
-
-    int len = snprintf(text_buffer, RAYGUI_VALUEBOX_MAX_CHARS + 1, "%f", *std::get<float *>(value_ptr));
+    int len = snprintf(text_buffer, RAYGUI_VALUEBOX_MAX_CHARS + 1, "%f", *std::get<Value<float>>(value).ptr);
 
     /* truncate insignificant zeros */
     char *end = text_buffer + len;
@@ -55,23 +54,23 @@ void InputBox::Reset() {
     text_buffer[0] = '0';
     std::fill(text_buffer + 1, text_buffer + RAYGUI_VALUEBOX_MAX_CHARS + 1, '\0');
 
-    if (std::holds_alternative<int *>(value_ptr)) {
-        *std::get<int *>(value_ptr) = 0;
+    if (std::holds_alternative<Value<int>>(value)) {
+        *std::get<Value<int>>(value).ptr = 0;
     } else {
-        *std::get<float *>(value_ptr) = 0.f;
+        *std::get<Value<float>>(value).ptr = 0.f;
     }
 }
 
 void InputBox::Draw() {
-    if (std::holds_alternative<int *>(value_ptr)) {
-
-        if (GuiValueBox(box, text.c_str(), std::get<int *>(value_ptr), 1, 10, editmode)) {
+    if (std::holds_alternative<Value<int>>(value)) {
+        auto &v = std::get<Value<int>>(value);
+        if (GuiValueBox(box, text.c_str(), v.ptr, v.min, v.max, editmode)) {
             editmode = !editmode;
         }
 
     } else {
 
-        if (GuiValueBoxFloat(box, text.c_str(), text_buffer, std::get<float *>(value_ptr), editmode)) {
+        if (GuiValueBoxFloat(box, text.c_str(), text_buffer, std::get<Value<float>>(value).ptr, editmode)) {
             editmode = !editmode;
         }
 
@@ -91,13 +90,13 @@ void InputBoxPanel::Add(float *value, std::string text) {
     input_boxes.emplace_back(input_box, value, std::move(text));
 }
 
-void InputBoxPanel::Add(int *value, std::string text) {
+void InputBoxPanel::Add(int *value, int min, int max, std::string text) {
     size_t nboxes = input_boxes.size();
     Rectangle input_box = { panel.x + panel.width / 2,
                             DEFAULT_MARGIN + panel.y + nboxes * (DEFAULT_BOX_HEIGHT + DEFAULT_BOX_PADDING),
                             DEFAULT_BOX_WIDTH,
                             DEFAULT_BOX_HEIGHT };
-    input_boxes.emplace_back(input_box, value, std::move(text));
+    input_boxes.emplace_back(input_box, value, min, max, std::move(text));
 }
 
 void InputBoxPanel::Draw() {
