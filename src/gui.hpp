@@ -6,32 +6,34 @@
 #include <vector>
 #include <string>
 
-struct GUI_InputBox {
+namespace GUI {
+
+struct InputBox {
     Rectangle box;
     float* value = nullptr;
     std::string text;
     char text_buffer[RAYGUI_VALUEBOX_MAX_CHARS + 1] = {0};
     bool editmode = false;
 
-    GUI_InputBox() = default;
-    GUI_InputBox(Rectangle box, float *value, std::string text);
+    InputBox() = default;
+    InputBox(Rectangle box, float *value, std::string text);
 
     void UpdateTextBuffer();
     void Reset();
     void Draw();
 };
 
-struct GUI_InputBoxPanel {
+struct InputBoxPanel {
     Rectangle panel;
-    std::vector<GUI_InputBox> input_boxes;
+    std::vector<GUI::InputBox> input_boxes;
 
     static const int DEFAULT_BOX_WIDTH   = 80;
     static const int DEFAULT_BOX_HEIGHT  = 40;
     static const int DEFAULT_BOX_PADDING = 10;
     static const int DEFAULT_MARGIN      = 20;
 
-    GUI_InputBoxPanel() = default;
-    GUI_InputBoxPanel(Rectangle box) : panel(box) {}
+    InputBoxPanel() = default;
+    InputBoxPanel(Rectangle box) : panel(box) {}
 
     void Add(float *value, std::string text);
 
@@ -39,15 +41,15 @@ struct GUI_InputBoxPanel {
     void Reset();
 };
 
-struct GUI_Toggle {
+struct Toggle {
     Rectangle box;
     std::string text_inactive;
     std::string text_active;
     bool active = false;
 
-    GUI_Toggle() = default;
+    Toggle() = default;
 
-    GUI_Toggle(Rectangle box, std::string text_inactive, std::string text_active) :
+    Toggle(Rectangle box, std::string text_inactive, std::string text_active) :
         box(box), text_inactive(std::move(text_inactive)), text_active(std::move(text_active))
     {}
 
@@ -55,3 +57,5 @@ struct GUI_Toggle {
         GuiToggle(box, active ? text_active.c_str() : text_inactive.c_str(), &active);
     }
 };
+
+} // namespace GUI

@@ -14,8 +14,8 @@ struct SceneDrawPolygons : Scene {
     std::deque<std::shared_ptr<Polygon>> polygons;
     std::deque<PolygonAnimation> animations;
     
-    GUI_InputBoxPanel input_box_panel;
-    GUI_Toggle toggle_draw_polygon;
+    GUI::InputBoxPanel input_box_panel;
+    GUI::Toggle toggle_draw_polygon;
 
     Point *dragged_point = nullptr;
     

@@ -12,7 +12,7 @@ struct SceneEllipses : Scene {
     std::array<std::shared_ptr<Ellipse>, 3> ellipses;
     std::array<PolygonAnimation, 3> animations;
     
-    GUI_InputBoxPanel input_box_panel;
+    GUI::InputBoxPanel input_box_panel;
 
     bool paused = false;
 

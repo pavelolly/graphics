@@ -5,13 +5,15 @@
 
 #include "gui.hpp"
 
-GUI_InputBox::GUI_InputBox(Rectangle box, float *value, std::string text) : box(box), value(value), text(std::move(text)) {
+namespace GUI {
+
+InputBox::InputBox(Rectangle box, float *value, std::string text) : box(box), value(value), text(std::move(text)) {
     if (value) {
         UpdateTextBuffer();
     }
 }
 
-void GUI_InputBox::UpdateTextBuffer() {
+void InputBox::UpdateTextBuffer() {
     int len = snprintf(text_buffer, RAYGUI_VALUEBOX_MAX_CHARS + 1, "%f", *value);
 
     /* truncate insignificant zeros */
@@ -34,7 +36,7 @@ void GUI_InputBox::UpdateTextBuffer() {
     }
 }
 
-void GUI_InputBox::Reset() {
+void InputBox::Reset() {
     text_buffer[0] = '0';
     std::fill(text_buffer + 1, text_buffer + RAYGUI_VALUEBOX_MAX_CHARS + 1, '\0');
 
@@ -43,7 +45,7 @@ void GUI_InputBox::Reset() {
     }
 }
 
-void GUI_InputBox::Draw() {
+void InputBox::Draw() {
     if (GuiValueBoxFloat(box, text.c_str(), text_buffer, value, editmode)) {
         editmode = !editmode;
     }
@@ -54,7 +56,7 @@ void GUI_InputBox::Draw() {
     // }
 }
 
-void GUI_InputBoxPanel::Add(float *value, std::string text) {
+void InputBoxPanel::Add(float *value, std::string text) {
     size_t nboxes = input_boxes.size();
     Rectangle input_box = { panel.x + panel.width / 2,
                             DEFAULT_MARGIN + panel.y + nboxes * (DEFAULT_BOX_HEIGHT + DEFAULT_BOX_PADDING),
@@ -63,7 +65,7 @@ void GUI_InputBoxPanel::Add(float *value, std::string text) {
     input_boxes.emplace_back(input_box, value, std::move(text));
 }
 
-void GUI_InputBoxPanel::Draw() {
+void InputBoxPanel::Draw() {
     // fill with background color to hide scene behind
     DrawRectangleRec(panel, GetColor(0x181818ff));
     GuiGroupBox(panel, "Parameters");
@@ -73,8 +75,10 @@ void GUI_InputBoxPanel::Draw() {
     }
 }
 
-void GUI_InputBoxPanel::Reset() {
+void InputBoxPanel::Reset() {
     for (auto &input_box : input_boxes) {
         input_box.Reset();
     }
 }
+
+} // namespace GUI
