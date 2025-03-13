@@ -2,7 +2,7 @@
 
 
 bool SceneDrawPolygons::IsSwitchable() {
-    for (auto &input_box : input_boxes) {
+    for (auto &input_box : input_box_panel.input_boxes) {
         if (input_box.editmode) {
             return false;
         }
@@ -17,11 +17,7 @@ void SceneDrawPolygons::Draw() {
 
     drawn_polygon.Draw(ORANGE, PURPLE);
 
-    DrawRectangleRec(PANEL, GetColor(0x181818ff));
-    DrawRectangleLinesEx(PANEL, static_cast<float>(GuiGetStyle(DEFAULT, BORDER_WIDTH)), GRAY);
-    for (auto &input_box : input_boxes) {
-        input_box.Draw();
-    }
+    input_box_panel.Draw();
 
     toggle_draw_polygon.Draw();
 
@@ -45,7 +41,7 @@ void SceneDrawPolygons::Update(float dt) {
                 }
             }
 
-            for (auto &input_box : input_boxes) {
+            for (auto &input_box : input_box_panel.input_boxes) {
                 input_box.Reset();
             }
         }
@@ -82,8 +78,7 @@ void SceneDrawPolygons::Update(float dt) {
             if (animations.size() == 0) {
                 animations.emplace_back(polygons.back());
 
-                AddInputBox(&animations[0].rotation_speed,
-                            "Rotation Speed 1\t");
+                input_box_panel.Add(&animations[0].rotation_speed, "Rotation Speed 1\t");
             } else {
                 // move the original polygon to where it started the animation
                 // so resetting the animation puts it in the right place
@@ -94,10 +89,8 @@ void SceneDrawPolygons::Update(float dt) {
                                         animations.back().animated_polygon);
 
                 auto polygon_ordinal = std::to_string(animations.size());
-                AddInputBox(&animations.back().moving_speed,
-                            "Moving Speed " + polygon_ordinal + "\t");
-                AddInputBox(&animations.back().rotation_speed,
-                            "Rotation Speed " + polygon_ordinal + "\t");
+                input_box_panel.Add(&animations.back().moving_speed, "Moving Speed " + polygon_ordinal + "\t");
+                input_box_panel.Add(&animations.back().rotation_speed, "Rotation Speed " + polygon_ordinal + "\t");
             }
         }
     }
@@ -150,7 +143,7 @@ void SceneDrawPolygons::Update(float dt) {
     if (IsKeyPressed(KEY_DELETE)) {
         polygons.clear();
         animations.clear();
-        input_boxes.clear();
+        input_box_panel.input_boxes.clear();
     }
 
     Point shift = Vector2Zeros;

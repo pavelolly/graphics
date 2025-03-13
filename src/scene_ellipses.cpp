@@ -17,15 +17,17 @@ SceneEllipses::SceneEllipses() {
     animations[2].rotation_speed = 3;
     animations[2].moving_speed   = 3;
 
-    input_boxes[0] = GUI_InputBox(Rectangle { PANEL_X + PANEL_W / 2, PANEL_Y + 0 * (BUTTON_H + 10.f), BUTTON_W, BUTTON_H }, &animations[0].rotation_speed, "Rotation Speed 1\t");
-    input_boxes[1] = GUI_InputBox(Rectangle { PANEL_X + PANEL_W / 2, PANEL_Y + 1 * (BUTTON_H + 10.f), BUTTON_W, BUTTON_H }, &animations[1].moving_speed,   "Moving Speed 2\t");
-    input_boxes[2] = GUI_InputBox(Rectangle { PANEL_X + PANEL_W / 2, PANEL_Y + 2 * (BUTTON_H + 10.f), BUTTON_W, BUTTON_H }, &animations[1].rotation_speed, "Rotation Speed 2\t");
-    input_boxes[3] = GUI_InputBox(Rectangle { PANEL_X + PANEL_W / 2, PANEL_Y + 3 * (BUTTON_H + 10.f), BUTTON_W, BUTTON_H }, &animations[2].moving_speed,   "Moving Speed 3\t");
-    input_boxes[4] = GUI_InputBox(Rectangle { PANEL_X + PANEL_W / 2, PANEL_Y + 4 * (BUTTON_H + 10.f), BUTTON_W, BUTTON_H }, &animations[2].rotation_speed, "Rotation Speed 3\t");
+    input_box_panel.panel = { GetScreenWidth() - 400.f, 40, 360, GetScreenHeight() - 80.f };
+    
+    input_box_panel.Add(&animations[0].rotation_speed, "Rotation Speed 1\t");
+    input_box_panel.Add(&animations[1].moving_speed,   "Moving Speed 2\t");
+    input_box_panel.Add(&animations[1].rotation_speed, "Rotation Speed 2\t");
+    input_box_panel.Add(&animations[2].moving_speed,   "Moving Speed 3\t");
+    input_box_panel.Add(&animations[2].rotation_speed, "Rotation Speed 3\t");
 }
 
 bool SceneEllipses::IsSwitchable() {
-    for (auto &input_box : input_boxes) {
+    for (auto &input_box : input_box_panel.input_boxes) {
         if (input_box.editmode) {
             return false;
         }
@@ -38,11 +40,7 @@ void SceneEllipses::Draw() {
         animation.animated_polygon->Draw(YELLOW, RED);
     }
 
-    DrawRectangleRec(PANEL, GetColor(0x181818ff));
-    DrawRectangleLinesEx(PANEL, static_cast<float>(GuiGetStyle(DEFAULT, BORDER_WIDTH)), GRAY);
-    for (auto &input_box : input_boxes) {
-        input_box.Draw();
-    }
+    input_box_panel.Draw();
 
     if (paused) {
         DrawText("paused", 20, 20, GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
@@ -65,7 +63,7 @@ void SceneEllipses::Update(float dt) {
                 }
             }
 
-            for (auto &input_box : input_boxes) {
+            for (auto &input_box : input_box_panel.input_boxes) {
                 input_box.Reset();
             }
         }

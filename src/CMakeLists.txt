@@ -4,7 +4,7 @@ set(SOURCES
     geometry.cpp geometry.hpp
     gui.cpp gui.hpp
     polygon_animation.cpp polygon_animation.cpp
-    scene.hpp scenes.hpp
+    scene.hpp
     scene_ellipses.cpp scene_ellipses.hpp
     scene_draw_polygons.cpp scene_draw_polygons.hpp
     scene_localization.cpp scene_localization.hpp)

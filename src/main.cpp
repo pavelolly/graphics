@@ -1,7 +1,9 @@
 
 #include <raylib.h>
 
-#include "scenes.hpp"
+#include "scene_ellipses.hpp"
+#include "scene_draw_polygons.hpp"
+#include "scene_localization.hpp"
 
 #define WIDTH  1600
 #define HEIGHT 900
@@ -13,6 +15,7 @@ int main() {
     SetTraceLogLevel(LOG_DEBUG);
 
     GuiSetStyle(DEFAULT, TEXT_SIZE, 15);
+    GuiSetStyle(DEFAULT, LINE_COLOR, ColorToInt(GRAY));
 
     SceneEllipses     scene_ellipses;
     SceneDrawPolygons scene_draw_polygons;
@@ -28,6 +31,7 @@ int main() {
                 scene->Draw();
             } else {
                 DrawLineBezier({100, 100}, {200, 200}, 2, YELLOW);
+                GuiGroupBox({300, 300, 400, 400}, "Window"); 
             }
 
         EndDrawing();

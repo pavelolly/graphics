@@ -14,7 +14,7 @@ struct SceneDrawPolygons : Scene {
     std::deque<std::shared_ptr<Polygon>> polygons;
     std::deque<PolygonAnimation> animations;
     
-    std::vector<GUI_InputBox> input_boxes;
+    GUI_InputBoxPanel input_box_panel;
     GUI_Toggle toggle_draw_polygon;
 
     Point *dragged_point = nullptr;
@@ -25,13 +25,14 @@ struct SceneDrawPolygons : Scene {
     bool dragging = false;
 
     SceneDrawPolygons() :
-        toggle_draw_polygon(Rectangle{ PANEL_X + PANEL_W - BUTTON_W - 35, PANEL_Y + PANEL_H - 2 * BUTTON_H, BUTTON_W, BUTTON_H }, "Draw", "Finish")
+        input_box_panel({ GetScreenWidth() - 400.f, 40, 360, GetScreenHeight() - 80.f }),
+        toggle_draw_polygon(Rectangle{ 
+                input_box_panel.panel.x + input_box_panel.panel.width - input_box_panel.DEFAULT_BOX_WIDTH - 35,
+                input_box_panel.panel.y + input_box_panel.panel.height - 2 * input_box_panel.DEFAULT_BOX_HEIGHT,
+                input_box_panel.DEFAULT_BOX_WIDTH,
+                input_box_panel.DEFAULT_BOX_HEIGHT },
+            "Draw", "Finish")
     {}
-
-    void AddInputBox(float *value, std::string text="") {
-        size_t nbuttons = input_boxes.size();
-        input_boxes.emplace_back(Rectangle { PANEL_X + PANEL_W / 2, PANEL_Y + nbuttons*(BUTTON_H + 10.f), BUTTON_W, BUTTON_H }, value, std::move(text));
-    }
 
     bool IsSwitchable() override;
     void Draw() override;
