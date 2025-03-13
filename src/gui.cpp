@@ -10,13 +10,16 @@ namespace GUI {
 InputBox::InputBox(Rectangle box, int *value_ptr, int min, int max, std::string text) :
     box(box), value(InputBox::Value(value_ptr, min, max)), text(std::move(text))
 {
+    this->text += "  ";
     if (value_ptr) {
         UpdateTextBuffer();
     }
 }
 
-InputBox::InputBox(Rectangle box, float *value_ptr, std::string text) : box(box), value(value_ptr), text(std::move(text))
+InputBox::InputBox(Rectangle box, float *value_ptr, std::string text) :
+    box(box), value(value_ptr), text(std::move(text))
 {
+    this->text += "  ";
     if (value_ptr) {
         UpdateTextBuffer();
     }
@@ -29,7 +32,7 @@ void InputBox::UpdateTextBuffer() {
     }
 
     int len = snprintf(text_buffer, RAYGUI_VALUEBOX_MAX_CHARS + 1, "%f", *std::get<Value<float>>(value).ptr);
-
+  
     /* truncate insignificant zeros */
     char *end = text_buffer + len;
 
@@ -66,12 +69,18 @@ void InputBox::Draw() {
         auto &v = std::get<Value<int>>(value);
         if (GuiValueBox(box, text.c_str(), v.ptr, v.min, v.max, editmode)) {
             editmode = !editmode;
+            if (editmode_change_callback) {
+                editmode_change_callback(editmode);
+            }
         }
 
     } else {
 
         if (GuiValueBoxFloat(box, text.c_str(), text_buffer, std::get<Value<float>>(value).ptr, editmode)) {
             editmode = !editmode;
+            if (editmode_change_callback) {
+                editmode_change_callback(editmode);
+            }
         }
 
     }

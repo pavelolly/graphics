@@ -35,7 +35,9 @@ struct InputBox {
 
     std::string text;
     char text_buffer[RAYGUI_VALUEBOX_MAX_CHARS + 1] = {0};
+
     bool editmode = false;
+    std::function<void(bool)> editmode_change_callback;
 
     InputBox() = default;
     InputBox(Rectangle box, int   *value, int min, int max, std::string text);
