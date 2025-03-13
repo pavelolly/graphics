@@ -7,14 +7,29 @@
 
 namespace GUI {
 
-InputBox::InputBox(Rectangle box, float *value, std::string text) : box(box), value(value), text(std::move(text)) {
+InputBox::InputBox(Rectangle box, int *value, std::string text) : box(box), value_ptr(value), text(std::move(text)) {
+    if (value) {
+        UpdateTextBuffer();
+    }
+}
+
+InputBox::InputBox(Rectangle box, float *value, std::string text) : box(box), value_ptr(value), text(std::move(text)) {
     if (value) {
         UpdateTextBuffer();
     }
 }
 
 void InputBox::UpdateTextBuffer() {
-    int len = snprintf(text_buffer, RAYGUI_VALUEBOX_MAX_CHARS + 1, "%f", *value);
+    if (value_ptr.index() == std::variant_npos) {
+        return;
+    }
+
+    if (std::holds_alternative<int *>(value_ptr)) {
+        snprintf(text_buffer, RAYGUI_VALUEBOX_MAX_CHARS + 1, "%d", *std::get<int *>(value_ptr));
+        return;
+    }
+
+    int len = snprintf(text_buffer, RAYGUI_VALUEBOX_MAX_CHARS + 1, "%f", *std::get<float *>(value_ptr));
 
     /* truncate insignificant zeros */
     char *end = text_buffer + len;
@@ -40,16 +55,27 @@ void InputBox::Reset() {
     text_buffer[0] = '0';
     std::fill(text_buffer + 1, text_buffer + RAYGUI_VALUEBOX_MAX_CHARS + 1, '\0');
 
-    if (value) {
-        *value = 0;
+    if (std::holds_alternative<int *>(value_ptr)) {
+        *std::get<int *>(value_ptr) = 0;
+    } else {
+        *std::get<float *>(value_ptr) = 0.f;
     }
 }
 
 void InputBox::Draw() {
-    if (GuiValueBoxFloat(box, text.c_str(), text_buffer, value, editmode)) {
-        editmode = !editmode;
-    }
+    if (std::holds_alternative<int *>(value_ptr)) {
 
+        if (GuiValueBox(box, text.c_str(), std::get<int *>(value_ptr), 1, 10, editmode)) {
+            editmode = !editmode;
+        }
+
+    } else {
+
+        if (GuiValueBoxFloat(box, text.c_str(), text_buffer, std::get<float *>(value_ptr), editmode)) {
+            editmode = !editmode;
+        }
+
+    }
     // Uncomment if want to modify *value not only from within input box
     // if (!editmode) {
     //     UpdateTextBuffer();
@@ -57,6 +83,15 @@ void InputBox::Draw() {
 }
 
 void InputBoxPanel::Add(float *value, std::string text) {
+    size_t nboxes = input_boxes.size();
+    Rectangle input_box = { panel.x + panel.width / 2,
+                            DEFAULT_MARGIN + panel.y + nboxes * (DEFAULT_BOX_HEIGHT + DEFAULT_BOX_PADDING),
+                            DEFAULT_BOX_WIDTH,
+                            DEFAULT_BOX_HEIGHT };
+    input_boxes.emplace_back(input_box, value, std::move(text));
+}
+
+void InputBoxPanel::Add(int *value, std::string text) {
     size_t nboxes = input_boxes.size();
     Rectangle input_box = { panel.x + panel.width / 2,
                             DEFAULT_MARGIN + panel.y + nboxes * (DEFAULT_BOX_HEIGHT + DEFAULT_BOX_PADDING),

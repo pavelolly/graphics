@@ -8,7 +8,8 @@ set(SOURCES
     scene.hpp
     scene_ellipses.cpp scene_ellipses.hpp
     scene_draw_polygons.cpp scene_draw_polygons.hpp
-    scene_localization.cpp scene_localization.hpp)
+    scene_localization.cpp scene_localization.hpp
+    scene_elementary_bezier.hpp)
 
 add_executable(main ${SOURCES})
 if (MSVC)

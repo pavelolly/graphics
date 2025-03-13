@@ -4,6 +4,7 @@
 #include "scene_ellipses.hpp"
 #include "scene_draw_polygons.hpp"
 #include "scene_localization.hpp"
+#include "scene_elementary_bezier.hpp"
 
 #define WIDTH  1600
 #define HEIGHT 900
@@ -17,9 +18,10 @@ int main() {
     GuiSetStyle(DEFAULT, TEXT_SIZE, 15);
     GuiSetStyle(DEFAULT, LINE_COLOR, ColorToInt(GRAY));
 
-    SceneEllipses     scene_ellipses;
-    SceneDrawPolygons scene_draw_polygons;
-    SceneLocalization scene_localization;
+    SceneEllipses         scene_ellipses;
+    SceneDrawPolygons     scene_draw_polygons;
+    SceneLocalization     scene_localization;
+    SceneElementaryBezier scene_elementary_bezier;
 
     Scene *scene = &scene_ellipses;
 
@@ -49,10 +51,12 @@ int main() {
             } else if (IsKeyPressed('3')) {
                 DisableCursor();
                 scene = &scene_localization;
-
+            } else if (IsKeyPressed('4')) {
+                EnableCursor();
+                scene = &scene_elementary_bezier;
             } else if (IsKeyPressed('0')) {
                 EnableCursor();
-                scene = nullptr; // empty scene  used for testing
+                scene = nullptr; // empty scene used for testing
             }
         }
         

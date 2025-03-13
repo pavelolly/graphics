@@ -74,7 +74,7 @@ void SceneDrawPolygons::Update(float dt) {
             if (animations.size() == 0) {
                 animations.emplace_back(polygons.back());
 
-                input_box_panel.Add(&animations[0].rotation_speed, "Rotation Speed 1 ");
+                input_box_panel.Add(&animations[0].rotation_speed, "Rotation Speed 1  ");
             } else {
                 // move the original polygon to where it started the animation
                 // so resetting the animation puts it in the right place
@@ -83,8 +83,8 @@ void SceneDrawPolygons::Update(float dt) {
                 animations.emplace_back(polygons.back(), animations.back().animated_polygon);
 
                 auto polygon_ordinal = std::to_string(animations.size());
-                input_box_panel.Add(&animations.back().moving_speed, "Moving Speed " + polygon_ordinal + " ");
-                input_box_panel.Add(&animations.back().rotation_speed, "Rotation Speed " + polygon_ordinal + " ");
+                input_box_panel.Add(&animations.back().moving_speed, "Moving Speed " + polygon_ordinal + "  ");
+                input_box_panel.Add(&animations.back().rotation_speed, "Rotation Speed " + polygon_ordinal + "  ");
             }
         }
     }

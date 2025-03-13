@@ -3070,8 +3070,8 @@ int GuiValueBox(Rectangle bounds, const char *text, int *value, int minValue, in
             if (valueHasChanged) *value = TextToInteger(textValue);
 
             // NOTE: We are not clamp values until user input finishes
-            //if (*value > maxValue) *value = maxValue;
-            //else if (*value < minValue) *value = minValue;
+            // if (*value > maxValue) *value = maxValue;
+            // else if (*value < minValue) *value = minValue;
 
             if ((IsKeyPressed(KEY_ENTER) || IsKeyPressed(KEY_KP_ENTER)) || (!CheckCollisionPointRec(mousePoint, bounds) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON)))
             {

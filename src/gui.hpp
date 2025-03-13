@@ -3,6 +3,7 @@
 #define RAYGUI_VALUEBOX_MAX_CHARS 10
 #include <raygui.h>
 
+#include <variant>
 #include <vector>
 #include <string>
 
@@ -10,12 +11,13 @@ namespace GUI {
 
 struct InputBox {
     Rectangle box;
-    float* value = nullptr;
+    std::variant<int *, float *> value_ptr;
     std::string text;
     char text_buffer[RAYGUI_VALUEBOX_MAX_CHARS + 1] = {0};
     bool editmode = false;
 
     InputBox() = default;
+    InputBox(Rectangle box, int   *value, std::string text);
     InputBox(Rectangle box, float *value, std::string text);
 
     void UpdateTextBuffer();
@@ -28,14 +30,15 @@ struct InputBoxPanel {
     std::vector<GUI::InputBox> input_boxes;
 
     static const int DEFAULT_BOX_WIDTH   = 80;
-    static const int DEFAULT_BOX_HEIGHT  = 40;
+    static const int DEFAULT_BOX_HEIGHT  = 30;
     static const int DEFAULT_BOX_PADDING = 10;
     static const int DEFAULT_MARGIN      = 20;
 
     InputBoxPanel() = default;
     InputBoxPanel(Rectangle box) : panel(box) {}
 
-    void Add(float *value, std::string text);
+    void Add(float *value, std::string text="");
+    void Add(int   *value, std::string text="");
 
     void Draw();
     void Reset();

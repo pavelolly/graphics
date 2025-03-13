@@ -18,11 +18,11 @@ SceneEllipses::SceneEllipses() : input_box_panel(Rectangle { GetScreenWidth() - 
     animations[2].rotation_speed = 3;
     animations[2].moving_speed   = 3;
     
-    input_box_panel.Add(&animations[0].rotation_speed, "Rotation Speed 1 ");
-    input_box_panel.Add(&animations[1].moving_speed,   "Moving Speed 2 ");
-    input_box_panel.Add(&animations[1].rotation_speed, "Rotation Speed 2 ");
-    input_box_panel.Add(&animations[2].moving_speed,   "Moving Speed 3 ");
-    input_box_panel.Add(&animations[2].rotation_speed, "Rotation Speed 3 ");
+    input_box_panel.Add(&animations[0].rotation_speed, "Rotation Speed 1  ");
+    input_box_panel.Add(&animations[1].moving_speed,   "Moving Speed 2  ");
+    input_box_panel.Add(&animations[1].rotation_speed, "Rotation Speed 2  ");
+    input_box_panel.Add(&animations[2].moving_speed,   "Moving Speed 3  ");
+    input_box_panel.Add(&animations[2].rotation_speed, "Rotation Speed 3  ");
 }
 
 bool SceneEllipses::IsSwitchable() {
