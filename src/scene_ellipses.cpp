@@ -1,7 +1,8 @@
 #include "scene_ellipses.hpp"
 
 
-SceneEllipses::SceneEllipses() {
+SceneEllipses::SceneEllipses() : input_box_panel(Rectangle { GetScreenWidth() - 400.f, 40, 360, GetScreenHeight() - 80.f } )
+{
     ellipses[0] = std::make_shared<Ellipse>( Point { GetScreenWidth() * 7.f / 16.f, GetScreenHeight() / 2.f }, 200.f, 100.f );
     ellipses[1] = std::make_shared<Ellipse>( ellipses[0]->GetPoint(0),                                         100.f, 50.f  );
     ellipses[2] = std::make_shared<Ellipse>( ellipses[1]->GetPoint(0),                                         50.f,  25.f  );
@@ -16,14 +17,12 @@ SceneEllipses::SceneEllipses() {
     animations[2] = PolygonAnimation(ellipses[2], animations[1].animated_polygon);
     animations[2].rotation_speed = 3;
     animations[2].moving_speed   = 3;
-
-    input_box_panel.panel = { GetScreenWidth() - 400.f, 40, 360, GetScreenHeight() - 80.f };
     
-    input_box_panel.Add(&animations[0].rotation_speed, "Rotation Speed 1\t");
-    input_box_panel.Add(&animations[1].moving_speed,   "Moving Speed 2\t");
-    input_box_panel.Add(&animations[1].rotation_speed, "Rotation Speed 2\t");
-    input_box_panel.Add(&animations[2].moving_speed,   "Moving Speed 3\t");
-    input_box_panel.Add(&animations[2].rotation_speed, "Rotation Speed 3\t");
+    input_box_panel.Add(&animations[0].rotation_speed, "Rotation Speed 1 ");
+    input_box_panel.Add(&animations[1].moving_speed,   "Moving Speed 2 ");
+    input_box_panel.Add(&animations[1].rotation_speed, "Rotation Speed 2 ");
+    input_box_panel.Add(&animations[2].moving_speed,   "Moving Speed 3 ");
+    input_box_panel.Add(&animations[2].rotation_speed, "Rotation Speed 3 ");
 }
 
 bool SceneEllipses::IsSwitchable() {
@@ -63,9 +62,7 @@ void SceneEllipses::Update(float dt) {
                 }
             }
 
-            for (auto &input_box : input_box_panel.input_boxes) {
-                input_box.Reset();
-            }
+            input_box_panel.Reset();
         }
 
     } else {

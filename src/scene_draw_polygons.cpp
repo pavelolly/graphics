@@ -16,9 +16,7 @@ void SceneDrawPolygons::Draw() {
     }
 
     drawn_polygon.Draw(ORANGE, PURPLE);
-
     input_box_panel.Draw();
-
     toggle_draw_polygon.Draw();
 
     if (paused) {
@@ -41,9 +39,7 @@ void SceneDrawPolygons::Update(float dt) {
                 }
             }
 
-            for (auto &input_box : input_box_panel.input_boxes) {
-                input_box.Reset();
-            }
+            input_box_panel.Reset();
         }
 
     } else {
@@ -78,19 +74,17 @@ void SceneDrawPolygons::Update(float dt) {
             if (animations.size() == 0) {
                 animations.emplace_back(polygons.back());
 
-                input_box_panel.Add(&animations[0].rotation_speed, "Rotation Speed 1\t");
+                input_box_panel.Add(&animations[0].rotation_speed, "Rotation Speed 1 ");
             } else {
                 // move the original polygon to where it started the animation
                 // so resetting the animation puts it in the right place
-                polygons.back()->SetCenter(
-                    animations.back().animated_polygon->GetPoint(0));
+                polygons.back()->SetCenter(animations.back().animated_polygon->GetPoint(0));
 
-                animations.emplace_back(polygons.back(),
-                                        animations.back().animated_polygon);
+                animations.emplace_back(polygons.back(), animations.back().animated_polygon);
 
                 auto polygon_ordinal = std::to_string(animations.size());
-                input_box_panel.Add(&animations.back().moving_speed, "Moving Speed " + polygon_ordinal + "\t");
-                input_box_panel.Add(&animations.back().rotation_speed, "Rotation Speed " + polygon_ordinal + "\t");
+                input_box_panel.Add(&animations.back().moving_speed, "Moving Speed " + polygon_ordinal + " ");
+                input_box_panel.Add(&animations.back().rotation_speed, "Rotation Speed " + polygon_ordinal + " ");
             }
         }
     }
@@ -99,21 +93,9 @@ void SceneDrawPolygons::Update(float dt) {
 
         if (dragging) {
             if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
-                assert(dragged_point &&
-                       "dragged_point is nullptr when trying to drag");
+                assert(dragged_point && "dragged_point is nullptr when trying to drag");
 
                 *dragged_point += GetMouseDelta();
-
-                // for (size_t i = 0; i < animations.size(); ++i) {
-                //     if (i == 0) {
-                //         animations[i].interpolator.default_point =
-                //         animations[i].polygon->GetCenter();
-                //     } else {
-                //         animations[i].interpolator.default_point =
-                //         animations[i - 1].polygon->GetPoint(0);
-                //     }
-                //     animations[i].Update(0);
-                // }
             }
 
             if (IsMouseButtonUp(MOUSE_BUTTON_RIGHT)) {

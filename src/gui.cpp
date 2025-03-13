@@ -53,3 +53,28 @@ void GUI_InputBox::Draw() {
     //     UpdateTextBuffer();
     // }
 }
+
+void GUI_InputBoxPanel::Add(float *value, std::string text) {
+    size_t nboxes = input_boxes.size();
+    Rectangle input_box = { panel.x + panel.width / 2,
+                            DEFAULT_MARGIN + panel.y + nboxes * (DEFAULT_BOX_HEIGHT + DEFAULT_BOX_PADDING),
+                            DEFAULT_BOX_WIDTH,
+                            DEFAULT_BOX_HEIGHT };
+    input_boxes.emplace_back(input_box, value, std::move(text));
+}
+
+void GUI_InputBoxPanel::Draw() {
+    // fill with background color to hide scene behind
+    DrawRectangleRec(panel, GetColor(0x181818ff));
+    GuiGroupBox(panel, "Parameters");
+
+    for (auto &input_box : input_boxes) {
+        input_box.Draw();
+    }
+}
+
+void GUI_InputBoxPanel::Reset() {
+    for (auto &input_box : input_boxes) {
+        input_box.Reset();
+    }
+}

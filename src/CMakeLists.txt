@@ -1,4 +1,5 @@
 
+set(CMAKE_BUILD_TYPE Debug)
 set(SOURCES
     main.cpp
     geometry.cpp geometry.hpp

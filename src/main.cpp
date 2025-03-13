@@ -9,7 +9,7 @@
 #define HEIGHT 900
 
 int main() {
-    InitWindow(WIDTH, HEIGHT, "Ellipses");
+    InitWindow(WIDTH, HEIGHT, "Graphics");
     SetTargetFPS(60);
 
     SetTraceLogLevel(LOG_DEBUG);
@@ -30,8 +30,10 @@ int main() {
             if (scene) {
                 scene->Draw();
             } else {
+
                 DrawLineBezier({100, 100}, {200, 200}, 2, YELLOW);
                 GuiGroupBox({300, 300, 400, 400}, "Window"); 
+                
             }
 
         EndDrawing();
