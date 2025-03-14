@@ -36,6 +36,35 @@ void DrawPoint(Point point, Color color, float radius) {
     }
 }
 
+void DrawLineDotted(Point start, Point end, float thick, Color color) {
+    static const int SEGMENT_LEN = 20;
+
+    Point sstart = start;
+    Point direction = Vector2Normalize(end - start);
+    bool draw = true;
+
+    for (;;) {
+        Point send = sstart + direction * SEGMENT_LEN;
+
+        if (draw) {
+
+            if (Distance(end, sstart) < Distance(send, sstart)) {
+                DrawLineEx(sstart, end, thick, color);
+                break;
+            }
+        }
+
+        if (draw) {
+            DrawLineEx(sstart, send, thick, color);
+        }
+
+        sstart = send;
+        draw = !draw;
+    }
+
+    DrawPoint(end, color, thick);
+};
+
 bool IsInsideTriangle(Point p, Point a, Point b, Point c) {
     bool side1 = signbit((p.x - a.x) * (b.y - a.y) - (p.y - a.y) * (b.x - a.x));
     bool side2 = signbit((p.x - b.x) * (c.y - b.y) - (p.y - b.y) * (c.x - b.x));
@@ -53,6 +82,76 @@ bool IsInsideTriangle2(Point p, Point a, Point b, Point c) {
     return k1 > 0 && k2 > 0 && k3 > 0;
 }
 
+std::function<Point(float)> BezierFunc(const std::vector<Point> &control_points) {
+    size_t order = control_points.size() - 1;
+    if (order == 0) {
+        return {};
+    }
+
+    if (order == 1) {
+        Point p1 = control_points[0];
+        Point p2 = control_points[1];
+
+        return [p1, p2](float t) -> Point {
+            return p1 * (1 - t) + p2 * t;
+        };
+    } else if (order == 2) {
+        Point p1 = control_points[0];
+        Point p2 = control_points[1];
+        Point p3 = control_points[2];
+
+        return [p1, p2, p3] (float t) -> Point {
+            return p1 * (1 - t) * (1 - t) +
+                   p2 * 2 * t * (1 - t)   +
+                   p3 * t * t;
+        };
+    } else if (order == 3) {
+        Point p1 = control_points[0];
+        Point p2 = control_points[1];
+        Point p3 = control_points[2];
+        Point p4 = control_points[3];
+
+        return [p1, p2, p3, p4] (float t) -> Point {
+            return p1 * (1 - t) * (1 - t) * (1 - t) +
+                   p2 * 3 * (1 - t) * (1 - t) * t   +
+                   p3 * 3 * (1 - t) * t * t         +
+                   p4 * t * t * t;
+        };
+    } else {
+        /*
+            General formula: ```f(t) = sum i=[0..order] { control_point[i] * (order choose i) * (1 - t)^(order - i) * t^i }```
+        */
+
+        // calculate binomial coefs ```(order choose i) = order! / (i! * (order - i)!)```
+        // (! - factorial)
+        std::vector<Point> coefs(order + 1);
+        coefs[0] = { 1.f, 1.f };
+        for (uint32_t i = 1; i <= order; ++i) {
+            coefs[i] = coefs[i - 1] * static_cast<float>(order - i + 1) / static_cast<float>(i);
+        }
+
+        // multiply coefs by control points
+        for (uint32_t i = 0; i < coefs.size(); ++i) {
+            coefs[i] *= control_points[i];
+        }
+        
+        return [order, coefs = std::move(coefs)] (float t) -> Point {
+            if (FloatEquals(t, 0)) {
+                return coefs.front();
+            } else if (FloatEquals(t, 1)) {
+                return coefs.back();
+            }
+
+            Point res = Vector2Zeros;
+            float t_mul = powf(1 - t, static_cast<float>(order));
+            for (auto coef : coefs) {
+                res += coef * t_mul;
+                t_mul *= t / (1 - t);
+            }
+            return res;
+        };
+    }
+}
 
 Polygon::Polygon(std::initializer_list<Point> points) {
     vertexes.reserve(points.size());

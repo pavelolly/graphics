@@ -11,7 +11,7 @@
 
 int main() {
     InitWindow(WIDTH, HEIGHT, "Graphics");
-    SetTargetFPS(60);
+    SetTargetFPS(240);
 
     SetTraceLogLevel(LOG_DEBUG);
 

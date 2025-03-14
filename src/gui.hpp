@@ -8,6 +8,7 @@
 #include <string>
 #include <type_traits>
 #include <limits>
+#include <functional>
 
 namespace GUI {
 

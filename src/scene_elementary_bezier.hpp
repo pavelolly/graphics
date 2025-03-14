@@ -1,0 +1,33 @@
+
+#include <vector>
+
+#include "geometry.hpp"
+#include "scene.hpp"
+#include "gui.hpp"
+
+
+struct SceneElementaryBezier : Scene {
+    // curve parameters
+    std::vector<Point> control_points;
+    int order = 3;
+    static const int MAX_ORDER = 10;
+    int n_control_points = order + 1;
+
+    // panel to cntrol order
+    GUI::InputBoxPanel input_box_panel;
+
+    // points of drawn curve
+    static const int BEZIER_SEGMENTS = 100;
+    std::vector<Point> curve_points;
+
+    bool dragging = false;
+    Point *dragged_point = nullptr;
+
+    SceneElementaryBezier();
+
+    void UpdateCurve();
+
+    void Draw() override;
+    void Update(float) override;
+    bool IsSwitchable() override;
+};

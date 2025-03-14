@@ -59,8 +59,7 @@ void SceneDrawPolygons::Update(float dt) {
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
             Point mouse_pos = GetMousePosition();
 
-            if (!CheckCollisionPointRec(mouse_pos,
-                                        {PANEL_X, PANEL_Y, PANEL_W, PANEL_H})) {
+            if (!CheckCollisionPointRec(mouse_pos, {PANEL_X, PANEL_Y, PANEL_W, PANEL_H})) {
                 drawn_polygon.AddPoint(mouse_pos);
             }
         }
@@ -68,8 +67,7 @@ void SceneDrawPolygons::Update(float dt) {
     } else {
 
         if (drawn_polygon.NumPoints() != 0) {
-            polygons.push_back(
-                std::make_shared<Polygon>(std::move(drawn_polygon)));
+            polygons.push_back(std::make_shared<Polygon>(std::move(drawn_polygon)));
 
             if (animations.size() == 0) {
                 animations.emplace_back(polygons.back());

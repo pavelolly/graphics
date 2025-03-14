@@ -57,15 +57,19 @@ void InputBox::Reset() {
     text_buffer[0] = '0';
     std::fill(text_buffer + 1, text_buffer + RAYGUI_VALUEBOX_MAX_CHARS + 1, '\0');
 
+
     if (std::holds_alternative<Value<int>>(value)) {
-        *std::get<Value<int>>(value).ptr = 0;
+        auto ptr = std::get<Value<int>>(value).ptr;
+        *ptr = 0;
     } else {
-        *std::get<Value<float>>(value).ptr = 0.f;
+        auto ptr = std::get<Value<float>>(value).ptr;
+        *ptr = 0.f;
     }
 }
 
 void InputBox::Draw() {
     if (std::holds_alternative<Value<int>>(value)) {
+        
         auto &v = std::get<Value<int>>(value);
         if (GuiValueBox(box, text.c_str(), v.ptr, v.min, v.max, editmode)) {
             editmode = !editmode;
@@ -76,7 +80,8 @@ void InputBox::Draw() {
 
     } else {
 
-        if (GuiValueBoxFloat(box, text.c_str(), text_buffer, std::get<Value<float>>(value).ptr, editmode)) {
+        auto &v = std::get<Value<float>>(value);
+        if (GuiValueBoxFloat(box, text.c_str(), text_buffer, v.ptr, editmode)) {
             editmode = !editmode;
             if (editmode_change_callback) {
                 editmode_change_callback(editmode);
@@ -84,6 +89,7 @@ void InputBox::Draw() {
         }
 
     }
+    
     // Uncomment if want to modify *value not only from within input box
     // if (!editmode) {
     //     UpdateTextBuffer();
