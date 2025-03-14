@@ -1,6 +1,6 @@
-#include "scene_elementary_bezier.hpp"
+#include "scene_bezier_elementary.hpp"
 
-SceneElementaryBezier::SceneElementaryBezier() :
+SceneBezierElementary::SceneBezierElementary() :
     input_box_panel(Rectangle{GetScreenWidth() - 400.f, 40, 360, GetScreenHeight() - 80.f})
 {
     control_points.reserve(MAX_ORDER + 1);
@@ -19,7 +19,7 @@ SceneElementaryBezier::SceneElementaryBezier() :
         };
 }
 
-void SceneElementaryBezier::UpdateCurve() {
+void SceneBezierElementary::UpdateCurve() {
     // generate control points if needed
     if (n_control_points != control_points.size()) {
         control_points.clear();
@@ -39,7 +39,7 @@ void SceneElementaryBezier::UpdateCurve() {
     }
 }
 
-void SceneElementaryBezier::Draw() {
+void SceneBezierElementary::Draw() {
     // draw control points
     for (int i = 1; i < n_control_points; ++i) {
         DrawLineDotted(control_points[i - 1], control_points[i], 3, Fade(GRAY, 0.3f));
@@ -56,7 +56,7 @@ void SceneElementaryBezier::Draw() {
     input_box_panel.Draw();
 }
 
-void SceneElementaryBezier::Update(float) {
+void SceneBezierElementary::Update(float) {
     if (dragging) {
         if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
             assert(dragged_point && "dragged_point is nullptr when trying to drag");
@@ -87,6 +87,6 @@ void SceneElementaryBezier::Update(float) {
     }
 }
 
-bool SceneElementaryBezier::IsSwitchable() {
+bool SceneBezierElementary::IsSwitchable() {
     return !input_box_panel.input_boxes[0].editmode;
 }

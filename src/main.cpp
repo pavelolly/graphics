@@ -4,7 +4,7 @@
 #include "scene_ellipses.hpp"
 #include "scene_draw_polygons.hpp"
 #include "scene_localization.hpp"
-#include "scene_elementary_bezier.hpp"
+#include "scene_bezier_elementary.hpp"
 
 #define WIDTH  1600
 #define HEIGHT 900
@@ -21,7 +21,7 @@ int main() {
     SceneEllipses         scene_ellipses;
     SceneDrawPolygons     scene_draw_polygons;
     SceneLocalization     scene_localization;
-    SceneElementaryBezier scene_elementary_bezier;
+    SceneBezierElementary scene_elementary_bezier;
 
     Scene *scene = &scene_ellipses;
 
@@ -35,7 +35,11 @@ int main() {
 
                 DrawLineBezier({100, 100}, {200, 200}, 2, YELLOW);
                 GuiGroupBox({300, 300, 400, 400}, "Window"); 
-                
+
+                DrawLineDotted({450, 450}, {500, 500}, 3, GRAY);
+                DrawPoint({450, 450}, RED, 3);
+                DrawPoint({500, 500}, RED, 3);
+
             }
 
         EndDrawing();

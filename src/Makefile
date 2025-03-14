@@ -24,7 +24,7 @@ OBJECTS = geometry.o \
           scene_ellipses.o \
           scene_draw_polygons.o \
           scene_localization.o \
-		  scene_elementary_bezier.o \
+		  scene_bezier_elementary.o \
           raygui.o
 
 ${MAIN}: main.cpp ${OBJECTS} libraylib.a
@@ -39,7 +39,7 @@ polygon_animation.o: polygon_animation.cpp polygon_animation.hpp
 scene_ellipses.o: scene_ellipses.cpp scene_ellipses.hpp scene.hpp
 scene_draw_polygons.o: scene_draw_polygons.cpp scene_draw_polygons.hpp scene.hpp
 scene_localization.o: scene_localization.cpp scene_localization.hpp scene.hpp
-scene_elementary_bezier.o: scene_elementary_bezier.cpp scene_elementary_bezier.hpp scene.hpp
+scene_bezier_elementary.o: scene_bezier_elementary.cpp scene_bezier_elementary.hpp scene.hpp
 
 raygui.o: ../include/raygui.h
 	${CC} --std=c11 -O2 ${INCLUDE_PATH} -DRAYGUI_IMPLEMENTATION -DRAYGUI_VALUEBOX_MAX_CHARS=10 -o $@ -c -x c $<

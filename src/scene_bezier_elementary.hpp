@@ -6,7 +6,7 @@
 #include "gui.hpp"
 
 
-struct SceneElementaryBezier : Scene {
+struct SceneBezierElementary : Scene {
     // curve parameters
     std::vector<Point> control_points;
     int order = 3;
@@ -23,7 +23,7 @@ struct SceneElementaryBezier : Scene {
     bool dragging = false;
     Point *dragged_point = nullptr;
 
-    SceneElementaryBezier();
+    SceneBezierElementary();
 
     void UpdateCurve();
 
