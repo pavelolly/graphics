@@ -34,3 +34,8 @@ Run `make` within the src/ folder to build everything
     margin-left: auto;
     margin-right: auto;">
 </img>
+
+<img src=".github/5.gif" alt="scene_3" width="90%" height="90%" style="display: block;
+    margin-left: auto;
+    margin-right: auto;">
+</img>
