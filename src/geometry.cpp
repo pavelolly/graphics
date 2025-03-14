@@ -48,8 +48,12 @@ void DrawLineDotted(Point start, Point end, float thick, Color color) {
 
         if (draw) {
 
-            if (Distance(end, sstart) < Distance(send, sstart)) {
-                DrawLineEx(sstart, end, thick, color);
+            // we're drawing last segment
+            if (Distance(sstart, end) < SEGMENT_LEN) {
+                // but we don't wanna draw it if sstart is further then end (so we don't draw extra segment after end point)
+                if (Distance(start, end) > Distance(start, sstart)) {
+                    DrawLineEx(sstart, end, thick, color);
+                }
                 break;
             }
         }
