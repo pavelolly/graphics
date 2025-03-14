@@ -59,7 +59,7 @@ void SceneDrawPolygons::Update(float dt) {
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
             Point mouse_pos = GetMousePosition();
 
-            if (!CheckCollisionPointRec(mouse_pos, {PANEL_X, PANEL_Y, PANEL_W, PANEL_H})) {
+            if (!CheckCollisionPointRec(mouse_pos, input_box_panel.panel)) {
                 drawn_polygon.AddPoint(mouse_pos);
             }
         }
