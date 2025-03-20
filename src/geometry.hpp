@@ -32,7 +32,7 @@ bool IsInsideTriangle2(Point p, Point a, Point b, Point c);
 // get function of bezier curve of order control_points.size() - 1
 std::function<Point(float)> BezierFunc(const std::vector<Point> &control_points);
 
-void DrawLineDotted(Point start, Point end, float thick, Color color);
+void DrawLineDotted(Point start, Point end, float segment_len, float thick, Color color);
 
 struct Polygon {
     std::vector<Point> vertexes;

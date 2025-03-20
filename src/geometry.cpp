@@ -26,29 +26,25 @@ Point Lerp(Point a, Point b, float t) {
     return a + (b - a) * t;
 }
 
-void DrawLineDotted(Point start, Point end, float thick, Color color) {
-    static const int SEGMENT_LEN = 20;
-
+void DrawLineDotted(Point start, Point end, float segment_len, float thick, Color color) {
     Point sstart = start;
     Point direction = Vector2Normalize(end - start);
     bool draw = true;
 
     for (;;) {
-        Point send = sstart + direction * SEGMENT_LEN;
+        Point send = sstart + direction * segment_len;
 
         if (draw) {
 
             // we're drawing last segment
-            if (Distance(sstart, end) < SEGMENT_LEN) {
+            if (Distance(sstart, end) < segment_len) {
                 // but we don't wanna draw it if sstart is further then end (so we don't draw extra segment after end point)
-                if (Distance(start, end) > Distance(start, sstart)) {
+                if (Distance(start, sstart) < Distance(start, end)) {
                     DrawLineEx(sstart, end, thick, color);
                 }
                 break;
             }
-        }
 
-        if (draw) {
             DrawLineEx(sstart, send, thick, color);
         }
 

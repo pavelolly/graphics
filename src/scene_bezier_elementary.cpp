@@ -42,7 +42,7 @@ void SceneBezierElementary::UpdateCurve() {
 void SceneBezierElementary::Draw() {
     // draw control points
     for (int i = 1; i < n_control_points; ++i) {
-        DrawLineDotted(control_points[i - 1], control_points[i], 3, Fade(GRAY, 0.3f));
+        DrawLineDotted(control_points[i - 1], control_points[i], 20, 3, Fade(GRAY, 0.3f));
     }
     for (int i = 0; i < n_control_points; ++i) {
         DrawCircleV(control_points[i], 7, RED);
