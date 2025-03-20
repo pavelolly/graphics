@@ -29,6 +29,7 @@ bool IsInsideTriangle(Point p, Point a, Point b, Point c);
 // calaculate barycentric coordinates
 bool IsInsideTriangle2(Point p, Point a, Point b, Point c);
 
+// get function of bezier curve of order control_points.size() - 1
 std::function<Point(float)> BezierFunc(const std::vector<Point> &control_points);
 
 void DrawLineDotted(Point start, Point end, float thick, Color color);
