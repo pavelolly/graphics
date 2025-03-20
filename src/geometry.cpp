@@ -26,16 +26,6 @@ Point Lerp(Point a, Point b, float t) {
     return a + (b - a) * t;
 }
 
-void DrawPoint(Point point, Color color, float radius) {
-    for (float x = -radius; x <= radius; x++) {
-        for (float y = -radius; y <= radius; y++) {
-            if (x * x + y * y <= radius * radius) {
-                DrawPixel(static_cast<int>(x + point.x), static_cast<int>(y + point.y), color);
-            }
-        }
-    }
-}
-
 void DrawLineDotted(Point start, Point end, float thick, Color color) {
     static const int SEGMENT_LEN = 20;
 
@@ -66,7 +56,7 @@ void DrawLineDotted(Point start, Point end, float thick, Color color) {
         draw = !draw;
     }
 
-    DrawPoint(end, color, thick);
+    DrawCircleV(end, thick, color);
 };
 
 bool IsInsideTriangle(Point p, Point a, Point b, Point c) {
@@ -219,13 +209,13 @@ void Polygon::Draw(Color color_line, Color color_point) const {
     Point a = vertexes.front();
     for (size_t i = 1; i < vertexes.size(); i++) {
         DrawLineV(a, vertexes[i], color_line);
-        DrawPoint(vertexes[i], color_point, 5);
+        DrawCircleV(vertexes[i], 5, color_point);
         a = vertexes[i];
     }
     DrawLineV(a, vertexes.front(), color_line);
-    DrawPoint(vertexes.front(), color_point, 5);
+    DrawCircleV(vertexes.front(), 5, color_point);
 
-    DrawPoint(RealCenter(), color_point, 7);
+    DrawCircleV(RealCenter(), 7, color_point);
 }
 
 Ellipse::Ellipse(Point center, float a, float b, int poly_steps) : center(center), a(a), b(b) {
@@ -265,7 +255,7 @@ Ellipse &Ellipse::operator=(Ellipse &&other) {
 }
 
 void Ellipse::Draw(Color color_line, Color color_point) const {
-    DrawPoint(center, GREEN, std::min(a, b) / 15);
-    DrawPoint(GetCenter(), color_point, std::min(a, b) / 15);
+    DrawCircleV(center, std::min(a, b) / 15, GREEN);
+    DrawCircleV(GetCenter(), std::min(a, b) / 15, color_point);
     Polygon::Draw(color_line);
 }

@@ -31,7 +31,6 @@ bool IsInsideTriangle2(Point p, Point a, Point b, Point c);
 
 std::function<Point(float)> BezierFunc(const std::vector<Point> &control_points);
 
-void DrawPoint(Point point, Color color, float radius=0);
 void DrawLineDotted(Point start, Point end, float thick, Color color);
 
 struct Polygon {

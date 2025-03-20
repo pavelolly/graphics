@@ -15,13 +15,12 @@ void SceneLocalization::Draw() {
     DrawLineV(triangle.b, triangle.c, YELLOW);
     DrawLineV(triangle.c, triangle.a, YELLOW);
 
-    DrawPoint(triangle.a, RED, 7);
-    DrawPoint(triangle.b, RED, 7);
-    DrawPoint(triangle.c, RED, 7);
+    DrawCircleV(triangle.a, 7, RED);
+    DrawCircleV(triangle.b, 7, RED);
+    DrawCircleV(triangle.c, 7, RED);
 
-    DrawPoint(GetMousePosition(),
-              IsInsideTriangle2(GetMousePosition(), triangle.a, triangle.b, triangle.c) ? GREEN : PURPLE,
-              15);
+    DrawCircleV(GetMousePosition(), 15,
+                IsInsideTriangle2(GetMousePosition(), triangle.a, triangle.b, triangle.c) ? GREEN : PURPLE);
 }
 
 void SceneLocalization::Update(float) {

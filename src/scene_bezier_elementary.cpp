@@ -45,7 +45,7 @@ void SceneBezierElementary::Draw() {
         DrawLineDotted(control_points[i - 1], control_points[i], 3, Fade(GRAY, 0.3f));
     }
     for (int i = 0; i < n_control_points; ++i) {
-        DrawPoint(control_points[i], RED, 7);
+        DrawCircleV(control_points[i], 7, RED);
     }
 
     // draw bezier curve
