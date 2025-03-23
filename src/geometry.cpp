@@ -10,8 +10,8 @@ Point RotatePoint(Point point, float angle, Point center) {
     float x = point.x;
     float y = point.y;
 
-    point.x = x * cosf(angle) - y * sinf(angle);
-    point.y = x * sinf(angle) + y * cosf(angle);
+    point.x = x * std::cos(angle) - y * std::sin(angle);
+    point.y = x * std::sin(angle) + y * std::cos(angle);
 
     return point + center;
 }
@@ -19,7 +19,11 @@ Point RotatePoint(Point point, float angle, Point center) {
 float Distance(Point a, Point b) {
     float x = a.x - b.x;
     float y = a.y - b.y;
-    return powf(x * x + y * y, 0.5f);
+    return std::sqrt(x * x + y * y);
+}
+
+float Length(Point a) {
+    return std::sqrt(a.x * a.x + a.y * a.y);
 }
 
 Point Lerp(Point a, Point b, float t) {
@@ -27,32 +31,28 @@ Point Lerp(Point a, Point b, float t) {
 }
 
 void DrawLineDotted(Point start, Point end, float segment_len, float thick, Color color) {
-    Point sstart = start;
-    Point direction = Vector2Normalize(end - start);
-    bool draw = true;
+    const auto nsegments = static_cast<int>(std::ceil(Distance(start, end) / (2 * segment_len)));
+    
+    Point delta = end - start;
+    Point step = Vector2Normalize(delta) * segment_len;
 
-    for (;;) {
-        Point send = sstart + direction * segment_len;
+    bool draw_end_cap = true;
+    
+    for (int i = 0; i < nsegments; ++i) {
+        Point segment_start = start + step * static_cast<float>(2 * i);
+        Point segment_end   = segment_start + step;
 
-        if (draw) {
-
-            // we're drawing last segment
-            if (Distance(sstart, end) < segment_len) {
-                // but we don't wanna draw it if sstart is further then end (so we don't draw extra segment after end point)
-                if (Distance(start, sstart) < Distance(start, end)) {
-                    DrawLineEx(sstart, end, thick, color);
-                }
-                break;
-            }
-
-            DrawLineEx(sstart, send, thick, color);
+        if (i == nsegments - 1 && Distance(segment_start, segment_end) > Distance(segment_start, end)) {
+            segment_end = end;
+            draw_end_cap = false;
         }
 
-        sstart = send;
-        draw = !draw;
+        DrawLineEx(segment_start, segment_end, thick, color);
     }
 
-    DrawCircleV(end, thick, color);
+    if (draw_end_cap) {
+        DrawLineEx(end + step*0.05f, end - step*0.05f, thick, color);
+    }    
 };
 
 bool IsInsideTriangle(Point p, Point a, Point b, Point c) {
@@ -223,9 +223,10 @@ void Polygon::Draw(Color color_line, Color color_point) const {
 }
 
 Ellipse::Ellipse(Point center, float a, float b, int poly_steps) : center(center), a(a), b(b) {
-    constexpr const float pi = static_cast<float>(std::numbers::pi);
+    static constexpr float pi = std::numbers::pi_v<float>;
 
-    for (float t = 0.5 * pi; t <= 2.5 * pi; t += 2 * pi / poly_steps) {
+    for (int i = 0; i <= poly_steps; ++i) {
+        float t = pi / 2 + 2 * pi * (static_cast<float>(i) / poly_steps);
         Polygon::AddPoint({ center.x + a * sinf(t), center.y + b * cosf(t) });
     }
 }

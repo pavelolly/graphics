@@ -22,6 +22,7 @@ inline Point GetRandomPoint(int min_x, int max_x, int min_y, int max_y) {
 
 Point RotatePoint(Point point, float angle, Point center=Vector2Zeros);
 float Distance(Point a, Point b);
+float Length(Point a);
 Point Lerp(Point a, Point b, float t);
 
 // check if point is on the same side to each triangle edge

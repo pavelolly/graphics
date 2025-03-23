@@ -34,7 +34,8 @@ void SceneBezierElementary::UpdateCurve() {
     assert(bezier_func && "Failed to get Bezier func");
 
     curve_points.clear();
-    for (float t = 0.f; t <= 1.f; t += 1.f / BEZIER_SEGMENTS) {
+    for (int i = 0; i <= BEZIER_SEGMENTS; ++i) {
+        float t = static_cast<float>(i) / BEZIER_SEGMENTS;
         curve_points.push_back(bezier_func(t));
     }
 }

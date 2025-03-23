@@ -78,7 +78,9 @@ void DrawThePlayground() {
     DrawLineBezier({100, 100}, {200, 200}, 2, YELLOW);
     GuiGroupBox({300, 300, 400, 400}, "Window"); 
 
-    DrawLineDotted({450, 450}, {500, 500}, 20, 3, GRAY);
-    DrawCircleV({450, 450}, 3, RED);
-    DrawCircleV({500, 500}, 3, RED);
+    // DrawCircleV({450, 450}, 3, RED);
+    // DrawCircleV({500, 500}, 3, RED);
+    DrawLineDotted({450, 450}, {500, 500}, 20, 5, GRAY);
+
+    DrawLineEx({600, 300}, {601, 300}, 16, GRAY);
 }
