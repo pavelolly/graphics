@@ -156,26 +156,6 @@ Polygon::Polygon(std::initializer_list<Point> points) {
     std::copy(points.begin(), points.end(), vertexes.begin());
 }
 
-Polygon &Polygon::operator=(const Polygon &other) {
-    if (this == &other) {
-        return *this;
-    }
-
-    vertexes = other.vertexes;
-
-    return *this;
-}
-
-Polygon &Polygon::operator=(Polygon &&other) {
-    if (this == &other) {
-        return *this;
-    }
-
-    vertexes = std::move(other.vertexes);
-
-    return *this;
-}
-
 void Polygon::Rotate(float angle) {
     Point center = GetCenter();
     for (Point &point : vertexes) {
@@ -229,34 +209,6 @@ Ellipse::Ellipse(Point center, float a, float b, int poly_steps) : center(center
         float t = pi / 2 + 2 * pi * (static_cast<float>(i) / poly_steps);
         Polygon::AddPoint({ center.x + a * sinf(t), center.y + b * cosf(t) });
     }
-}
-
-Ellipse &Ellipse::operator=(const Ellipse &other) {
-    if (this == &other) {
-        return *this;
-    }
-
-    Polygon::operator=(other);
-
-    center = other.center;
-    a = other.a;
-    b = other.b;
-
-    return *this;
-}
-
-Ellipse &Ellipse::operator=(Ellipse &&other) {
-    if (this == &other) {
-        return *this;
-    }
-
-    Polygon::operator=(std::move(other));
-
-    center = other.center;
-    a = other.a;
-    b = other.b;
-
-    return *this;
 }
 
 void Ellipse::Draw(Color color_line, Color color_point) const {

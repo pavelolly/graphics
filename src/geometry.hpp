@@ -42,11 +42,6 @@ struct Polygon {
     virtual ~Polygon() = default;
 
     Polygon(std::initializer_list<Point> points);
-    Polygon(const Polygon &other) : vertexes(other.vertexes) {}
-    Polygon(Polygon &&other) : vertexes(std::move(other.vertexes)) {}
-
-    Polygon &operator =(const Polygon& other);
-    Polygon &operator =(Polygon&& other);
 
     void AddPoint(Point point) {
         vertexes.push_back(point);
@@ -103,11 +98,6 @@ struct Ellipse : Polygon {
     void AddPoint(Point point) = delete;
 
     Ellipse(Point center, float a, float b, int poly_steps=40);
-    Ellipse(const Ellipse &other) = default;
-    Ellipse(Ellipse &&other) = default;
-
-    Ellipse &operator =(const Ellipse &other);
-    Ellipse &operator =(Ellipse &&other);
 
     std::unique_ptr<Polygon> Clone() const override {
         return std::make_unique<Ellipse>(*this);

@@ -69,6 +69,9 @@ void SceneDrawPolygons::Update(float dt) {
         if (drawn_polygon.NumPoints() != 0) {
             polygons.push_back(std::make_shared<Polygon>(std::move(drawn_polygon)));
 
+            // we can't use after move without this
+            drawn_polygon = Polygon{};
+
             if (animations.size() == 0) {
                 animations.emplace_back(polygons.back());
 
@@ -84,6 +87,8 @@ void SceneDrawPolygons::Update(float dt) {
                 input_box_panel.Add(&animations.back().moving_speed, "Moving Speed " + polygon_ordinal);
                 input_box_panel.Add(&animations.back().rotation_speed, "Rotation Speed " + polygon_ordinal);
             }
+
+            assert(drawn_polygon.NumPoints() == 0);
         }
     }
 
