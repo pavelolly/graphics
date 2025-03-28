@@ -20,12 +20,12 @@ int main() {
     GuiSetStyle(DEFAULT, TEXT_SIZE, 15);
     GuiSetStyle(DEFAULT, LINE_COLOR, ColorToInt(GRAY));
 
-    SceneEllipses         scene_ellipses;
     SceneDrawPolygons     scene_draw_polygons;
     SceneLocalization     scene_localization;
     SceneBezierElementary scene_elementary_bezier;
+    SceneEllipses         scene_ellipses;
 
-    Scene *scene = &scene_ellipses;
+    Scene *scene = &scene_draw_polygons;
 
     while (!WindowShouldClose()) {
         BeginDrawing();
@@ -44,19 +44,19 @@ int main() {
             switch (GetCharPressed()) {
             case '1':
                 ShowCursor(); 
-                scene = &scene_ellipses;
-                break;
-            case '2':
-                ShowCursor(); 
                 scene = &scene_draw_polygons;
                 break;
-            case '3':
+            case '2':
                 HideCursor();
                 scene = &scene_localization;
                 break;
-            case '4':
+            case '3':
                 ShowCursor(); 
                 scene = &scene_elementary_bezier;
+                break;
+            case '4':
+                ShowCursor(); 
+                scene = &scene_ellipses;
                 break;
             case '0':
                 ShowCursor(); 
