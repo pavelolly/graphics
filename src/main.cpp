@@ -28,16 +28,6 @@ int main() {
     Scene *scene = &scene_draw_polygons;
 
     while (!WindowShouldClose()) {
-        BeginDrawing();
-
-            ClearBackground(GetColor(0x181818ff));
-            if (scene) {
-                scene->Draw();
-            } else {
-                DrawThePlayground();
-            }
-
-        EndDrawing();
 
         // scene is not switchable when input boxes are active
         if (!scene || scene->IsSwitchable()) {
@@ -67,6 +57,17 @@ int main() {
         if (scene) {
             scene->Update(GetFrameTime());
         }
+
+        BeginDrawing();
+
+            ClearBackground(GetColor(0x181818ff));
+            if (scene) {
+                scene->Draw();
+            } else {
+                DrawThePlayground();
+            }
+
+        EndDrawing();
     }
 
     CloseWindow();
