@@ -17,14 +17,7 @@ Use `R` to reset the scene without resetting its parameters
 
 Use `Ctrl + R` to reset the scene and the parameters 
 
-## 1. Rotating ellipses
-
-<img src=".github/1.gif" alt="scene_1" width="90%" height="90%" style="display: block;
-    margin-left: auto;
-    margin-right: auto;">
-</img>
-
-## 2. Drawing polygons
+## 1. Drawing polygons
 
 <img src=".github/2.gif" alt="scene_2_1" width="90%" height="90%" style="display: block;
     margin-left: auto;
@@ -36,16 +29,23 @@ Use `Ctrl + R` to reset the scene and the parameters
     margin-right: auto;">
 </img>
 
-## 3. Is point in the triangle?
+## 2. Is point in the triangle?
 
 <img src=".github/4.gif" alt="scene_3" width="90%" height="90%" style="display: block;
     margin-left: auto;
     margin-right: auto;">
 </img>
 
-## 4. Elementary Bezier curves
+## 3. Elementary Bezier curves
 
 <img src=".github/5.gif" alt="scene_3" width="90%" height="90%" style="display: block;
+    margin-left: auto;
+    margin-right: auto;">
+</img>
+
+## 4. Rotating ellipses
+
+<img src=".github/1.gif" alt="scene_1" width="90%" height="90%" style="display: block;
     margin-left: auto;
     margin-right: auto;">
 </img>
