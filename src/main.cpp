@@ -13,7 +13,7 @@ void DrawThePlayground();
 
 int main() {
     InitWindow(WIDTH, HEIGHT, "Graphics");
-    SetTargetFPS(240);
+    SetTargetFPS(GetMonitorRefreshRate(GetCurrentMonitor()));
 
     SetTraceLogLevel(LOG_DEBUG);
 
