@@ -38,10 +38,7 @@ void DrawLineDotted(Point start, Point end, float segment_len, float thick, Colo
 struct Polygon {
     std::vector<Point> vertexes;
 
-    Polygon() = default;
-    virtual ~Polygon() = default;
-
-    Polygon(std::initializer_list<Point> points);
+    static Polygon Ellipse(Point center, float a, float b, int poly_steps=40);
 
     void AddPoint(Point point) {
         vertexes.push_back(point);
@@ -58,71 +55,19 @@ struct Polygon {
     void Rotate(float angle);
     float Perimeter() const;
     // get polygon center based on its vertexes
-    Point RealCenter() const;
+    Point GetCenter() const;
 
-    // Shape specific
-
-    virtual std::unique_ptr<Polygon> Clone() const {
-        return std::make_unique<Polygon>(*this);
-    }
-
-    virtual Polygon *CloneInto(Polygon *dest) const {
-        assert(typeid(*this) == typeid(*dest) && "trying to CloneInto different type");
-
-        dest->~Polygon();
-        return new(dest) Polygon(*this);
-    }
-
-    virtual Point GetCenter() const {
-        return RealCenter();
-    }
-
-    virtual void SetCenter(Point new_center) {
+    void SetCenter(Point new_center) {
         Point center = GetCenter();
         Shift(new_center - center);
     }
 
-    virtual void Shift(Point shift) {
+    void Shift(Point shift) {
         for (Point &point : vertexes) {
             point += shift;
         }
     }
 
-    virtual void Draw(Color color_line, Color color_point=BLANK) const;
-};
-
-struct Ellipse : Polygon {
-    Point center;
-    float a, b;
-
-    void AddPoint(Point point) = delete;
-
-    Ellipse(Point center, float a, float b, int poly_steps=40);
-
-    std::unique_ptr<Polygon> Clone() const override {
-        return std::make_unique<Ellipse>(*this);
-    }
-
-    Polygon *CloneInto(Polygon *dest) const override {
-        assert(typeid(*this) == typeid(*dest) && "trying to CloneInto different type");
-
-        dest->~Polygon();
-        return new(dest) Ellipse(*this);
-    }
-
-    void SetCenter(Point new_center) override {
-        Polygon::Shift(new_center - center);
-        center = new_center;
-    }
-
-    Point GetCenter() const override {
-        return center;
-    }
-
-    void Shift(Point shift) override {
-        Polygon::Shift(shift);
-        center += shift;
-    }
-
-    void Draw(Color color_line, Color color_point=RED) const override;
+    void Draw(Color color_line, Color color_point=BLANK) const;
+    void DrawCenter(Color color) const;
 };

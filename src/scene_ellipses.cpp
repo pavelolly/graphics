@@ -3,9 +3,9 @@
 
 SceneEllipses::SceneEllipses() : input_box_panel(Rectangle { GetScreenWidth() - 400.f, 40, 360, GetScreenHeight() - 80.f } )
 {
-    ellipses[0] = std::make_shared<Ellipse>( Point { GetScreenWidth() * 7.f / 16.f, GetScreenHeight() / 2.f }, 200.f, 100.f );
-    ellipses[1] = std::make_shared<Ellipse>( ellipses[0]->GetPoint(0),                                         100.f, 50.f  );
-    ellipses[2] = std::make_shared<Ellipse>( ellipses[1]->GetPoint(0),                                         50.f,  25.f  );
+    ellipses[0] = Polygon::Ellipse( Point { GetScreenWidth() * 7.f / 16.f, GetScreenHeight() / 2.f }, 200.f, 100.f );
+    ellipses[1] = Polygon::Ellipse( ellipses[0].GetPoint(0),                                          100.f, 50.f  );
+    ellipses[2] = Polygon::Ellipse( ellipses[1].GetPoint(0),                                          50.f,  25.f  );
 
     animations[0] = PolygonAnimation(ellipses[0]);
     animations[0].rotation_speed = 1;
@@ -36,7 +36,8 @@ bool SceneEllipses::IsSwitchable() {
 
 void SceneEllipses::Draw() {
     for (auto &animation : animations) {
-        animation.animated_polygon->Draw(YELLOW, RED);
+        animation.animated_polygon.Draw(YELLOW);
+        animation.animated_polygon.DrawCenter(RED);
     }
 
     input_box_panel.Draw();

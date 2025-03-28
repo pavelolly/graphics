@@ -11,8 +11,11 @@ bool SceneDrawPolygons::IsSwitchable() {
 }
 
 void SceneDrawPolygons::Draw() {
-    for (auto &animation : animations) {
-        animation.animated_polygon->Draw(YELLOW, RED);
+    for (int i = 0; i < animations.size(); ++i) {
+        animations[i].animated_polygon.Draw(YELLOW, RED);
+        if (i != 0) {
+            animations[i].animated_polygon.DrawCenter(RED);
+        }
     }
 
     drawn_polygon.Draw(ORANGE, PURPLE);
@@ -67,7 +70,7 @@ void SceneDrawPolygons::Update(float dt) {
     } else {
 
         if (drawn_polygon.NumPoints() != 0) {
-            polygons.push_back(std::make_shared<Polygon>(std::move(drawn_polygon)));
+            polygons.push_back(std::move(drawn_polygon));
 
             // we can't use after move without this
             drawn_polygon = Polygon{};
@@ -79,7 +82,7 @@ void SceneDrawPolygons::Update(float dt) {
             } else {
                 // move the original polygon to where it started the animation
                 // so resetting the animation puts it in the right place
-                polygons.back()->SetCenter(animations.back().animated_polygon->GetPoint(0));
+                polygons.back().SetCenter(animations.back().animated_polygon.GetPoint(0));
 
                 animations.emplace_back(polygons.back(), animations.back().animated_polygon);
 
@@ -111,7 +114,7 @@ void SceneDrawPolygons::Update(float dt) {
             Point mouse_pos = GetMousePosition();
 
             for (size_t i = 0; i < animations.size(); ++i) {
-                for (auto &point : animations[i].animated_polygon->vertexes) {
+                for (auto &point : animations[i].animated_polygon.vertexes) {
                     if (CheckCollisionPointCircle(mouse_pos, point, 10)) {
                         dragged_point = &point;
                         break;
@@ -148,7 +151,7 @@ void SceneDrawPolygons::Update(float dt) {
 
     if (shift != Vector2Zeros) {
         for (auto &animation : animations) {
-            animation.animated_polygon->Shift(shift);
+            animation.animated_polygon.Shift(shift);
             if (animation.trajectory.IsPoint()) {
                 animation.trajectory.GetPoint() += shift;
             }

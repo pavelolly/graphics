@@ -151,11 +151,6 @@ std::function<Point(float)> BezierFunc(const std::vector<Point> &control_points)
     }
 }
 
-Polygon::Polygon(std::initializer_list<Point> points) {
-    vertexes.reserve(points.size());
-    std::copy(points.begin(), points.end(), vertexes.begin());
-}
-
 void Polygon::Rotate(float angle) {
     Point center = GetCenter();
     for (Point &point : vertexes) {
@@ -178,7 +173,7 @@ float Polygon::Perimeter() const {
     return len;
 }
 
-Point Polygon::RealCenter() const {
+Point Polygon::GetCenter() const {
     Point center = std::accumulate(vertexes.begin(), vertexes.end(), Vector2Zeros);
     center.x /= vertexes.size();
     center.y /= vertexes.size();
@@ -198,21 +193,21 @@ void Polygon::Draw(Color color_line, Color color_point) const {
     }
     DrawLineV(a, vertexes.front(), color_line);
     DrawCircleV(vertexes.front(), 5, color_point);
-
-    DrawCircleV(RealCenter(), 7, color_point);
 }
 
-Ellipse::Ellipse(Point center, float a, float b, int poly_steps) : center(center), a(a), b(b) {
+void Polygon::DrawCenter(Color color) const {
+    DrawCircleV(GetCenter(), 7, color);
+}
+
+Polygon Polygon::Ellipse(Point center, float a, float b, int poly_steps) {
     static constexpr float pi = std::numbers::pi_v<float>;
+
+    Polygon p;
 
     for (int i = 0; i <= poly_steps; ++i) {
         float t = pi / 2 + 2 * pi * (static_cast<float>(i) / poly_steps);
-        Polygon::AddPoint({ center.x + a * sinf(t), center.y + b * cosf(t) });
+        p.AddPoint({ center.x + a * sinf(t), center.y + b * cosf(t) });
     }
-}
 
-void Ellipse::Draw(Color color_line, Color color_point) const {
-    DrawCircleV(center, std::min(a, b) / 15, GREEN);
-    DrawCircleV(GetCenter(), std::min(a, b) / 15, color_point);
-    Polygon::Draw(color_line);
+    return p;
 }

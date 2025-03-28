@@ -8,7 +8,7 @@
 // simple wrapper around std::variant for convinience
 // Trajectory can be reference to polygon or single point
 struct Trajectory {
-    using PolygonPtr = std::weak_ptr<const Polygon>;
+    using PolygonPtr = const Polygon *;
 
     std::variant<PolygonPtr, Point> trajectory;
 
@@ -36,13 +36,13 @@ struct Trajectory {
 
 struct PolygonAnimation {
     // reference to orignal polygon that is animated
-    std::weak_ptr<const Polygon> original_polygon;
+    const Polygon *original_polygon = nullptr;
 
     // original position of polygon if no trajectory-as-polygon was introduced
     Point original_point = Vector2Zeros;
 
     // copy of original polygon that is actually changed during animation
-    std::shared_ptr<Polygon> animated_polygon;
+    Polygon animated_polygon;
     
     Trajectory trajectory;
     size_t trajectory_edge_idx         = 0;   // edge of trajectory we're currently at
@@ -54,19 +54,17 @@ struct PolygonAnimation {
 
     PolygonAnimation() = default;
 
-    template <typename Poly> requires std::is_base_of_v<Polygon, Poly>
-    PolygonAnimation(std::shared_ptr<Poly> polygon, std::shared_ptr<Polygon> trajectory) :
-        original_polygon(polygon),
-        animated_polygon(std::make_shared<Poly>(*polygon)),
-        trajectory(trajectory)
+    PolygonAnimation(const Polygon &polygon) :
+        original_polygon(&polygon),
+        original_point(polygon.GetCenter()),
+        animated_polygon(polygon),
+        trajectory(original_point)
     {}
 
-    template <typename Poly> requires std::is_base_of_v<Polygon, Poly>
-    PolygonAnimation(std::shared_ptr<Poly> polygon) :
-        original_polygon(polygon),
-        original_point(polygon->GetCenter()),
-        animated_polygon(std::make_shared<Poly>(*polygon)),
-        trajectory(original_point)
+    PolygonAnimation(const Polygon &polygon, const Polygon &trajectory) :
+        original_polygon(&polygon),
+        animated_polygon(polygon),
+        trajectory(&trajectory)
     {}
 
     Point InterpolatorStep(float dt);

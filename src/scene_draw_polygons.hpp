@@ -11,7 +11,7 @@
 
 struct SceneDrawPolygons : Scene {
     // these must be deques so refs to the objects are always valid
-    std::deque<std::shared_ptr<Polygon>> polygons;
+    std::deque<Polygon> polygons;
     std::deque<PolygonAnimation> animations;
     
     GUI::InputBoxPanel input_box_panel;

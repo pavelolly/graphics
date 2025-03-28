@@ -10,11 +10,10 @@ Point PolygonAnimation::InterpolatorStep(float dt) {
 
     assert(trajectory.IsPolygon() && "trajectory is in invalid state");
 
-    auto trajectory_ptr = trajectory.GetPolygon();
-    if (trajectory_ptr.expired()) {
+    auto *polygon_trajectory = trajectory.GetPolygon();
+    if (!polygon_trajectory) {
         return Vector2Zeros;
     }
-    auto polygon_trajectory = trajectory_ptr.lock();
 
     float len = polygon_trajectory->Perimeter();
     size_t npoints = polygon_trajectory->NumPoints();
@@ -56,14 +55,12 @@ Point PolygonAnimation::InterpolatorStep(float dt) {
 }
 
 void PolygonAnimation::Update(float dt) {
-    animated_polygon->SetCenter(InterpolatorStep(dt));
-    animated_polygon->Rotate(rotation_speed * dt);
+    animated_polygon.SetCenter(InterpolatorStep(dt));
+    animated_polygon.Rotate(rotation_speed * dt);
 }
 
 void PolygonAnimation::Reset() {
-    if (!original_polygon.expired()) {
-        original_polygon.lock()->CloneInto(animated_polygon.get());
-    }
+    animated_polygon = *original_polygon;
 
     if (trajectory.IsPoint()) {
         trajectory.GetPoint() = original_point;
