@@ -1,9 +1,8 @@
 #pragma once
 
 #include <deque>
-#include <vector>
-#include <memory>
 
+#include "geometry/geometry.hpp"
 #include "geometry/polygon_animation.hpp"
 #include "scenes/point_dragger.hpp"
 #include "scenes/scene.hpp"

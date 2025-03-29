@@ -2,6 +2,7 @@
 
 #include "geometry.hpp"
 
+#include <functional>
 
 inline std::function<Point(float)> BezierFuncLinear(Point p1, Point p2) {
     return [p1, p2](float t) -> Point {

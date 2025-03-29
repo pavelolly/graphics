@@ -4,11 +4,7 @@
 #include <raymath.h>
 
 #include <deque>
-#include <functional>
-#include <memory>
 #include <ranges>
-#include <type_traits>
-#include <cassert>
 
 using Point = Vector2;
 

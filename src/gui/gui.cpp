@@ -1,6 +1,5 @@
 #include <raylib.h>
 
-#include <cstring>
 #include <algorithm>
 
 #include "gui.hpp"
@@ -27,11 +26,11 @@ InputBox::InputBox(Rectangle box, float *value_ptr, std::string text) :
 
 void InputBox::UpdateTextBuffer() {
     if (std::holds_alternative<Value<int>>(value)) {
-        snprintf(text_buffer, RAYGUI_VALUEBOX_MAX_CHARS + 1, "%d", *std::get<Value<int>>(value).ptr);
+        std::snprintf(text_buffer, RAYGUI_VALUEBOX_MAX_CHARS + 1, "%d", *std::get<Value<int>>(value).ptr);
         return;
     }
 
-    int len = snprintf(text_buffer, RAYGUI_VALUEBOX_MAX_CHARS + 1, "%f", *std::get<Value<float>>(value).ptr);
+    int len = std::snprintf(text_buffer, RAYGUI_VALUEBOX_MAX_CHARS + 1, "%f", *std::get<Value<float>>(value).ptr);
   
     /* truncate insignificant zeros */
     char *end = text_buffer + len;

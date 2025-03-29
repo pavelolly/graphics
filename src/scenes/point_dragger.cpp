@@ -2,6 +2,8 @@
 
 #include <raylib.h>
 
+#include <cassert>
+
 bool PointDragger::Update() {
     if (dragging) {
         if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {

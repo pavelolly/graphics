@@ -1,5 +1,6 @@
 #include "scene_localization.hpp"
 
+#include <raylib.h>
 
 SceneLocalization::SceneLocalization() {
     auto w = GetScreenWidth();

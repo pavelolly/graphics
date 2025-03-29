@@ -1,5 +1,6 @@
 #include "polygon_animation.hpp"
 
+#include <cassert>
 
 Point PolygonAnimation::InterpolatorStep(float dt) {
     float speed = moving_speed * 100 * dt;

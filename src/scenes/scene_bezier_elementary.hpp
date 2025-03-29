@@ -1,5 +1,7 @@
 
-#include <vector>
+#pragma once
+
+#include <deque>
 
 #include "geometry/geometry.hpp"
 #include "geometry/bezier.hpp"
