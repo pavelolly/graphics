@@ -24,7 +24,7 @@ bool PointDragger::Update() {
 
         Point mouse_pos = GetMousePosition();
 
-        for (int i = 0; i < points.size(); ++i) {
+        for (int i = 0; i < static_cast<int>(points.size()); ++i) {
             if (CheckCollisionPointCircle(mouse_pos, *points[i], 10)) {
                 idx = i;
                 dragging = true;

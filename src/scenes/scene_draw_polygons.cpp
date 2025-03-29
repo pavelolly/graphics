@@ -11,7 +11,7 @@ bool SceneDrawPolygons::IsSwitchable() {
 }
 
 void SceneDrawPolygons::Draw() {
-    for (int i = 0; i < animations.size(); ++i) {
+    for (int i = 0; i < static_cast<int>(animations.size()); ++i) {
         animations[i].animated_polygon.Draw(YELLOW, RED);
         if (i != 0) {
             animations[i].animated_polygon.DrawCenter(RED);

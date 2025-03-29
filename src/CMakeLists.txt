@@ -32,7 +32,7 @@ add_executable(main ${SOURCES})
 if (MSVC)
     target_compile_options(main PUBLIC "/W3")
 else()
-    target_compile_options(main PUBLIC "-Wall" "-Wextra")
+    target_compile_options(main PUBLIC "-Wall" "-Wextra" "-Werror")
 endif()
 
 target_include_directories(main PRIVATE

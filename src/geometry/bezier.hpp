@@ -37,7 +37,7 @@ std::function<Point(float)> BezierFunc(const RangeOfPoints auto &control_points)
             return BezierFuncCubic(control_points[0], control_points[1], control_points[2], control_points[3]);
         default: {
             std::vector<Point> coefs(size);
-            auto order = size - 1;
+            int order = size - 1;
 
             /*
                 General formula: ```f(t) = sum i=[0..order] { control_point[i] * (order choose i) * (1 - t)^(order - i) * t^i }```
@@ -51,7 +51,7 @@ std::function<Point(float)> BezierFunc(const RangeOfPoints auto &control_points)
             }
 
             // multiply coefs by control points
-            for (int i = 0; i < coefs.size(); ++i) {
+            for (int i = 0; i < static_cast<int>(coefs.size()); ++i) {
                 coefs[i] *= control_points[i];
             }
 
