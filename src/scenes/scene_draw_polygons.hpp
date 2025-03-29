@@ -4,10 +4,11 @@
 #include <vector>
 #include <memory>
 
-#include "polygon_animation.hpp"
-#include "point_dragger.hpp"
-#include "gui.hpp"
-#include "scene.hpp"
+#include "geometry/polygon_animation.hpp"
+#include "scenes/point_dragger.hpp"
+#include "scenes/scene.hpp"
+#include "gui/gui.hpp"
+
 
 struct SceneDrawPolygons : Scene {
     // these must be deques so refs to the objects are always valid

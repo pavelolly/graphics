@@ -1,8 +1,8 @@
 #pragma once
 
-#include "geometry.hpp"
-#include "point_dragger.hpp"
-#include "scene.hpp"
+#include "geometry/geometry.hpp"
+#include "scenes/point_dragger.hpp"
+#include "scenes/scene.hpp"
 
 struct SceneLocalization : Scene {
     struct {

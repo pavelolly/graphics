@@ -1,10 +1,10 @@
 
 #include <raylib.h>
 
-#include "scene_ellipses.hpp"
-#include "scene_draw_polygons.hpp"
-#include "scene_localization.hpp"
-#include "scene_bezier_elementary.hpp"
+#include "scenes/scene_ellipses.hpp"
+#include "scenes/scene_draw_polygons.hpp"
+#include "scenes/scene_localization.hpp"
+#include "scenes/scene_bezier_elementary.hpp"
 
 #define WIDTH  1600
 #define HEIGHT 900

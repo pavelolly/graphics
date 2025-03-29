@@ -1,11 +1,11 @@
 
 #include <vector>
 
-#include "geometry.hpp"
-#include "bezier.hpp"
-#include "point_dragger.hpp"
-#include "scene.hpp"
-#include "gui.hpp"
+#include "geometry/geometry.hpp"
+#include "geometry/bezier.hpp"
+#include "scenes/point_dragger.hpp"
+#include "scenes/scene.hpp"
+#include "gui/gui.hpp"
 
 
 struct SceneBezierElementary : Scene {

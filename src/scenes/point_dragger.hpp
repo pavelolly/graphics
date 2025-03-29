@@ -3,7 +3,7 @@
 #include <vector>
 #include <ranges>
 
-#include "geometry.hpp"
+#include "geometry/geometry.hpp"
 
 // struct that is used to mvoe points on a screen with MOUSE_BUTTON_RIGHT
 struct PointDragger {

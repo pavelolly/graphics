@@ -2,10 +2,10 @@
 
 #include <array>
 
-#include "geometry.hpp"
-#include "gui.hpp"
-#include "polygon_animation.hpp"
-#include "scene.hpp"
+#include "geometry/geometry.hpp"
+#include "geometry/polygon_animation.hpp"
+#include "gui/gui.hpp"
+#include "scenes/scene.hpp"
 
 
 struct SceneEllipses : Scene {
