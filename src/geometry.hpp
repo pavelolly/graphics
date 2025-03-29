@@ -3,7 +3,7 @@
 #include <raylib.h>
 #include <raymath.h>
 
-#include <vector>
+#include <deque>
 #include <functional>
 #include <memory>
 
@@ -36,7 +36,7 @@ std::function<Point(float)> BezierFunc(const std::vector<Point> &control_points)
 void DrawLineDotted(Point start, Point end, float segment_len, float thick, Color color);
 
 struct Polygon {
-    std::vector<Point> vertexes;
+    std::deque<Point> vertexes;
 
     static Polygon Ellipse(Point center, float a, float b, int poly_steps=40);
 

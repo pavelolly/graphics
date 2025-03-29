@@ -5,9 +5,9 @@
 #include <memory>
 
 #include "polygon_animation.hpp"
+#include "point_dragger.hpp"
 #include "gui.hpp"
 #include "scene.hpp"
-
 
 struct SceneDrawPolygons : Scene {
     // these must be deques so refs to the objects are always valid
@@ -16,13 +16,12 @@ struct SceneDrawPolygons : Scene {
     
     GUI::InputBoxPanel input_box_panel;
     GUI::Toggle toggle_draw_polygon;
-
-    Point *dragged_point = nullptr;
     
     Polygon drawn_polygon;
 
     bool paused = false;
-    bool dragging = false;
+
+    PointDragger dragger;
 
     SceneDrawPolygons() :
         input_box_panel({ GetScreenWidth() - 400.f, 40, 360, GetScreenHeight() - 80.f }),

@@ -77,6 +77,7 @@ void SceneDrawPolygons::Update(float dt) {
 
             if (animations.size() == 0) {
                 animations.emplace_back(polygons.back());
+                dragger.AddToDrag(animations.back().animated_polygon.vertexes);
 
                 input_box_panel.Add(&animations[0].rotation_speed, "Rotation Speed 1");
             } else {
@@ -85,6 +86,7 @@ void SceneDrawPolygons::Update(float dt) {
                 polygons.back().SetCenter(animations.back().animated_polygon.GetPoint(0));
 
                 animations.emplace_back(polygons.back(), animations.back().animated_polygon);
+                dragger.AddToDrag(animations.back().animated_polygon.vertexes);
 
                 auto polygon_ordinal = std::to_string(animations.size());
                 input_box_panel.Add(&animations.back().moving_speed, "Moving Speed " + polygon_ordinal);
@@ -96,42 +98,14 @@ void SceneDrawPolygons::Update(float dt) {
     }
 
     if (paused) {
-
-        if (dragging) {
-            if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
-                assert(dragged_point && "dragged_point is nullptr when trying to drag");
-
-                *dragged_point += GetMouseDelta();
-            }
-
-            if (IsMouseButtonUp(MOUSE_BUTTON_RIGHT)) {
-                dragging = false;
-                dragged_point = nullptr;
-            }
-        }
-
-        if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
-            Point mouse_pos = GetMousePosition();
-
-            for (size_t i = 0; i < animations.size(); ++i) {
-                for (auto &point : animations[i].animated_polygon.vertexes) {
-                    if (CheckCollisionPointCircle(mouse_pos, point, 10)) {
-                        dragged_point = &point;
-                        break;
-                    }
-                }
-                if (dragged_point) {
-                    dragging = true;
-                    break;
-                }
-            }
-        }
+        dragger.Update();
     }
 
     if (IsKeyPressed(KEY_DELETE)) {
         polygons.clear();
         animations.clear();
         input_box_panel.input_boxes.clear();
+        dragger.Clear();
     }
 
     Point shift = Vector2Zeros;

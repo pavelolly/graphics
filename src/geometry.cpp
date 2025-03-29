@@ -56,9 +56,9 @@ void DrawLineDotted(Point start, Point end, float segment_len, float thick, Colo
 };
 
 bool IsInsideTriangle(Point p, Point a, Point b, Point c) {
-    bool side1 = signbit((p.x - a.x) * (b.y - a.y) - (p.y - a.y) * (b.x - a.x));
-    bool side2 = signbit((p.x - b.x) * (c.y - b.y) - (p.y - b.y) * (c.x - b.x));
-    bool side3 = signbit((p.x - c.x) * (a.y - c.y) - (p.y - c.y) * (a.x - c.x));
+    auto side1 = std::signbit((p.x - a.x) * (b.y - a.y) - (p.y - a.y) * (b.x - a.x));
+    auto side2 = std::signbit((p.x - b.x) * (c.y - b.y) - (p.y - b.y) * (c.x - b.x));
+    auto side3 = std::signbit((p.x - c.x) * (a.y - c.y) - (p.y - c.y) * (a.x - c.x));
 
     return side1 == side2 && side2 == side3;
 }
@@ -123,12 +123,12 @@ std::function<Point(float)> BezierFunc(const std::vector<Point> &control_points)
             // (! - factorial)
             std::vector<Point> coefs(order + 1);
             coefs[0] = { 1.f, 1.f };
-            for (uint32_t i = 1; i <= order; ++i) {
+            for (int i = 1; i <= order; ++i) {
                 coefs[i] = coefs[i - 1] * static_cast<float>(order - i + 1) / static_cast<float>(i);
             }
 
             // multiply coefs by control points
-            for (uint32_t i = 0; i < coefs.size(); ++i) {
+            for (int i = 0; i < coefs.size(); ++i) {
                 coefs[i] *= control_points[i];
             }
 

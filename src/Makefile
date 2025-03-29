@@ -21,6 +21,7 @@ LD_PATH = -L ${RAYLIB_PATH}
 OBJECTS = geometry.o \
           gui.o \
           polygon_animation.o \
+		  point_dragger.o \
           scene_ellipses.o \
           scene_draw_polygons.o \
           scene_localization.o \
@@ -36,6 +37,7 @@ ${MAIN}: main.cpp ${OBJECTS} libraylib.a
 geometry.o: geometry.cpp geometry.hpp
 gui.o: gui.cpp gui.hpp
 polygon_animation.o: polygon_animation.cpp polygon_animation.hpp
+point_dragger.o: point_dragger.cpp point_dragger.hpp
 scene_ellipses.o: scene_ellipses.cpp scene_ellipses.hpp scene.hpp
 scene_draw_polygons.o: scene_draw_polygons.cpp scene_draw_polygons.hpp scene.hpp
 scene_localization.o: scene_localization.cpp scene_localization.hpp scene.hpp
