@@ -1,6 +1,7 @@
 #pragma once
 
 #include "geometry.hpp"
+#include "point_dragger.hpp"
 #include "scene.hpp"
 
 struct SceneLocalization : Scene {
@@ -10,8 +11,7 @@ struct SceneLocalization : Scene {
         Point c;
     } triangle;
 
-    bool dragging = false;
-    Point *dragged_point = nullptr;
+    PointDragger dragger;
 
     SceneLocalization();
 

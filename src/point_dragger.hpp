@@ -5,6 +5,7 @@
 
 #include "geometry.hpp"
 
+// struct that is used to mvoe points on a screen with MOUSE_BUTTON_RIGHT
 struct PointDragger {
     std::vector<Point *> points;
     int idx = -1; // index of dragged point
@@ -28,5 +29,6 @@ struct PointDragger {
         }
     }
 
-    void Update();
+    // return true if some point was moved
+    bool Update();
 };

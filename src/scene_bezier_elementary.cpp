@@ -6,6 +6,7 @@ SceneBezierElementary::SceneBezierElementary() :
     control_points.reserve(MAX_ORDER + 1);
     curve_points.reserve(BEZIER_SEGMENTS + 1);
     UpdateCurve();
+    dragger.AddToDrag(control_points);
 
     input_box_panel.Add(&order, 1, MAX_ORDER, "Order");
     input_box_panel.input_boxes[0].editmode_change_callback =
@@ -16,11 +17,13 @@ SceneBezierElementary::SceneBezierElementary() :
 
             n_control_points = order + 1;
             UpdateCurve();
+            dragger.Clear();
+            dragger.AddToDrag(control_points);
         };
 }
 
 void SceneBezierElementary::UpdateCurve() {
-    // generate control points if needed
+    // generate new control points if needed
     if (n_control_points != control_points.size()) {
         control_points.clear();
         int screen_segment_width = static_cast<int>(input_box_panel.panel.x) / n_control_points;
@@ -58,33 +61,8 @@ void SceneBezierElementary::Draw() {
 }
 
 void SceneBezierElementary::Update(float) {
-    if (dragging) {
-        if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
-            assert(dragged_point && "dragged_point is nullptr when trying to drag");
-
-            Point mouse_delta = GetMouseDelta();
-            if (mouse_delta != Vector2Zeros) {
-                *dragged_point += GetMouseDelta();
-                UpdateCurve();
-            }
-        }
-
-        if (IsMouseButtonUp(MOUSE_BUTTON_RIGHT)) {
-            dragging = false;
-            dragged_point = nullptr;
-        }
-    }
-
-    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
-        Point mouse_pos = GetMousePosition();
-
-        for (auto &point : control_points) {
-            if (CheckCollisionPointCircle(mouse_pos, point, 10)) {
-                dragging = true;
-                dragged_point = &point;
-                break;
-            }
-        }
+    if (dragger.Update()) {
+        UpdateCurve();
     }
 }
 

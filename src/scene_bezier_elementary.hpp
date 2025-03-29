@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "geometry.hpp"
+#include "point_dragger.hpp"
 #include "scene.hpp"
 #include "gui.hpp"
 
@@ -20,8 +21,7 @@ struct SceneBezierElementary : Scene {
     static const int BEZIER_SEGMENTS = 100;
     std::vector<Point> curve_points;
 
-    bool dragging = false;
-    Point *dragged_point = nullptr;
+    PointDragger dragger;
 
     SceneBezierElementary();
 

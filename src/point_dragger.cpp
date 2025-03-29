@@ -2,12 +2,13 @@
 
 #include <raylib.h>
 
-void PointDragger::Update() {
+bool PointDragger::Update() {
     if (dragging) {
         if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
             assert(idx >= 0 && "dragged point is undefined when trying to drag");
 
             *points[idx] += GetMouseDelta();
+            return true;
         }
 
         if (IsMouseButtonUp(MOUSE_BUTTON_RIGHT)) {
@@ -15,7 +16,7 @@ void PointDragger::Update() {
             idx = -1;
         }
 
-        return;
+        return false;
     }
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
@@ -33,4 +34,6 @@ void PointDragger::Update() {
             }
         }
     }
+
+    return false;
 }

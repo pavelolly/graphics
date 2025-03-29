@@ -8,6 +8,10 @@ SceneLocalization::SceneLocalization() {
     triangle.a = GetScreenCenter() + GetRandomPoint(-w / 2, w / 2, -h / 2, h / 2);
     triangle.b = GetScreenCenter() + GetRandomPoint(-w / 2, w / 2, -h / 2, h / 2);
     triangle.c = GetScreenCenter() + GetRandomPoint(-w / 2, w / 2, -h / 2, h / 2);
+
+    dragger.AddToDrag(triangle.a);
+    dragger.AddToDrag(triangle.b);
+    dragger.AddToDrag(triangle.c);
 }
 
 void SceneLocalization::Draw() {
@@ -24,33 +28,5 @@ void SceneLocalization::Draw() {
 }
 
 void SceneLocalization::Update(float) {
-    if (dragging) {
-        if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
-            assert(dragged_point && "dragged_point is nullptr when trying to drag");
-
-            *dragged_point += GetMouseDelta();
-        }
-
-        if (IsMouseButtonUp(MOUSE_BUTTON_RIGHT)) {
-            dragging = false;
-            dragged_point = nullptr;
-        }
-    }
-
-    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
-        Point mouse_pos = GetMousePosition();
-
-        if (CheckCollisionPointCircle(mouse_pos, triangle.a, 10)) {
-            dragging = true;
-            dragged_point = &triangle.a;
-        }
-        if (CheckCollisionPointCircle(mouse_pos, triangle.b, 10)) {
-            dragging = true;
-            dragged_point = &triangle.b;
-        }
-        if (CheckCollisionPointCircle(mouse_pos, triangle.c, 10)) {
-            dragging = true;
-            dragged_point = &triangle.c;
-        }
-    }
+    dragger.Update();
 }
