@@ -20,7 +20,7 @@ bool PointDragger::Update() {
     }
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
-        TraceLog(LOG_DEBUG, "MOUSE_BUTTON_RIGHT Pressed");
+        TraceLog(LOG_DEBUG, "PointDragger: MOUSE_BUTTON_RIGHT Pressed");
 
         Point mouse_pos = GetMousePosition();
 
@@ -29,7 +29,7 @@ bool PointDragger::Update() {
                 idx = i;
                 dragging = true;
 
-                TraceLog(LOG_DEBUG, "Captured point %i", idx);
+                TraceLog(LOG_DEBUG, "PointDragger: Captured point %i", idx);
                 break;
             }
         }
