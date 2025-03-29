@@ -2,8 +2,7 @@
 
 Don't forget to `git clone --recursive-submodules ...` or `git submodule update --init` to get raylib
 
-Run `make` within the src/ folder to build everything.
-Or use `cmake` for the same purpose.
+Build everything with `cmake`
 
 No installation is introduced, so the main executable is located in the binary folder the project.
 
