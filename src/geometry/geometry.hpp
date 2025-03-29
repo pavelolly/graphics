@@ -12,10 +12,10 @@
 
 using Point = Vector2;
 
-template <typename Range>
-concept RangeOfPoints = std::ranges::random_access_range<Range> &&
-                        std::convertible_to<typename std::ranges::iterator_t<Range>::value_type,
-                                            Point>;
+template <typename Range, typename Value>
+concept RangeOf = std::ranges::random_access_range<Range> &&
+                  std::convertible_to<typename std::ranges::iterator_t<Range>::value_type,
+                                       Value>;
 
 inline Point GetScreenCenter() {
     return Point { GetScreenWidth() / 2.f, GetScreenHeight() / 2.f };

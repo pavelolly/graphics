@@ -21,7 +21,7 @@ struct PointDragger {
         points.push_back(&point);
     }
     // accepts any range of Point
-    void AddToDrag(RangeOfPoints auto &points) {
+    void AddToDrag(RangeOf<Point> auto &points) {
         using std::ranges::begin;
         using std::ranges::end;
 

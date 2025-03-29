@@ -24,7 +24,7 @@ inline std::function<Point(float)> BezierFuncCubic(Point p1, Point p2, Point p3,
 }
 
 // get function of bezier curve of order control_points.size() - 1
-std::function<Point(float)> BezierFunc(const RangeOfPoints auto &control_points) {
+std::function<Point(float)> BezierFunc(const RangeOf<Point> auto &control_points) {
     switch (auto size = std::ranges::size(control_points)) {
         case 0:
         case 1:
@@ -37,7 +37,7 @@ std::function<Point(float)> BezierFunc(const RangeOfPoints auto &control_points)
             return BezierFuncCubic(control_points[0], control_points[1], control_points[2], control_points[3]);
         default: {
             std::vector<Point> coefs(size);
-            int order = size - 1;
+            auto order = static_cast<int>(size - 1);
 
             /*
                 General formula: ```f(t) = sum i=[0..order] { control_point[i] * (order choose i) * (1 - t)^(order - i) * t^i }```
