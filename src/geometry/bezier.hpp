@@ -2,7 +2,6 @@
 
 #include "geometry.hpp"
 
-#include <source_location>
 
 inline std::function<Point(float)> BezierFuncLinear(Point p1, Point p2) {
     return [p1, p2](float t) -> Point {
@@ -80,36 +79,9 @@ struct BezierCurve {
     std::vector<Point> curve_points;
     int bezier_segments;
     
-    BezierCurve(int bezier_segments=100) : bezier_segments(bezier_segments) {
-        curve_points.reserve(bezier_segments + 1);
-    }
+    BezierCurve(int bezier_segments=100);
 
-    void DrawControlPoints(Color color_points, Color color_lines=BLANK) const {
-        for (int i = 1; i < control_points.size(); ++i) {
-            DrawLineDotted(control_points[i - 1], control_points[i], 20, 3, color_lines);
-        }
-        for (int i = 0; i < control_points.size(); ++i) {
-            DrawCircleV(control_points[i], 7, color_points);
-        }
-    }
-    void DrawCurve(Color color) const {
-        for (int i = 1; i < curve_points.size(); ++i) {
-            DrawLineV(curve_points[i - 1], curve_points[i], color);
-        }
-    }
-
-    void Update() {
-        // calculate bezier curve
-        auto bezier_func = BezierFunc(control_points);
-        if (!bezier_func) {
-            TraceLog(LOG_WARNING, "%s: Failed to compure bezier_func", std::source_location::current().function_name());
-            return;
-        }
-
-        curve_points.clear();
-        for (int i = 0; i <= bezier_segments; ++i) {
-            float t = static_cast<float>(i) / bezier_segments;
-            curve_points.push_back(bezier_func(t));
-        }
-    }
+    void DrawControlPoints(Color color_points, Color color_lines=BLANK) const;
+    void DrawCurve(Color color) const;
+    void Update();
 };
