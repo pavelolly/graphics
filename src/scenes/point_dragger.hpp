@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <optional>
 
 #include "geometry/geometry.hpp"
 
@@ -29,6 +30,5 @@ struct PointDragger {
         }
     }
 
-    // return true if some point was moved
-    bool Update();
+    std::optional<size_t> Update();
 };

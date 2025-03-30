@@ -81,6 +81,18 @@ struct BezierCurve {
     int bezier_segments;
     
     BezierCurve(int bezier_segments=100);
+    
+    BezierCurve(std::deque<Point> points, int bezier_segments=100) :
+        control_points(std::move(points)), bezier_segments(bezier_segments)
+    {
+        Update();
+        TraceLog(LOG_DEBUG, "Created curve! %i control points, %i curve points", control_points.size(), curve_points.size());
+    }
+
+    void SetControlPoints(std::deque<Point> points) {
+        control_points = std::move(points);
+        Update();
+    }
 
     void DrawControlPoints(Color color_points, Color color_lines=BLANK) const;
     void DrawCurve(Color color) const;

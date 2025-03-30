@@ -5,15 +5,18 @@
 #include "scenes/scene_draw_polygons.hpp"
 #include "scenes/scene_localization.hpp"
 #include "scenes/scene_bezier_elementary.hpp"
+#include "scenes/scene_bezier.hpp"
 
 #define WIDTH  1600
 #define HEIGHT 900
+
+#define TARGET_FPS (GetMonitorRefreshRate(GetCurrentMonitor()))
 
 void DrawThePlayground();
 
 int main() {
     InitWindow(WIDTH, HEIGHT, "Graphics");
-    SetTargetFPS(GetMonitorRefreshRate(GetCurrentMonitor()));
+    SetTargetFPS(TARGET_FPS);
 
     SetTraceLogLevel(LOG_DEBUG);
 
@@ -23,6 +26,7 @@ int main() {
     SceneDrawPolygons     scene_draw_polygons;
     SceneLocalization     scene_localization;
     SceneBezierElementary scene_elementary_bezier;
+    SceneBezier           scene_bezier;
     SceneEllipses         scene_ellipses;
 
     Scene *scene = &scene_draw_polygons;
@@ -47,6 +51,10 @@ int main() {
             case '4':
                 ShowCursor(); 
                 scene = &scene_ellipses;
+                break;
+            case '5':
+                ShowCursor();
+                scene = &scene_bezier;
                 break;
             case '0':
                 ShowCursor(); 

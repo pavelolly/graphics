@@ -4,13 +4,15 @@
 
 #include <cassert>
 
-bool PointDragger::Update() {
+std::optional<size_t> PointDragger::Update() {
     if (dragging) {
         if (IsMouseButtonDown(MOUSE_BUTTON_RIGHT)) {
             assert(idx >= 0 && "dragged point is undefined when trying to drag");
 
-            *points[idx] += GetMouseDelta();
-            return true;
+            if (Point delta = GetMouseDelta(); delta != Vector2Zeros) {
+                *points[idx] += delta;
+                return idx;
+            }
         }
 
         if (IsMouseButtonUp(MOUSE_BUTTON_RIGHT)) {
@@ -18,7 +20,7 @@ bool PointDragger::Update() {
             idx = -1;
         }
 
-        return false;
+        return { std::nullopt };
     }
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
@@ -37,5 +39,5 @@ bool PointDragger::Update() {
         }
     }
 
-    return false;
+    return { std::nullopt };
 }
