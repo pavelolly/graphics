@@ -13,14 +13,19 @@
 #include "scenes/scene.hpp"
 
 struct SceneBezier : Scene {
-    std::deque<BezierCurve> bezier_curves;
-    std::deque<Point> control_points;
+    struct BezierSet {
+        std::deque<BezierCurve> curves;
+        std::deque<Point> control_points;
+    };
+
+    std::deque<BezierSet> bezier_sets;
 
     PointDragger dragger;
 
     bool show_control_points = true;
+    bool need_new_set = true;
 
-    static constexpr size_t BEZIER_ORDER = 3;
+    static constexpr size_t BEZIER_ORDER = 2;
     static constexpr size_t ELEM_CONTROL_POINTS = BEZIER_ORDER + 1;
 
     static_assert(BEZIER_ORDER > 0);
