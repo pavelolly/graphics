@@ -22,6 +22,8 @@ struct SceneBezier : Scene {
 
     PointDragger dragger;
 
+    Camera2D camera = {0};
+
     bool show_control_points = true;
     bool need_new_set = true;
 
@@ -29,6 +31,10 @@ struct SceneBezier : Scene {
     static constexpr size_t ELEM_CONTROL_POINTS = BEZIER_ORDER + 1;
 
     static_assert(BEZIER_ORDER > 0);
+
+    SceneBezier() {
+        camera.zoom = 1;
+    }
 
     void Draw() override;
     void Update(float) override;

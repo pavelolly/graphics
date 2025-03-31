@@ -1,6 +1,8 @@
 #include "scene_bezier.hpp"
 
 void SceneBezier::Draw() {
+    BeginMode2D(camera);
+
     for (auto &set : bezier_sets) {
 
         Color color_point = RED;
@@ -32,6 +34,8 @@ void SceneBezier::Draw() {
             }
         }
     }
+
+    EndMode2D();
 };
 
 void SceneBezier::Update(float) {
@@ -107,6 +111,19 @@ void SceneBezier::Update(float) {
             }
         }
 
+    }
+
+    if (float wheel_move = GetMouseWheelMove(); wheel_move != 0.f) {
+        float scale = 1.f + 0.01f * std::abs(wheel_move);
+        if (wheel_move < 0) {
+            scale = 1.f / scale;
+        }
+        camera.zoom = Clamp(camera.zoom * scale, 0.125f, 64.f);
+
+        Point mouse_pos = GetMousePosition();
+
+        camera.target = GetScreenToWorld2D(mouse_pos, camera);
+        camera.offset = mouse_pos;
     }
 
     if (IsKeyPressed(KEY_SPACE)) {
