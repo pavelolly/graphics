@@ -18,11 +18,15 @@ struct SceneBezier : Scene {
 
     PointDragger dragger;
 
-    static constexpr size_t BEZIER_ORDER = 1;
+    bool show_control_points = true;
+
+    static constexpr size_t BEZIER_ORDER = 3;
     static constexpr size_t ELEM_CONTROL_POINTS = BEZIER_ORDER + 1;
 
     static_assert(BEZIER_ORDER > 0);
 
     void Draw() override;
     void Update(float) override;
+
+    void UpdateAllCurves();
 };

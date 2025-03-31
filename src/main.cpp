@@ -49,12 +49,12 @@ int main() {
                 scene = &scene_elementary_bezier;
                 break;
             case '4':
-                ShowCursor(); 
-                scene = &scene_ellipses;
-                break;
-            case '5':
                 ShowCursor();
                 scene = &scene_bezier;
+                break;
+            case '5':
+                ShowCursor(); 
+                scene = &scene_ellipses;
                 break;
             case '0':
                 ShowCursor(); 

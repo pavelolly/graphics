@@ -26,6 +26,7 @@ Point RotatePoint(Point point, float angle, Point center=Vector2Zeros);
 float Distance(Point a, Point b);
 float Length(Point a);
 Point Lerp(Point a, Point b, float t);
+Point Project(Point p, Point a, Point b);
 
 // check if point is on the same side to each triangle edge
 bool IsInsideTriangle(Point p, Point a, Point b, Point c);

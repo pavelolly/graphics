@@ -30,6 +30,18 @@ Point Lerp(Point a, Point b, float t) {
     return a + (b - a) * t;
 }
 
+Point Project(Point p, Point a, Point b) {
+    Point direction = Vector2Normalize(b - a);
+    
+    float pa = Distance(a, p);
+    float ab = Distance(a, b);
+    float pb = Distance(p, b);
+
+    float len = (pa * pa + ab * ab - pb * pb) / (2 * ab);
+
+    return a + direction * len;
+}
+
 void DrawLineDotted(Point start, Point end, float segment_len, float thick, Color color) {
     const auto nsegments = static_cast<int>(std::ceil(Distance(start, end) / (2 * segment_len)));
     
