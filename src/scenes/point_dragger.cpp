@@ -10,6 +10,9 @@ std::optional<size_t> PointDragger::Update() {
             assert(idx >= 0 && "dragged point is undefined when trying to drag");
 
             if (Point delta = GetMouseDelta(); delta != Vector2Zeros) {
+                if (camera.has_value()) {
+                    delta *= 1.f / camera.value()->zoom;
+                }
                 *points[idx] += delta;
                 return idx;
             }
@@ -20,7 +23,7 @@ std::optional<size_t> PointDragger::Update() {
             idx = -1;
         }
 
-        return { std::nullopt };
+        return std::nullopt;
     }
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
@@ -29,7 +32,11 @@ std::optional<size_t> PointDragger::Update() {
         Point mouse_pos = GetMousePosition();
 
         for (int i = 0; i < static_cast<int>(points.size()); ++i) {
-            if (CheckCollisionPointCircle(mouse_pos, *points[i], 10)) {
+            Point point_pos_on_screen = *points[i];
+            if (camera.has_value()) {
+                point_pos_on_screen = GetWorldToScreen2D(*points[i], *camera.value());
+            }
+            if (CheckCollisionPointCircle(mouse_pos, point_pos_on_screen, 10)) {
                 idx = i;
                 dragging = true;
 
@@ -39,5 +46,5 @@ std::optional<size_t> PointDragger::Update() {
         }
     }
 
-    return { std::nullopt };
+    return std::nullopt;
 }

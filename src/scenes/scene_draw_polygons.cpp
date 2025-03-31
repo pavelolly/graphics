@@ -123,7 +123,7 @@ void SceneDrawPolygons::Update(float dt) {
     if (IsKeyDown(KEY_DOWN)) {
         shift += {0, 1};
     }
-    shift *= 200 * dt;
+    shift = Vector2Normalize(shift) * 200 * dt;
 
     if (shift != Vector2Zeros) {
         for (auto &animation : animations) {

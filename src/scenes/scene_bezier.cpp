@@ -38,7 +38,7 @@ void SceneBezier::Draw() {
     EndMode2D();
 };
 
-void SceneBezier::Update(float) {
+void SceneBezier::Update(float dt) {
     if (show_control_points) {
 
         if (auto drag_res = dragger.Update(); drag_res.has_value()) {
@@ -114,7 +114,7 @@ void SceneBezier::Update(float) {
     }
 
     if (float wheel_move = GetMouseWheelMove(); wheel_move != 0.f) {
-        float scale = 1.f + 0.01f * std::abs(wheel_move);
+        float scale = 1.f + 0.1f * std::abs(wheel_move);
         if (wheel_move < 0) {
             scale = 1.f / scale;
         }
@@ -125,6 +125,23 @@ void SceneBezier::Update(float) {
         camera.target = GetScreenToWorld2D(mouse_pos, camera);
         camera.offset = mouse_pos;
     }
+
+    Point shift = Vector2Zeros;
+    if (IsKeyDown(KEY_LEFT)) {
+        shift += {-1, 0};
+    }
+    if (IsKeyDown(KEY_RIGHT)) {
+        shift += {1, 0};
+    }
+    if (IsKeyDown(KEY_UP)) {
+        shift += {0, -1};
+    }
+    if (IsKeyDown(KEY_DOWN)) {
+        shift += {0, 1};
+    }
+    shift = Vector2Normalize(shift) * 200 * dt;
+
+    camera.offset += shift;
 
     if (IsKeyPressed(KEY_SPACE)) {
         show_control_points = !show_control_points;

@@ -34,10 +34,11 @@ struct SceneBezier : Scene {
 
     SceneBezier() {
         camera.zoom = 1;
+        dragger.camera = &camera;
     }
 
     void Draw() override;
-    void Update(float) override;
+    void Update(float dt) override;
 
     void UpdateAllCurves();
 };

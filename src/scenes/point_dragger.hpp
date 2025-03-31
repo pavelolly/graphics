@@ -11,6 +11,8 @@ struct PointDragger {
     int idx = -1; // index of dragged point
     bool dragging = false;
 
+    std::optional<Camera2D*> camera;
+
     void Clear() {
         points.clear();
         idx = -1;
