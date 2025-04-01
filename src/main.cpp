@@ -62,6 +62,7 @@ int main() {
             case '0':
                 ShowCursor(); 
                 scene = nullptr; // empty scene used for testing
+                break;
             }
         }
         

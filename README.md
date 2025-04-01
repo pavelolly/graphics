@@ -8,43 +8,64 @@ No installation is introduced, so the main executable is located in the binary f
 
 # Scenes
 
-You can switch between scenes using `1`, `2`, `3`, `4` keys.
+You can switch between scenes using `1`, `2`, `3`, `4`, `5` keys.
 
-Use `space` to pause/unpause the scene
+## 1. Drawing polygons
+
+Draw polygons' vertexes with `left mouse button`. Press `Draw/Finish` button to control which polygon you are drawing
+
+Use `space` to pause/unpause the scene. While paused you can drag the vertexes with `right mouse button`
 
 Use `R` to reset the scene without resetting its parameters
 
 Use `Ctrl + R` to reset the scene and the parameters 
 
-## 1. Drawing polygons
+Use `Delete` to erase the whole scene
 
-<img src=".github/2.gif" alt="scene_2_1" width="90%" height="90%" style="display: block;
-    margin-left: auto;
-    margin-right: auto;">
-</img>
+You can move the scene with `arrow keys`
 
-<img src=".github/3.gif" alt="scene_2_2" width="90%" height="90%" style="display: block;
-    margin-left: auto;
-    margin-right: auto;">
-</img>
+```C
+// .gif will be here
+```
 
 ## 2. Is point in the triangle?
 
-<img src=".github/4.gif" alt="scene_3" width="90%" height="90%" style="display: block;
-    margin-left: auto;
-    margin-right: auto;">
-</img>
+Drag points with `right mouse button`
+
+Use `space` to switch between modes
+
+```C
+// .gif will be here
+```
 
 ## 3. Elementary Bezier curves
 
-<img src=".github/5.gif" alt="scene_3" width="90%" height="90%" style="display: block;
-    margin-left: auto;
-    margin-right: auto;">
-</img>
+Choose `order` of bezier curve (is can be from 1 to 10)
 
-## 4. Rotating ellipses
+Drag points with `right mouse button`
 
-<img src=".github/1.gif" alt="scene_1" width="90%" height="90%" style="display: block;
-    margin-left: auto;
-    margin-right: auto;">
-</img>
+```C
+// .gif will be here
+```
+
+## 4. Bezier curves
+
+Draw control points with `left mouse button`. Press `Enter` to draw next curve
+
+Drag points with `right mouse button`
+
+Use `space` to hide/show control points
+
+You can move the scene with `arrow keys` and scale with `mouse wheel`
+
+```C
+// .gif will be here
+```
+
+## 5. Ellipses
+
+Use `space` to pause/unpause the scene
+
+```C
+// .gif will be here
+```
