@@ -112,9 +112,9 @@ bool IsInsideTriangle(Point p, Point a, Point b, Point c) {
 }
 
 bool IsInsideTriangle2(Point p, Point a, Point b, Point c) {
-    auto side1 = std::signbit((p.x - a.x) * (b.y - a.y) - (p.y - a.y) * (b.x - a.x));
-    auto side2 = std::signbit((p.x - b.x) * (c.y - b.y) - (p.y - b.y) * (c.x - b.x));
-    auto side3 = std::signbit((p.x - c.x) * (a.y - c.y) - (p.y - c.y) * (a.x - c.x));
+    bool side1 = std::signbit((p.x - a.x) * (b.y - a.y) - (p.y - a.y) * (b.x - a.x));
+    bool side2 = std::signbit((p.x - b.x) * (c.y - b.y) - (p.y - b.y) * (c.x - b.x));
+    bool side3 = std::signbit((p.x - c.x) * (a.y - c.y) - (p.y - c.y) * (a.x - c.x));
 
     return side1 == side2 && side2 == side3;
 }

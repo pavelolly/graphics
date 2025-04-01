@@ -56,6 +56,7 @@ int main() {
                 ShowCursor(); 
                 scene = &scene_ellipses;
                 break;
+
             case '0':
                 ShowCursor(); 
                 scene = nullptr; // empty scene used for testing
@@ -99,8 +100,7 @@ void DrawThePlayground() {
     DrawLineEx(line1[0], line1[1], 5, ORANGE);
     DrawLineEx(line2[0], line2[1], 5, ORANGE);
 
-    auto i = Intersect(line1[0], line1[1], line2[0], line2[1]);
-    if (i.has_value()) {
+    if (auto i = Intersect(line1[0], line1[1], line2[0], line2[1])) {
         DrawCircleV({ 100, 100 }, 7, BROWN);
         DrawCircleV(i.value(), 7, PURPLE);
     }
