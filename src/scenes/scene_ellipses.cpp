@@ -1,5 +1,6 @@
 #include "scene_ellipses.hpp"
 
+#include "colors.h"
 
 SceneEllipses::SceneEllipses() : input_box_panel(Rectangle { GetScreenWidth() - 400.f, 40, 360, GetScreenHeight() - 80.f } )
 {
@@ -36,8 +37,8 @@ bool SceneEllipses::IsSwitchable() {
 
 void SceneEllipses::Draw() {
     for (auto &animation : animations) {
-        animation.animated_polygon.Draw(YELLOW);
-        animation.animated_polygon.DrawCenter(RED);
+        animation.animated_polygon.Draw(COLOR_LINE_PRIMARY);
+        animation.animated_polygon.DrawCenter(COLOR_POINT_PRIMARY);
     }
 
     input_box_panel.Draw();

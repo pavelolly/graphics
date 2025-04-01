@@ -1,5 +1,7 @@
 #include "scene_localization.hpp"
 
+#include "colors.h"
+
 #include <raylib.h>
 #include <raygui.h>
 
@@ -21,9 +23,9 @@ SceneLocalization::SceneLocalization() {
 }
 
 void SceneLocalization::Draw() {
-    Color col_side1 = YELLOW;
-    Color col_side2 = YELLOW;
-    Color col_side3 = YELLOW;
+    Color col_side1 = COLOR_LINE_PRIMARY;
+    Color col_side2 = COLOR_LINE_PRIMARY;
+    Color col_side3 = COLOR_LINE_PRIMARY;
 
     Point mouse_pos = GetMousePosition();
 
@@ -43,13 +45,13 @@ void SceneLocalization::Draw() {
             float k3 = 1 - k1 - k2;
 
             std::string text = "k1 = " + std::to_string(k1);
-            DrawText(text.c_str(), 40, 40, 20, k1 > 0 ? GRAY : Fade(GRAY, 0.3f));
+            DrawText(text.c_str(), 40, 40, 20, k1 > 0 ? GRAY : COLOR_GRAY_FADED);
 
             text = "k2 = " + std::to_string(k2);
-            DrawText(text.c_str(), 40, 60, 20, k2 > 0 ? GRAY : Fade(GRAY, 0.3f));
+            DrawText(text.c_str(), 40, 60, 20, k2 > 0 ? GRAY : COLOR_GRAY_FADED);
             
             text = "k3 = " + std::to_string(k3);
-            DrawText(text.c_str(), 40, 80, 20, k3 > 0 ? GRAY : Fade(GRAY, 0.3f));
+            DrawText(text.c_str(), 40, 80, 20, k3 > 0 ? GRAY : COLOR_GRAY_FADED);
             break;
         }
         case 1: // sides
@@ -59,13 +61,13 @@ void SceneLocalization::Draw() {
             bool side3 = std::signbit((p.x - c.x) * (a.y - c.y) - (p.y - c.y) * (a.x - c.x));
 
             if (side1) {
-                col_side1 = ORANGE;
+                col_side1 = COLOR_LINE_SECONDARY;
             }
             if (side2) {
-                col_side2 = ORANGE;
+                col_side2 = COLOR_LINE_SECONDARY;
             }
             if (side3) {
-                col_side3 = ORANGE;
+                col_side3 = COLOR_LINE_SECONDARY;
             }
 
             Point center = (a + b + c) / 3;
@@ -84,22 +86,22 @@ void SceneLocalization::Draw() {
         {
             Point center = (a + b + c) / 3;
 
-            DrawLineDotted(p, center, 20, 5, Fade(GRAY, 0.3f));
-            DrawCircleV(center, 7, RED);
+            DrawLineDotted(p, center, 20, 5, COLOR_GRAY_FADED);
+            DrawCircleV(center, 7, COLOR_POINT_PRIMARY);
 
             if (auto i = Intersect(p, center, a, b)) {
-                col_side1 = ORANGE;
-                DrawCircleV(i.value(), 7, PURPLE);
+                col_side1 = COLOR_LINE_SECONDARY;
+                DrawCircleV(i.value(), 7, COLOR_POINT_SECONDARY);
             }
 
             if (auto i = Intersect(p, center, b, c)) {
-                col_side2 = ORANGE;
-                DrawCircleV(i.value(), 7, PURPLE);
+                col_side2 = COLOR_LINE_SECONDARY;
+                DrawCircleV(i.value(), 7, COLOR_POINT_SECONDARY);
             }
 
             if (auto i = Intersect(p, center, c, a)) {
-                col_side3 = ORANGE;
-                DrawCircleV(i.value(), 7, PURPLE);
+                col_side3 = COLOR_LINE_SECONDARY;
+                DrawCircleV(i.value(), 7, COLOR_POINT_SECONDARY);
             }
 
             break;
@@ -112,11 +114,11 @@ void SceneLocalization::Draw() {
     DrawLineV(triangle.b, triangle.c, col_side2);
     DrawLineV(triangle.c, triangle.a, col_side3);
 
-    DrawCircleV(triangle.a, 7, RED);
-    DrawCircleV(triangle.b, 7, RED);
-    DrawCircleV(triangle.c, 7, RED);
+    DrawCircleV(triangle.a, 7, COLOR_POINT_PRIMARY);
+    DrawCircleV(triangle.b, 7, COLOR_POINT_PRIMARY);
+    DrawCircleV(triangle.c, 7, COLOR_POINT_PRIMARY);
 
-    DrawCircleV(GetMousePosition(), 15, is_inside_funcs[mode](mouse_pos, triangle.a, triangle.b, triangle.c) ? GREEN : PURPLE);
+    DrawCircleV(GetMousePosition(), 15, is_inside_funcs[mode](mouse_pos, triangle.a, triangle.b, triangle.c) ? GREEN : COLOR_POINT_SECONDARY);
 }
 
 void SceneLocalization::Update(float) {

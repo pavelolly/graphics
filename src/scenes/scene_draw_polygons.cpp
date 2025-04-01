@@ -2,6 +2,7 @@
 
 #include <cassert>
 
+#include "colors.h"
 
 bool SceneDrawPolygons::IsSwitchable() {
     for (auto &input_box : input_box_panel.input_boxes) {
@@ -14,13 +15,13 @@ bool SceneDrawPolygons::IsSwitchable() {
 
 void SceneDrawPolygons::Draw() {
     for (int i = 0; i < static_cast<int>(animations.size()); ++i) {
-        animations[i].animated_polygon.Draw(YELLOW, RED);
+        animations[i].animated_polygon.Draw(COLOR_LINE_PRIMARY, COLOR_POINT_PRIMARY);
         if (i != 0) {
-            animations[i].animated_polygon.DrawCenter(RED);
+            animations[i].animated_polygon.DrawCenter(COLOR_POINT_PRIMARY);
         }
     }
 
-    drawn_polygon.Draw(ORANGE, PURPLE);
+    drawn_polygon.Draw(COLOR_LINE_SECONDARY, COLOR_POINT_SECONDARY);
     input_box_panel.Draw();
     toggle_draw_polygon.Draw();
 

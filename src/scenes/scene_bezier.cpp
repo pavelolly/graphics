@@ -1,20 +1,22 @@
 #include "scene_bezier.hpp"
 
+#include "colors.h"
+
 void SceneBezier::Draw() {
     BeginMode2D(camera);
 
     for (auto &set : bezier_sets) {
 
-        Color color_point = RED;
-        Color color_curve = YELLOW;
+        Color color_point = COLOR_POINT_PRIMARY;
+        Color color_curve = COLOR_LINE_PRIMARY;
         if (&set == &bezier_sets.back() && !need_new_set) {
-            color_point = PURPLE;
-            color_curve = ORANGE;
+            color_point = COLOR_POINT_SECONDARY;
+            color_curve = COLOR_LINE_SECONDARY;
         }
 
         for (auto &curve : set.curves) {
             if (show_control_points) {
-                curve.DrawControlPoints(color_point, Fade(GRAY, 0.3f));
+                curve.DrawControlPoints(color_point, COLOR_GRAY_FADED);
             }
             curve.DrawCurve(color_curve);
         }
@@ -24,10 +26,10 @@ void SceneBezier::Draw() {
     if (show_control_points) {
         for (auto &set : bezier_sets) {
             
-            Color color_point = &set == &bezier_sets.back() && !need_new_set ? PURPLE : RED;
+            Color color_point = &set == &bezier_sets.back() && !need_new_set ? COLOR_POINT_SECONDARY : COLOR_POINT_PRIMARY;
 
             for (int i = 1; i < static_cast<int>(set.control_points.size()); ++i) {
-                DrawLineDotted(set.control_points[i - 1], set.control_points[i], 20, 3, Fade(GRAY, 0.3f));
+                DrawLineDotted(set.control_points[i - 1], set.control_points[i], 20, 3, COLOR_GRAY_FADED);
             }
             for (int i = 0; i < static_cast<int>(set.control_points.size()); ++i) {
                 DrawCircleV(set.control_points[i], 7, color_point);

@@ -2,6 +2,7 @@
 
 #include <algorithm>
 
+#include "colors.h"
 #include "gui.hpp"
 
 namespace GUI {
@@ -115,7 +116,7 @@ void InputBoxPanel::Add(int *value, int min, int max, std::string text) {
 
 void InputBoxPanel::Draw() {
     // fill with background color to hide scene behind
-    DrawRectangleRec(panel, GetColor(0x181818ff));
+    DrawRectangleRec(panel, COLOR_BACKGROUND);
     GuiGroupBox(panel, "Parameters");
 
     for (auto &input_box : input_boxes) {

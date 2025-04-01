@@ -7,6 +7,8 @@
 #include "scenes/scene_bezier_elementary.hpp"
 #include "scenes/scene_bezier.hpp"
 
+#include "colors.h"
+
 #define WIDTH  1600
 #define HEIGHT 900
 
@@ -69,7 +71,7 @@ int main() {
 
         BeginDrawing();
 
-            ClearBackground(GetColor(0x181818ff));
+            ClearBackground(COLOR_BACKGROUND);
             if (scene) {
                 scene->Draw();
             } else {
@@ -85,11 +87,11 @@ int main() {
 }
 
 void DrawThePlayground() {
-    DrawLineBezier({100, 100}, {200, 200}, 2, YELLOW);
+    DrawLineBezier({100, 100}, {200, 200}, 2, COLOR_LINE_PRIMARY);
     GuiGroupBox({300, 300, 400, 400}, "Window"); 
 
-    // DrawCircleV({450, 450}, 3, RED);
-    // DrawCircleV({500, 500}, 3, RED);
+    // DrawCircleV({450, 450}, 3, COLOR_POINT_PRIMARY);
+    // DrawCircleV({500, 500}, 3, COLOR_POINT_PRIMARY);
     DrawLineDotted({450, 450}, {500, 500}, 20, 5, GRAY);
 
     DrawLineEx({600, 300}, {601, 300}, 16, GRAY);
@@ -97,11 +99,11 @@ void DrawThePlayground() {
     Point line1[] = { { 900, 560 }, { 1200, 800 } };
     Point line2[] = { { 900, 700 }, { 1300, 670 } };
 
-    DrawLineEx(line1[0], line1[1], 5, ORANGE);
-    DrawLineEx(line2[0], line2[1], 5, ORANGE);
+    DrawLineEx(line1[0], line1[1], 5, COLOR_LINE_SECONDARY);
+    DrawLineEx(line2[0], line2[1], 5, COLOR_LINE_SECONDARY);
 
     if (auto i = Intersect(line1[0], line1[1], line2[0], line2[1])) {
         DrawCircleV({ 100, 100 }, 7, BROWN);
-        DrawCircleV(i.value(), 7, PURPLE);
+        DrawCircleV(i.value(), 7, COLOR_POINT_SECONDARY);
     }
 }

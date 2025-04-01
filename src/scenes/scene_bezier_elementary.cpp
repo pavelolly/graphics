@@ -1,5 +1,6 @@
 #include "scene_bezier_elementary.hpp"
 
+#include "colors.h"
 
 std::deque<Point> SceneBezierElementary::GenerateRandomControlPoints(int npoints) {
     if (npoints <= 0) {
@@ -40,8 +41,8 @@ SceneBezierElementary::SceneBezierElementary() :
 }
 
 void SceneBezierElementary::Draw() {
-    bezier_curve.DrawControlPoints(RED, Fade(GRAY, 0.3f));
-    bezier_curve.DrawCurve(YELLOW);
+    bezier_curve.DrawControlPoints(COLOR_POINT_PRIMARY, COLOR_GRAY_FADED);
+    bezier_curve.DrawCurve(COLOR_LINE_PRIMARY);
 
     input_box_panel.Draw();
 }
