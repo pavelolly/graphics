@@ -58,19 +58,25 @@ void SceneLocalization::Draw() {
             bool side2 = std::signbit((p.x - b.x) * (c.y - b.y) - (p.y - b.y) * (c.x - b.x));
             bool side3 = std::signbit((p.x - c.x) * (a.y - c.y) - (p.y - c.y) * (a.x - c.x));
 
-            if (!side1) {
+            if (side1) {
                 col_side1 = ORANGE;
             }
-            if (!side2) {
+            if (side2) {
                 col_side2 = ORANGE;
             }
-            if (!side3) {
+            if (side3) {
                 col_side3 = ORANGE;
             }
 
-            DrawText("1", static_cast<int>(a.x) - 20, static_cast<int>(a.y) - 20, GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
-            DrawText("2", static_cast<int>(b.x) - 20, static_cast<int>(b.y) - 20, GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
-            DrawText("3", static_cast<int>(c.x) - 20, static_cast<int>(c.y) - 20, GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
+            Point center = (a + b + c) / 3;
+            Point offset = Vector2Normalize(center - a) * 30;
+            DrawText("1", static_cast<int>(a.x - offset.x), static_cast<int>(a.y - offset.y), GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
+
+            offset = Vector2Normalize(center - b) * 30;
+            DrawText("2", static_cast<int>(b.x - offset.x), static_cast<int>(b.y - offset.y), GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
+
+            offset = Vector2Normalize(center - c) * 30;
+            DrawText("3", static_cast<int>(c.x - offset.x), static_cast<int>(c.y - offset.y), GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
 
             break;
         }
