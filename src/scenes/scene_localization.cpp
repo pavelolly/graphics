@@ -36,7 +36,8 @@ void SceneLocalization::Draw() {
 
     switch (mode) {
         case 0: // barycentric
-        {
+        {   
+
             Point &a = triangle.a;
 
             float d  = (b.x - a.x) * (c.y - a.y) - (c.x - a.x) * (b.y - a.y);
@@ -120,7 +121,7 @@ void SceneLocalization::Draw() {
 
     DrawCircleV(GetMousePosition(), 15, is_inside_funcs[mode](mouse_pos, triangle.a, triangle.b, triangle.c) ? GREEN : COLOR_POINT_SECONDARY);
 
-    DrawText("Localization", 20, 20, GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
+    DrawText(titles[mode], 20, 20, GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
 }
 
 void SceneLocalization::Update(float) {

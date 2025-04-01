@@ -16,6 +16,11 @@ struct SceneLocalization : Scene {
     PointDragger dragger;
 
     static constexpr auto is_inside_funcs = std::array{ IsInsideTriangle, IsInsideTriangle2, IsInsideTriangle3 };
+    static constexpr auto titles = std::array {
+        "Localization: barycentric coordinates",
+        "Localization: sides of the triangle",
+        "Localization: intersections"
+    };
     int mode = 0; // idx of is_inside_func
 
     SceneLocalization();

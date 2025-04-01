@@ -44,7 +44,7 @@ void SceneEllipses::Draw() {
     input_box_panel.Draw();
 
     if (paused) {
-        DrawText("paused", 20, 40, GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
+        DrawText("paused", 20, 45, GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
     }
 
     DrawText("Ellipses", 20, 20, GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
