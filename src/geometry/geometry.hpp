@@ -5,6 +5,7 @@
 
 #include <deque>
 #include <ranges>
+#include <optional>
 
 using Point = Vector2;
 
@@ -27,16 +28,22 @@ float Distance(Point a, Point b);
 float Length(Point a);
 Point Lerp(Point a, Point b, float t);
 Point Project(Point p, Point a, Point b);
+std::optional<Point> Intersect(Point a, Point b, Point x, Point y);
 
-// check if point is on the same side to each triangle edge
-bool IsInsideTriangle(Point p, Point a, Point b, Point c);
 // calaculate barycentric coordinates
+bool IsInsideTriangle(Point p, Point a, Point b, Point c);
+// check if point is on the same side to each triangle edge
 bool IsInsideTriangle2(Point p, Point a, Point b, Point c);
+// cast rays from p to center and checks intersections
+bool IsInsideTriangle3(Point p, Point a, Point b, Point c);
 
 void DrawLineDotted(Point start, Point end, float segment_len, float thick, Color color);
 
 struct Polygon {
     std::deque<Point> vertexes;
+
+    Polygon() = default;
+    Polygon(std::initializer_list<Point> points) : vertexes(points) {}
 
     static Polygon Ellipse(Point center, float a, float b, int poly_steps=40);
 

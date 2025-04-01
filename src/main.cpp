@@ -92,4 +92,16 @@ void DrawThePlayground() {
     DrawLineDotted({450, 450}, {500, 500}, 20, 5, GRAY);
 
     DrawLineEx({600, 300}, {601, 300}, 16, GRAY);
+
+    Point line1[] = { { 900, 560 }, { 1200, 800 } };
+    Point line2[] = { { 900, 700 }, { 1300, 670 } };
+
+    DrawLineEx(line1[0], line1[1], 5, ORANGE);
+    DrawLineEx(line2[0], line2[1], 5, ORANGE);
+
+    auto i = Intersect(line1[0], line1[1], line2[0], line2[1]);
+    if (i.has_value()) {
+        DrawCircleV({ 100, 100 }, 7, BROWN);
+        DrawCircleV(i.value(), 7, PURPLE);
+    }
 }

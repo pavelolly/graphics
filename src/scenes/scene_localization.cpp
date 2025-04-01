@@ -24,8 +24,7 @@ void SceneLocalization::Draw() {
     DrawCircleV(triangle.b, 7, RED);
     DrawCircleV(triangle.c, 7, RED);
 
-    DrawCircleV(GetMousePosition(), 15,
-                IsInsideTriangle2(GetMousePosition(), triangle.a, triangle.b, triangle.c) ? GREEN : PURPLE);
+    DrawCircleV(GetMousePosition(), 15, IsInsideTriangle3(GetMousePosition(), triangle.a, triangle.b, triangle.c) ? GREEN : PURPLE);
 }
 
 void SceneLocalization::Update(float) {
