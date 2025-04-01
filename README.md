@@ -28,7 +28,16 @@ You can move the scene with `arrow keys`
 // .gif will be here
 ```
 
-## 2. Is point in the triangle?
+## 2. Ellipses
+
+Use `space` to pause/unpause the scene
+
+```C
+// .gif will be here
+```
+
+
+## 3. Is point in the triangle?
 
 Drag points with `right mouse button`
 
@@ -38,7 +47,7 @@ Use `space` to switch between modes
 // .gif will be here
 ```
 
-## 3. Elementary Bezier curves
+## 4. Elementary Bezier curves
 
 Choose `order` of bezier curve (is can be from 1 to 10)
 
@@ -48,7 +57,7 @@ Drag points with `right mouse button`
 // .gif will be here
 ```
 
-## 4. Bezier curves
+## 5. Bezier curves
 
 Draw control points with `left mouse button`. Press `Enter` to draw next curve
 
@@ -56,15 +65,9 @@ Drag points with `right mouse button`
 
 Use `space` to hide/show control points
 
+Use `L` to align last curve
+
 You can move the scene with `arrow keys` and scale with `mouse wheel`
-
-```C
-// .gif will be here
-```
-
-## 5. Ellipses
-
-Use `space` to pause/unpause the scene
 
 ```C
 // .gif will be here

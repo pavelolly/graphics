@@ -43,20 +43,20 @@ int main() {
                 scene = &scene_draw_polygons;
                 break;
             case '2':
+                ShowCursor(); 
+                scene = &scene_ellipses;
+                break;
+            case '3':
                 HideCursor();
                 scene = &scene_localization;
                 break;
-            case '3':
+            case '4':
                 ShowCursor(); 
                 scene = &scene_elementary_bezier;
                 break;
-            case '4':
+            case '5':
                 ShowCursor();
                 scene = &scene_bezier;
-                break;
-            case '5':
-                ShowCursor(); 
-                scene = &scene_ellipses;
                 break;
 
             case '0':
