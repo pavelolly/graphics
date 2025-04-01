@@ -106,7 +106,9 @@ void SceneBezier::Update(float dt) {
 
             auto &[curves, control_points] = bezier_sets.back();
 
-            control_points.push_back(GetMousePosition());
+            Point new_point = GetScreenToWorld2D(GetMousePosition(), camera);
+
+            control_points.push_back(new_point);
             dragger.AddToDrag(control_points.back());
 
             if (size_t size = control_points.size(); size == ELEM_CONTROL_POINTS || size > ELEM_CONTROL_POINTS && (size - 1) % BEZIER_ORDER == 0) {
@@ -168,6 +170,7 @@ void SceneBezier::Update(float dt) {
 
     if (IsKeyPressed(KEY_ENTER)) {
         need_new_set = true;
+        // TODO: strip off unused control points
     }
 };
 
