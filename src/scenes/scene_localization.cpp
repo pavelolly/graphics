@@ -45,13 +45,13 @@ void SceneLocalization::Draw() {
             float k3 = 1 - k1 - k2;
 
             std::string text = "k1 = " + std::to_string(k1);
-            DrawText(text.c_str(), 40, 40, 20, k1 > 0 ? GRAY : COLOR_GRAY_FADED);
+            DrawText(text.c_str(), 40, 60, 20, k1 > 0 ? GRAY : COLOR_GRAY_FADED);
 
             text = "k2 = " + std::to_string(k2);
-            DrawText(text.c_str(), 40, 60, 20, k2 > 0 ? GRAY : COLOR_GRAY_FADED);
+            DrawText(text.c_str(), 40, 85, 20, k2 > 0 ? GRAY : COLOR_GRAY_FADED);
             
             text = "k3 = " + std::to_string(k3);
-            DrawText(text.c_str(), 40, 80, 20, k3 > 0 ? GRAY : COLOR_GRAY_FADED);
+            DrawText(text.c_str(), 40, 110, 20, k3 > 0 ? GRAY : COLOR_GRAY_FADED);
             break;
         }
         case 1: // sides
@@ -119,6 +119,8 @@ void SceneLocalization::Draw() {
     DrawCircleV(triangle.c, 7, COLOR_POINT_PRIMARY);
 
     DrawCircleV(GetMousePosition(), 15, is_inside_funcs[mode](mouse_pos, triangle.a, triangle.b, triangle.c) ? GREEN : COLOR_POINT_SECONDARY);
+
+    DrawText("Localization", 20, 20, GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
 }
 
 void SceneLocalization::Update(float) {

@@ -2,7 +2,7 @@
 
 #include "colors.h"
 
-SceneEllipses::SceneEllipses() : input_box_panel(Rectangle { GetScreenWidth() - 400.f, 40, 360, GetScreenHeight() - 80.f } )
+SceneEllipses::SceneEllipses() : input_box_panel(Rectangle { GetScreenWidth() - 450.f, 40, 410, GetScreenHeight() - 80.f } )
 {
     ellipses[0] = Polygon::Ellipse( Point { GetScreenWidth() * 7.f / 16.f, GetScreenHeight() / 2.f }, 200.f, 100.f );
     ellipses[1] = Polygon::Ellipse( ellipses[0].GetPoint(0),                                          100.f, 50.f  );
@@ -44,8 +44,10 @@ void SceneEllipses::Draw() {
     input_box_panel.Draw();
 
     if (paused) {
-        DrawText("paused", 20, 20, GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
+        DrawText("paused", 20, 40, GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
     }
+
+    DrawText("Ellipses", 20, 20, GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
 }
 
 void SceneEllipses::Update(float dt) {

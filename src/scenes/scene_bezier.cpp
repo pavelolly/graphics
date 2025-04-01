@@ -2,6 +2,8 @@
 
 #include "colors.h"
 
+#include <raygui.h>
+
 void SceneBezier::Draw() {
     BeginMode2D(camera);
 
@@ -38,6 +40,8 @@ void SceneBezier::Draw() {
     }
 
     EndMode2D();
+
+    DrawText("Bezier Curves", 20, 20, GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
 };
 
 void SceneBezier::Update(float dt) {

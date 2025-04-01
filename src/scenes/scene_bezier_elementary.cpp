@@ -45,6 +45,8 @@ void SceneBezierElementary::Draw() {
     bezier_curve.DrawCurve(COLOR_LINE_PRIMARY);
 
     input_box_panel.Draw();
+
+    DrawText("Elementary Bezier Curve", 20, 20, GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
 }
 
 void SceneBezierElementary::Update(float) {

@@ -22,7 +22,7 @@ int main() {
 
     SetTraceLogLevel(LOG_DEBUG);
 
-    GuiSetStyle(DEFAULT, TEXT_SIZE, 15);
+    GuiSetStyle(DEFAULT, TEXT_SIZE, 20);
     GuiSetStyle(DEFAULT, LINE_COLOR, ColorToInt(GRAY));
 
     SceneDrawPolygons     scene_draw_polygons;

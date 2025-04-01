@@ -26,8 +26,10 @@ void SceneDrawPolygons::Draw() {
     toggle_draw_polygon.Draw();
 
     if (paused) {
-        DrawText("paused", 20, 20, GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
+        DrawText("paused", 20, 40, GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
     }
+
+    DrawText("Draw Polygons!", 20, 20, GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
 }
 
 void SceneDrawPolygons::Update(float dt) {

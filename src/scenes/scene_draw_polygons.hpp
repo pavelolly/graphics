@@ -24,7 +24,7 @@ struct SceneDrawPolygons : Scene {
     PointDragger dragger;
 
     SceneDrawPolygons() :
-        input_box_panel({ GetScreenWidth() - 400.f, 40, 360, GetScreenHeight() - 80.f }),
+        input_box_panel({ GetScreenWidth() - 450.f, 40, 410, GetScreenHeight() - 80.f }),
         toggle_draw_polygon(Rectangle{ 
                 input_box_panel.panel.x + input_box_panel.panel.width - input_box_panel.DEFAULT_BOX_WIDTH - 35,
                 input_box_panel.panel.y + input_box_panel.panel.height - 2 * input_box_panel.DEFAULT_BOX_HEIGHT,
