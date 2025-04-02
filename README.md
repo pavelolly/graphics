@@ -24,17 +24,17 @@ Use `Delete` to erase the whole scene
 
 You can move the scene with `arrow keys`
 
-```C
-// .gif will be here
-```
+<div align="center">
+<img src=".github/1.gif">
+</div>
 
 ## 2. Ellipses
 
 Use `space` to pause/unpause the scene
 
-```C
-// .gif will be here
-```
+<div align="center">
+<img src=".github/2.gif">
+</div>
 
 
 ## 3. Is point in the triangle?
@@ -43,19 +43,19 @@ Drag points with `right mouse button`
 
 Use `space` to switch between modes
 
-```C
-// .gif will be here
-```
+<div align="center">
+<img src=".github/3.gif">
+</div>
 
 ## 4. Elementary Bezier curves
 
-Choose `order` of bezier curve (is can be from 1 to 10)
+Choose `order` of bezier curve (it can be from 1 to 10)
 
 Drag points with `right mouse button`
 
-```C
-// .gif will be here
-```
+<div align="center">
+<img src=".github/4.gif">
+</div>
 
 ## 5. Bezier curves
 
@@ -69,6 +69,6 @@ Use `L` to align last curve
 
 You can move the scene with `arrow keys` and scale with `mouse wheel`
 
-```C
-// .gif will be here
-```
+<div align="center">
+<img src=".github/5.gif">
+</div>
