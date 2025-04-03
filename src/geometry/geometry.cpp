@@ -154,6 +154,17 @@ Point Polygon::GetCenter() const {
     return center;
 }
 
+void Polygon::SetCenter(Point new_center) {
+    Point center = GetCenter();
+    Shift(new_center - center);
+}
+
+void Polygon::Shift(Point shift) {
+    for (Point &point : vertexes) {
+        point += shift;
+    }
+}
+
 void Polygon::Draw(Color color_line, Color color_point) const {
     if (vertexes.size() == 0) {
         return;

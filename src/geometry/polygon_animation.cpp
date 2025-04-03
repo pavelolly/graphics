@@ -2,6 +2,18 @@
 
 #include <cassert>
 
+PolygonAnimation::PolygonAnimation(const Polygon &polygon) :
+    original_polygon(&polygon),
+    original_point(polygon.GetCenter()),
+    animated_polygon(polygon),
+    trajectory(original_point)
+{}
+
+PolygonAnimation::PolygonAnimation(const Polygon &polygon, const Polygon &trajectory) :
+    original_polygon(&polygon), animated_polygon(polygon),
+    trajectory(&trajectory)
+{}
+
 Point PolygonAnimation::InterpolatorStep(float dt) {
     float speed = moving_speed * 100 * dt;
 

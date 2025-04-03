@@ -130,4 +130,12 @@ void InputBoxPanel::Reset() {
     }
 }
 
+Toggle::Toggle(Rectangle box, std::string text_inactive, std::string text_active) :
+    box(box), text_inactive(std::move(text_inactive)), text_active(std::move(text_active))
+{}
+
+void Toggle::Draw() {
+    GuiToggle(box, active ? text_active.c_str() : text_inactive.c_str(), &active);
+}
+
 } // namespace GUI

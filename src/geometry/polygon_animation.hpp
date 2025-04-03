@@ -52,19 +52,8 @@ struct PolygonAnimation {
     float rotation_speed = 0.f;
 
     PolygonAnimation() = default;
-
-    PolygonAnimation(const Polygon &polygon) :
-        original_polygon(&polygon),
-        original_point(polygon.GetCenter()),
-        animated_polygon(polygon),
-        trajectory(original_point)
-    {}
-
-    PolygonAnimation(const Polygon &polygon, const Polygon &trajectory) :
-        original_polygon(&polygon),
-        animated_polygon(polygon),
-        trajectory(&trajectory)
-    {}
+    PolygonAnimation(const Polygon &polygon);
+    PolygonAnimation(const Polygon &polygon, const Polygon &trajectory);
 
     Point InterpolatorStep(float dt);
     void Update(float dt);

@@ -63,17 +63,8 @@ struct Polygon {
     float Perimeter() const;
     // get polygon center based on its vertexes
     Point GetCenter() const;
-
-    void SetCenter(Point new_center) {
-        Point center = GetCenter();
-        Shift(new_center - center);
-    }
-
-    void Shift(Point shift) {
-        for (Point &point : vertexes) {
-            point += shift;
-        }
-    }
+    void SetCenter(Point new_center);
+    void Shift(Point shift);
 
     void Draw(Color color_line, Color color_point=BLANK) const;
     void DrawCenter(Color color) const;
