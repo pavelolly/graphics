@@ -22,7 +22,7 @@ struct SceneBezier : Scene {
 
     PointDragger dragger;
 
-    Camera2D camera = {0};
+    Camera2D camera {};
 
     bool show_control_points = true;
     bool need_new_set = true;
