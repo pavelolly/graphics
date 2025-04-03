@@ -30,10 +30,10 @@ void SceneBezier::Draw() {
             
             Color color_point = &set == &bezier_sets.back() && !need_new_set ? COLOR_POINT_SECONDARY : COLOR_POINT_PRIMARY;
 
-            for (int i = 1; i < static_cast<int>(set.control_points.size()); ++i) {
+            for (int i = 1; (size_t) i < set.control_points.size(); ++i) {
                 DrawLineDotted(set.control_points[i - 1], set.control_points[i], 20, 3, COLOR_GRAY_FADED);
             }
-            for (int i = 0; i < static_cast<int>(set.control_points.size()); ++i) {
+            for (int i = 0; (size_t) i < set.control_points.size(); ++i) {
                 DrawCircleV(set.control_points[i], 7, color_point);
             }
         }
@@ -48,17 +48,18 @@ void SceneBezier::Update(float dt) {
     if (show_control_points) {
 
         if (auto drag_res = dragger.Update(); drag_res.has_value()) {
-            int global_idx = static_cast<int>(drag_res.value());
+            size_t global_idx = drag_res.value();
 
-            int idx = global_idx;
+            int idx = (int) global_idx;
             int set_idx = -1;
-            for (int i = 0; i < static_cast<int>(bezier_sets.size()); ++i) {
-                if (idx < static_cast<int>(bezier_sets[i].control_points.size())) {
+            for (int i = 0; (size_t) i < bezier_sets.size(); ++i) {
+                int n_control_points = (int) bezier_sets[i].control_points.size();
+                if (idx < n_control_points) {
                     set_idx = i;
                     break;
                 }
 
-                idx -= static_cast<int>(bezier_sets[i].control_points.size());
+                idx -= n_control_points;
             }
 
             TraceLog(LOG_DEBUG, "Global point idx=%i; set_idx=%i, idx=%i", global_idx, set_idx, idx);
@@ -71,7 +72,7 @@ void SceneBezier::Update(float dt) {
                              : (idx - 1) / BEZIER_ORDER;
 
             int second = (idx != 0 && idx % BEZIER_ORDER == 0)
-                             ? static_cast<int>(first + 1)
+                             ? (int) (first + 1)
                              : -1;
 
             auto &[curves, control_points] = bezier_sets[set_idx];
@@ -80,18 +81,18 @@ void SceneBezier::Update(float dt) {
                 auto begin = control_points.begin() + first * BEZIER_ORDER;
                 auto end   = control_points.end();
 
-                assert(std::distance(begin, end) >= static_cast<long int>(ELEM_CONTROL_POINTS));
+                assert((size_t) std::distance(begin, end) >= ELEM_CONTROL_POINTS);
 
                 TraceLog(LOG_DEBUG, "Based on idx=%i got first %i and second %i", idx, first, second);
                 TraceLog(LOG_DEBUG, "Updating curve %i", first);
                 curves[first].SetControlPoints(std::deque<Point>(begin, begin + ELEM_CONTROL_POINTS));
             }
 
-            if (second != -1 && second < static_cast<int>(curves.size())) {
+            if (second != -1 && (size_t) second < curves.size()) {
                 auto begin = control_points.begin() + second * BEZIER_ORDER;
                 auto end   = control_points.end();
 
-                assert(std::distance(begin, end) >= static_cast<long int>(ELEM_CONTROL_POINTS));
+                assert((size_t) std::distance(begin, end) >= ELEM_CONTROL_POINTS);
 
                 TraceLog(LOG_DEBUG, "Updating curve %i", second);
                 curves[second].SetControlPoints(std::deque<Point>(begin, begin + ELEM_CONTROL_POINTS));
@@ -177,7 +178,7 @@ void SceneBezier::Update(float dt) {
 void SceneBezier::UpdateAllCurves() {
     for (auto &[curves, control_points] : bezier_sets) {
         for (int curve_idx = 0, curve_first_control_point = 0;
-             curve_idx < static_cast<int>(curves.size());
+             (size_t) curve_idx < curves.size();
              curve_first_control_point += BEZIER_ORDER, ++curve_idx)
         {
             std::deque<Point> chunk(control_points.begin() + curve_first_control_point,

@@ -31,7 +31,7 @@ std::optional<size_t> PointDragger::Update() {
 
         Point mouse_pos = GetMousePosition();
 
-        for (int i = 0; i < static_cast<int>(points.size()); ++i) {
+        for (int i = 0; (size_t) i < points.size(); ++i) {
             Point point_pos_on_screen = *points[i];
             if (camera.has_value()) {
                 point_pos_on_screen = GetWorldToScreen2D(*points[i], *camera.value());

@@ -78,7 +78,7 @@ std::optional<Point> Intersect(Point a, Point b, Point x, Point y) {
 }
 
 void DrawLineDotted(Point start, Point end, float segment_len, float thick, Color color) {
-    const auto nsegments = static_cast<int>(std::ceil(Distance(start, end) / (2 * segment_len)));
+    const int nsegments = (int) std::ceil(Distance(start, end) / (2 * segment_len));
     
     Point delta = end - start;
     Point step = Vector2Normalize(delta) * segment_len;
@@ -86,7 +86,7 @@ void DrawLineDotted(Point start, Point end, float segment_len, float thick, Colo
     bool draw_end_cap = true;
     
     for (int i = 0; i < nsegments; ++i) {
-        Point segment_start = start + step * static_cast<float>(2 * i);
+        Point segment_start = start + step * (float) (2 * i);
         Point segment_end   = segment_start + step;
 
         if (i == nsegments - 1 && Distance(segment_start, segment_end) > Distance(segment_start, end)) {
@@ -179,7 +179,7 @@ Polygon Polygon::Ellipse(Point center, float a, float b, int poly_steps) {
     Polygon p;
 
     for (int i = 0; i <= poly_steps; ++i) {
-        float t = pi / 2 + 2 * pi * (static_cast<float>(i) / poly_steps);
+        float t = pi / 2 + 2 * pi * ((float) i / poly_steps);
         p.AddPoint({ center.x + a * sinf(t), center.y + b * cosf(t) });
     }
 

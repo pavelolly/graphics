@@ -8,7 +8,7 @@ std::deque<Point> SceneBezierElementary::GenerateRandomControlPoints(int npoints
     }
 
     std::deque<Point> res;
-    int screen_segment_width = static_cast<int>(input_box_panel.panel.x) / npoints;
+    int screen_segment_width = (int) input_box_panel.panel.x / npoints;
     for (int i = 0; i < npoints; ++i) {
         res.push_back(GetRandomPoint(screen_segment_width * i, screen_segment_width * (i + 1),
                                      0,                        GetScreenHeight()));

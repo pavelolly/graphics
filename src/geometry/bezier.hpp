@@ -38,7 +38,7 @@ std::function<Point(float)> BezierFunc(const RangeOf<Point> auto &control_points
             return BezierFuncCubic(control_points[0], control_points[1], control_points[2], control_points[3]);
         default: {
             std::vector<Point> coefs(size);
-            auto order = static_cast<int>(size - 1);
+            size_t order = size - 1;
 
             /*
                 General formula: ```f(t) = sum i=[0..order] { control_point[i] * (order choose i) * (1 - t)^(order - i) * t^i }```
@@ -47,12 +47,12 @@ std::function<Point(float)> BezierFunc(const RangeOf<Point> auto &control_points
             // calculate binomial coefs ```(order choose i) = order! / (i! * (order - i)!)```
             // (! - factorial)
             coefs[0] = { 1.f, 1.f };
-            for (int i = 1; i <= order; ++i) {
-                coefs[i] = coefs[i - 1] * static_cast<float>(order - i + 1) / static_cast<float>(i);
+            for (int i = 1; (size_t) i <= order; ++i) {
+                coefs[i] = coefs[i - 1] * (float) (order - i + 1) / (float) i;
             }
 
             // multiply coefs by control points
-            for (int i = 0; i < static_cast<int>(coefs.size()); ++i) {
+            for (int i = 0; (size_t) i < coefs.size(); ++i) {
                 coefs[i] *= control_points[i];
             }
 
@@ -64,7 +64,7 @@ std::function<Point(float)> BezierFunc(const RangeOf<Point> auto &control_points
                 }
 
                 Point res = Vector2Zeros;
-                float t_mul = powf(1 - t, static_cast<float>(order));
+                float t_mul = powf(1 - t, (float) order);
                 for (auto coef : coefs) {
                     res += coef * t_mul;
                     t_mul *= t / (1 - t);

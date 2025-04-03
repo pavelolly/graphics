@@ -73,13 +73,13 @@ void SceneLocalization::Draw() {
 
             Point center = (a + b + c) / 3;
             Point offset = Vector2Normalize(center - a) * 30;
-            DrawText("1", static_cast<int>(a.x - offset.x), static_cast<int>(a.y - offset.y), GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
+            DrawText("1", (int) (a.x - offset.x), (int) (a.y - offset.y), GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
 
             offset = Vector2Normalize(center - b) * 30;
-            DrawText("2", static_cast<int>(b.x - offset.x), static_cast<int>(b.y - offset.y), GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
+            DrawText("2", (int) (b.x - offset.x), (int) (b.y - offset.y), GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
 
             offset = Vector2Normalize(center - c) * 30;
-            DrawText("3", static_cast<int>(c.x - offset.x), static_cast<int>(c.y - offset.y), GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
+            DrawText("3", (int) (c.x - offset.x), (int) (c.y - offset.y), GuiGetStyle(DEFAULT, TEXT_SIZE), GRAY);
 
             break;
         }
